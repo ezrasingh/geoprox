@@ -19,6 +19,7 @@ readme = "README.md"
 repository = "https://github.com/ezrasingh/geoprox"
 documentation = "https://docs.rs/geoprox"
 license = "MIT OR Apache-2.0"
+exclude = ["demo/*"]
 
 [dependencies]
 axum = { version = "0.7.5", features = ["macros"] }
