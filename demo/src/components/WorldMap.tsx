@@ -33,8 +33,11 @@ export const WorldMap: React.FC<React.PropsWithChildren> = ({ children }) => {
       {orders.map((user, id) => (
         <Marker key={id} icon={orderIcon} position={user.position}>
           <Popup>
-            <div className="bg-white m-8 p-4">{user.name}</div>
+            <div className="bg-white m-8 p-4">
+              <b className="font-bold">Order:</b>&nbsp;<span>{user.name}</span>
+            </div>
             <button
+              className="btn btn-primary btn-wide mx-auto"
               onClick={async () => {
                 const radius = prompt("Enter search radius", "0.0");
                 if (radius === null) return;
@@ -54,7 +57,10 @@ export const WorldMap: React.FC<React.PropsWithChildren> = ({ children }) => {
         <Marker key={id} icon={riderIcon} position={user.position}>
           <Popup>
             <div className="bg-white m-8 p-4">
-              {user.name} ({user.uid})
+              <b className="font-bold">Rider:</b>&nbsp;
+              <span>
+                {user.name} (uid={user.uid})
+              </span>
             </div>
           </Popup>
         </Marker>
