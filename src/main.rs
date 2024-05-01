@@ -1,42 +1,35 @@
-use axum::{
-    routing::{patch, post},
-    Router,
-};
-use std::sync::Arc;
-use tower_http::{services::ServeFile, trace::TraceLayer};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use clap::{Parser, Subcommand};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-mod app;
-mod handlers;
-mod models;
+use geoprox::server;
 
-use handlers::{place_order, place_rider, remove_rider};
-
-fn start() -> Router {
-    let state = app::SharedState::default();
-
-    Router::new()
-        .route_service("/", ServeFile::new("index.html"))
-        .route("/rider/", patch(place_rider).delete(remove_rider))
-        .route("/order/", post(place_order))
-        .with_state(Arc::clone(&state))
-        .layer(TraceLayer::new_for_http())
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
 }
 
-#[tokio::main]
-async fn main() {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "geoprox=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+#[derive(Subcommand)]
+enum Commands {
+    /// run web server
+    RunServer {
+        /// <addr>:<port> (default 127.0.0.1:5000)
+        #[arg(short, long)]
+        bind: Option<SocketAddr>,
+    },
+}
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:5000")
-        .await
-        .unwrap();
+fn main() {
+    let cli = Cli::parse();
 
-    println!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, start()).await.unwrap();
+    match &cli.command {
+        Some(Commands::RunServer { bind }) => {
+            server::run(bind.unwrap_or(SocketAddr::new(
+                IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+                5000,
+            )));
+        }
+        None => {}
+    }
 }

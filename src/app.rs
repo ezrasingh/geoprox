@@ -27,6 +27,13 @@ impl Default for AppState {
 }
 
 impl AppState {
+    pub fn new(precision: usize) -> Self {
+        AppState {
+            precision: precision,
+            prefix_tree: StringPatriciaMap::new(),
+            position_map: HashMap::new(),
+        }
+    }
     pub fn place_rider(&mut self, payload: models::PlaceRider) -> models::PlaceRiderResponse {
         let ghash = geohash::encode(
             geohash::Coord {
@@ -36,30 +43,21 @@ impl AppState {
             self.precision,
         )
         .unwrap();
-        match self.position_map.insert(payload.uid, ghash.clone()) {
-            Some(old_ghash) => {
-                // ? remove rider from previous region
-                match self.prefix_tree.get_mut(old_ghash.clone()) {
-                    Some(prev_members) => {
-                        prev_members.remove(&payload.uid);
-                    }
-                    None => {
-                        self.prefix_tree.remove(old_ghash);
-                    }
-                }
+        if let Some(old_ghash) = self.position_map.insert(payload.uid, ghash.clone()) {
+            // ? remove rider from previous region
+            if let Some(prev_members) = self.prefix_tree.get_mut(old_ghash.clone()) {
+                prev_members.remove(&payload.uid);
+            } else {
+                self.prefix_tree.remove(old_ghash);
             }
-            None => {}
         }
         // ? insert current region in prefix tree
-        match self.prefix_tree.get_mut(ghash.clone()) {
-            Some(members) => {
-                members.insert(payload.uid);
-            }
-            None => {
-                let mut members: HashSet<u64> = HashSet::new();
-                members.insert(payload.uid);
-                self.prefix_tree.insert(ghash.clone(), members);
-            }
+        if let Some(members) = self.prefix_tree.get_mut(ghash.clone()) {
+            members.insert(payload.uid);
+        } else {
+            let mut members: HashSet<u64> = HashSet::new();
+            members.insert(payload.uid);
+            self.prefix_tree.insert(ghash.clone(), members);
         };
         println!("placed rider: ({}, {})", payload.uid, ghash.clone());
         models::PlaceRiderResponse { geohash: ghash }
@@ -71,19 +69,27 @@ impl AppState {
     }
 
     pub fn remove_rider(&mut self, payload: models::RemoveRider) -> models::RemoveRiderResponse {
-        self.position_map.remove(&payload.uid);
-        models::RemoveRiderResponse { removed: true }
+        let result: bool = match self.position_map.remove(&payload.uid) {
+            Some(ghash) => self
+                .prefix_tree
+                .get_mut(ghash)
+                .unwrap()
+                .remove(&payload.uid),
+            None => true,
+        };
+        models::RemoveRiderResponse { removed: result }
     }
 
     fn search(
         self,
         location: models::LatLongCoord,
-        radius: f64,
+        within: f64,
     ) -> Vec<models::Neighbor<f64, u64>> {
-        let within = radius / KM_CONVERSION_FACTOR;
+        let radius = within / KM_CONVERSION_FACTOR;
         let mut subregion_hash = geohash::encode(location.into(), self.precision).unwrap();
         let mut d = 0.0;
-        while d < within {
+        // ? truncate subregion hash until it contains our radius
+        while d < radius {
             let parent_region = &subregion_hash[0..subregion_hash.len() - 1];
             let (point, _, _) = geohash::decode(parent_region).unwrap();
             d = SquaredEuclidean::dist(&location, &[point.x, point.y]);
@@ -108,7 +114,7 @@ impl AppState {
         // ? compute nearest neighbors
         println!("spatial index size: {}", spatial_index.size());
         spatial_index
-            .within::<SquaredEuclidean>(&location, within)
+            .within::<SquaredEuclidean>(&location, radius)
             .iter()
             .map(|n| models::Neighbor {
                 distance: n.distance * KM_CONVERSION_FACTOR,
