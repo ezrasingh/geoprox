@@ -36,7 +36,7 @@ just run
 
 - Determine horizontal scaling strategy
 
-  - Possibly distributed in-memory cache could work
+  - Distributed in-memory cache could work
   - Another idea is distribute state via a consensus algorithm like Raft
   - Long term persistence may be achieved with a NoSQL solution
 
