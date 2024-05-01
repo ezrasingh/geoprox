@@ -6,7 +6,7 @@ This is a service that allows you to determine which users are nearby a contract
 
 ## Goals
 
-- Should keep track of **approximate location of riders**
+- Keep track of **approximate location of riders**
 
 - When order is placed should return **set of drivers nearby the pickup location**
 
