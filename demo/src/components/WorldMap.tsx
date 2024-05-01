@@ -4,7 +4,7 @@ import { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useAppState } from "../store";
 import { Marker, Popup } from "react-leaflet";
-import { markerIcon, orderIcon, riderIcon } from "../helpers";
+import { orderIcon, riderIcon } from "../helpers";
 
 const CENTER: LatLngExpression = {
   lat: 40.77638178482896,
