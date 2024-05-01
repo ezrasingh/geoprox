@@ -59,7 +59,12 @@ impl AppState {
             members.insert(payload.uid);
             self.prefix_tree.insert(ghash.clone(), members);
         };
-        println!("placed rider: ({}, {})", payload.uid, ghash.clone());
+        println!(
+            "placed rider: ({}, {}) => {:?}",
+            payload.uid,
+            ghash.clone(),
+            payload.position
+        );
         models::PlaceRiderResponse { geohash: ghash }
     }
 
@@ -165,8 +170,8 @@ mod test {
             position: [0.0, 0.0],
         });
         let center = [0.0, 0.0];
-        let radius = 1000.0; // km
+        let radius = 2500.0; // km
         let res = app.search(center, radius);
-        println!("riders within {} from ({:?}): {:#?}", radius, center, res);
+        println!("riders within {}km from ({:?}): {:#?}", radius, center, res);
     }
 }
