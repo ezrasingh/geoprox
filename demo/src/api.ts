@@ -8,7 +8,7 @@ const api = axios.create({
 
 export async function placeRider(uid: number, position: LatLng){
     const { lat, lng } = position.wrap();
-    return await api.patch('/rider/', { uid, position: [lat, lng] });
+    return await api.post('/rider/', { uid, position: [lat, lng] });
 }
 
 export async function removeRider(uid: number){

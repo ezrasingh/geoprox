@@ -1,9 +1,6 @@
 use crate::app;
 use crate::handlers::{place_order, place_rider, remove_rider};
-use axum::{
-    routing::{patch, post},
-    Router,
-};
+use axum::{routing::post, Router};
 use std::sync::Arc;
 use tokio::net::ToSocketAddrs;
 use tower_http::services::ServeFile;
@@ -16,7 +13,7 @@ fn start() -> Router {
         .not_found_service(ServeFile::new("frontend/dist/index.html"));
 
     Router::new()
-        .route("/rider/", patch(place_rider).delete(remove_rider))
+        .route("/rider/", post(place_rider).delete(remove_rider))
         .route("/order/", post(place_order))
         .nest_service("/demo", demo.clone())
         .fallback_service(demo)
