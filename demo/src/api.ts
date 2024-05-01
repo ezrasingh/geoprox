@@ -17,5 +17,5 @@ export async function removeRider(uid: number){
 
 export async function placeOrder(distance: number, position: LatLng){
     const { lat, lng } = position.wrap();
-    return await api.post('/order/', { distance, location: [lat, lng] });
+    return await api.post('/order/', { distance, position: [lat, lng] });
 }

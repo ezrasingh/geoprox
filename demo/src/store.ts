@@ -18,9 +18,9 @@ export interface AppState {
 }
 
 export interface AppActions {
-  placeRider: (rider: User) => Promise<void>;
+  placeRider: (rider: { name: string, position: LatLngExpression }) => Promise<void>;
   removeRider: (name: string) => void;
-  placeOrder: (order: User) => void;
+  placeOrder: (order: { name: string, position: LatLngExpression }) => void;
   cancelOrder: (name: string) => void;
 }
 
@@ -49,7 +49,7 @@ export const useAppState = create(
             },
             placeOrder(order) {
                 set((state) => {
-                    state.orders.set(order.name, order);
+                    state.orders.set(order.name, { ...order, uid: id++ });
                 });
             },
             cancelOrder(name) {

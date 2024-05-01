@@ -7,13 +7,13 @@ export const markerIcon = icon({
 });
 
 export const orderIcon = icon({
-    iconUrl: "http://localhost:5173/order-pin.png",
+    iconUrl: "/demo/order-pin.png",
     iconSize: [25, 41],
     iconAnchor: [13, 0],
 });
 
 export const riderIcon = icon({
-    iconUrl: "http://localhost:5173/rider-pin.png",
+    iconUrl: "/demo/rider-pin.png",
     iconSize: [25, 41],
     iconAnchor: [13, 0],
 });

@@ -9,8 +9,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 fn start() -> Router {
     let state = app::SharedState::default();
-    let demo = ServeDir::new("frontend/dist")
-        .not_found_service(ServeFile::new("frontend/dist/index.html"));
+    let demo = ServeDir::new("demo/dist").not_found_service(ServeFile::new("demo/dist/index.html"));
 
     Router::new()
         .route("/rider/", post(place_rider).delete(remove_rider))
