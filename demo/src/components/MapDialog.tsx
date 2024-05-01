@@ -46,15 +46,6 @@ export const MapDialog = () => {
         >
           Place New Order
         </button>
-        <button
-          className="btn btn-md btn-primary mt-2"
-          onClick={(e) => {
-            e.stopPropagation();
-            setStep(UiAction.SEARCH);
-          }}
-        >
-          Search within radius
-        </button>
       </>
     ),
     [UiAction.ADD_RIDER]: (
