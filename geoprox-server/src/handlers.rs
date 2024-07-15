@@ -1,5 +1,5 @@
 use crate::app::SharedState;
-use crate::models::{
+use crate::dto::{
     PlaceOrder, PlaceOrderResponse, PlaceRider, PlaceRiderResponse, RemoveRider,
     RemoveRiderResponse,
 };

@@ -1,6 +1,6 @@
 pub mod app;
 pub mod handlers;
-pub mod models;
+pub mod dto;
 
 use crate::handlers::{place_contract, place_user, remove_user};
 use axum::{routing::post, Router};
