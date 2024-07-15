@@ -70,30 +70,10 @@ impl PositionRegistry {
         }
     }
 
-    fn search(
-        &self,
-        position: LatLongCoord,
-        within: &f64,
-        precision: &usize
-    ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
-        let radius = within / Self::KM_CONVERSION_FACTOR;
-        
-        let mut subregion_hash = geohash::encode(position.into(), *precision)?;
-        
-        {
-        let mut d = 0.0;
-            // ? truncate subregion hash until it contains our radius
-            while subregion_hash.len() > 1 && d < radius {
-                subregion_hash.pop();
-                let (point, _, _) = geohash::decode(&subregion_hash)?;
-                d = SquaredEuclidean::dist(&position, &[point.x, point.y]);
-            }
-        }
-        dbg!("searching subregion: ", &subregion_hash);
-
+    fn build_spatial_index(&self, subregion_hash: &str) -> KdTree<f64, 2> {
         let mut spatial_index = KdTree::new();
         // ? locate nearby geohashes and populate spatial index
-        dbg!("prefix tree size: ", self.prefix_tree.len());
+        dbg!("building spatial index for: ", subregion_hash);
 
         let subtree = self.prefix_tree.clone().split_by_prefix(subregion_hash);
 
@@ -106,9 +86,33 @@ impl PositionRegistry {
             });
         });
 
-        // ? compute nearest neighbors
         dbg!("spatial index size: ", spatial_index.size());
-        let neighbors: Vec<Neighbor<f64>> = spatial_index
+        spatial_index
+    }
+
+    fn search(
+        &self,
+        position: LatLongCoord,
+        within: &f64,
+        precision: &usize
+    ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
+        let radius = within / Self::KM_CONVERSION_FACTOR;
+        
+        let mut subregion_hash = geohash::encode(position.into(), *precision)?;
+        
+        {
+        let mut dist = 0.0;
+            // ? truncate subregion hash until it contains our radius
+            while subregion_hash.len() > 1 && dist < radius {
+                subregion_hash.pop();
+                let (point, _, _) = geohash::decode(&subregion_hash)?;
+                dist = SquaredEuclidean::dist(&position, &[point.x, point.y]);
+            }
+        }
+        dbg!("searching subregion: ", &subregion_hash);
+        
+        // ? compute nearest neighbors
+        let neighbors: Vec<Neighbor<f64>> = self.build_spatial_index(&subregion_hash)
             .within_unsorted_iter::<SquaredEuclidean>(&position, radius)
             .map(|node| Neighbor {
                 distance: node.distance * Self::KM_CONVERSION_FACTOR,
