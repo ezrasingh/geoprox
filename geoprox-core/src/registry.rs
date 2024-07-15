@@ -77,14 +77,17 @@ impl PositionRegistry {
         precision: &usize
     ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
         let radius = within / Self::KM_CONVERSION_FACTOR;
+        
         let mut subregion_hash = geohash::encode(position.into(), *precision)?;
+        
+        {
         let mut d = 0.0;
-        // ? truncate subregion hash until it contains our radius
-        while subregion_hash.len() > 1 && d < radius {
-            println!("{}", &subregion_hash);
-            subregion_hash.pop();
-            let (point, _, _) = geohash::decode(&subregion_hash)?;
-            d = SquaredEuclidean::dist(&position, &[point.x, point.y]);
+            // ? truncate subregion hash until it contains our radius
+            while subregion_hash.len() > 1 && d < radius {
+                subregion_hash.pop();
+                let (point, _, _) = geohash::decode(&subregion_hash)?;
+                d = SquaredEuclidean::dist(&position, &[point.x, point.y]);
+            }
         }
         dbg!("searching subregion: ", &subregion_hash);
 
@@ -98,6 +101,7 @@ impl PositionRegistry {
             dbg!("found nearby riders:", &ghash, members);
             let (position, _, _) = geohash::decode(&ghash).unwrap();
             members.iter().for_each(|uid| {
+                dbg!("adding user to spatial index", uid);
                 spatial_index.add(&[position.x, position.y], *uid);
             });
         });
@@ -107,9 +111,9 @@ impl PositionRegistry {
         let neighbors: Vec<Neighbor<f64>> = spatial_index
             .within::<SquaredEuclidean>(&position, radius)
             .iter()
-            .map(|n| Neighbor {
-                distance: n.distance * Self::KM_CONVERSION_FACTOR,
-                uid: n.item,
+            .map(|node| Neighbor {
+                distance: node.distance * Self::KM_CONVERSION_FACTOR,
+                uid: node.item,
             })
             .collect();
         Ok(neighbors)
