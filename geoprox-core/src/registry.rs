@@ -109,8 +109,7 @@ impl PositionRegistry {
         // ? compute nearest neighbors
         dbg!("spatial index size: ", spatial_index.size());
         let neighbors: Vec<Neighbor<f64>> = spatial_index
-            .within::<SquaredEuclidean>(&position, radius)
-            .iter()
+            .within_unsorted_iter::<SquaredEuclidean>(&position, radius)
             .map(|node| Neighbor {
                 distance: node.distance * Self::KM_CONVERSION_FACTOR,
                 uid: node.item,
