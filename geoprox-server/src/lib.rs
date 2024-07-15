@@ -2,23 +2,19 @@ pub mod app;
 pub mod handlers;
 pub mod models;
 
-use crate::handlers::{place_order, place_rider, remove_rider};
+use crate::handlers::{place_contract, place_user, remove_user};
 use axum::{routing::post, Router};
 use std::sync::Arc;
 use tokio::net::ToSocketAddrs;
-use tower_http::services::ServeFile;
-use tower_http::{services::ServeDir, trace::TraceLayer};
+use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-fn start() -> Router {
+pub fn routes() -> Router {
     let state = app::SharedState::default();
-    let demo = ServeDir::new("demo/dist").not_found_service(ServeFile::new("demo/dist/index.html"));
 
     Router::new()
-        .route("/rider/", post(place_rider).delete(remove_rider))
-        .route("/order/", post(place_order))
-        .nest_service("/demo", demo.clone())
-        .fallback_service(demo)
+        .route("/user/", post(place_user).delete(remove_user))
+        .route("/contract/", post(place_contract))
         .with_state(Arc::clone(&state))
         .layer(TraceLayer::new_for_http())
 }
@@ -35,7 +31,8 @@ pub async fn run(addr: impl ToSocketAddrs) {
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
+    let root = Router::new().nest("/geoprox/", routes());
     println!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, start()).await.unwrap();
+    axum::serve(listener, root).await.unwrap();
 }
 

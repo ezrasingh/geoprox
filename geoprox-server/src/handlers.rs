@@ -5,32 +5,37 @@ use crate::models::{
 };
 use axum::{extract, Json};
 
-pub async fn place_rider(
+pub async fn place_user(
     extract::State(app_state): extract::State<SharedState>,
     extract::Json(payload): extract::Json<PlaceRider>,
 ) -> Json<PlaceRiderResponse> {
     let mut state = app_state.write().unwrap();
+    let precision = state.precision;
+
     Json(PlaceRiderResponse { 
-        geohash: state.place_user(payload.uid, payload.position, 10).unwrap() 
+        geohash: state.position_registry.store_user(&payload.uid, &payload.position, &precision).unwrap() 
     })
 }
 
-pub async fn place_order(
+pub async fn place_contract(
     extract::State(app_state): extract::State<SharedState>,
     extract::Json(payload): extract::Json<PlaceOrder>,
 ) -> Json<PlaceOrderResponse> {
     let mut state = app_state.write().unwrap();
+    let precision = state.precision;
+
     Json(PlaceOrderResponse{
-        riders: state.place_contract(payload.position, payload.distance, 10).unwrap(),
+        riders: state.position_registry.add_contract(&payload.position, &payload.distance, &precision).unwrap(),
     })
 }
 
-pub async fn remove_rider(
+pub async fn remove_user(
     extract::State(app_state): extract::State<SharedState>,
     extract::Json(payload): extract::Json<RemoveRider>,
 ) -> Json<RemoveRiderResponse> {
     let mut state = app_state.write().unwrap();
+
     Json(RemoveRiderResponse { 
-        removed:  state.remove_user(&payload.uid),
+        removed:  state.position_registry.remove_user(&payload.uid),
     })
 }
