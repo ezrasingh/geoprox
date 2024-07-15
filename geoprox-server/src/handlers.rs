@@ -10,17 +10,19 @@ pub async fn place_rider(
     extract::Json(payload): extract::Json<PlaceRider>,
 ) -> Json<PlaceRiderResponse> {
     let mut state = app_state.write().unwrap();
-    let res = state.place_rider(payload);
-    Json(res)
+    Json(PlaceRiderResponse { 
+        geohash: state.place_user(payload.uid, payload.position, 10).unwrap() 
+    })
 }
 
 pub async fn place_order(
     extract::State(app_state): extract::State<SharedState>,
     extract::Json(payload): extract::Json<PlaceOrder>,
 ) -> Json<PlaceOrderResponse> {
-    let state = app_state.read().unwrap();
-    let res = state.clone().place_order(payload);
-    Json(res)
+    let mut state = app_state.write().unwrap();
+    Json(PlaceOrderResponse{
+        riders: state.place_contract(payload.position, payload.distance, 10).unwrap(),
+    })
 }
 
 pub async fn remove_rider(
@@ -28,6 +30,7 @@ pub async fn remove_rider(
     extract::Json(payload): extract::Json<RemoveRider>,
 ) -> Json<RemoveRiderResponse> {
     let mut state = app_state.write().unwrap();
-    let res = state.remove_rider(payload);
-    Json(res)
+    Json(RemoveRiderResponse { 
+        removed:  state.remove_user(&payload.uid),
+    })
 }

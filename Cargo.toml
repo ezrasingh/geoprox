@@ -1,25 +1,5 @@
-[package]
-name = "geoprox"
-version = "0.1.0"
-edition = "2021"
-authors = ["Ezra Singh <singhezra@gmail.com>"]
-description = "A Geo-Proximity detection service for efficient real-time geo-aware contract pairing. Ideal for rideshare pairing services"
-keywords = ["geo", "proximity", "geohash", "pairing", "nearest-neighbor"]
-readme = "README.md"
-repository = "https://github.com/ezrasingh/geoprox"
-documentation = "https://docs.rs/geoprox"
-license = "MIT OR Apache-2.0"
-exclude = ["demo/*"]
-
-[dependencies]
-axum = { version = "0.7.5", features = ["macros"] }
-clap = { version = "4.5.4", features = ["derive"] }
-geohash = "0.13.1"
-kiddo = { version = "4.2.0", features = ["serialize"] }
-patricia_tree = { version = "0.8.0", features = ["serde"] }
-serde = { version = "1.0.199", features = ["derive", "rc"] }
-serde_json = "1.0.116"
-tokio = { version = "1.37.0", features = ["full"] }
-tower-http = { version = "0.5.2", features = ["fs", "trace"] }
-tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+[workspace]
+members = ["geoprox", "geoprox-*"]
+# Only check / build main crates by default (check all with `--workspace`)
+default-members = ["geoprox", "geoprox-*"]
+resolver = "2"

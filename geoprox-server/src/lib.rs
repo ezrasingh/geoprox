@@ -1,4 +1,7 @@
-use crate::app;
+pub mod app;
+pub mod handlers;
+pub mod models;
+
 use crate::handlers::{place_order, place_rider, remove_rider};
 use axum::{routing::post, Router};
 use std::sync::Arc;
@@ -35,3 +38,4 @@ pub async fn run(addr: impl ToSocketAddrs) {
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, start()).await.unwrap();
 }
+

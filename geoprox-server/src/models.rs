@@ -1,10 +1,9 @@
 use serde::{Deserialize, Serialize};
-
-pub type LatLongCoord = [f64; 2];
+use geoprox_core::models::{LatLongCoord,Neighbor,UserIdentifier};
 
 #[derive(Deserialize)]
 pub struct PlaceRider {
-    pub uid: u64,
+    pub uid: UserIdentifier,
     pub position: LatLongCoord,
 }
 
@@ -13,11 +12,6 @@ pub struct PlaceRiderResponse {
     pub geohash: String,
 }
 
-#[derive(Debug, Serialize)]
-pub struct Neighbor<A, T> {
-    pub distance: A,
-    pub uid: T,
-}
 
 #[derive(Deserialize)]
 pub struct PlaceOrder {
@@ -27,12 +21,12 @@ pub struct PlaceOrder {
 
 #[derive(Serialize)]
 pub struct PlaceOrderResponse {
-    pub riders: Vec<Neighbor<f64, u64>>,
+    pub riders: Vec<Neighbor<f64>>,
 }
 
 #[derive(Deserialize)]
 pub struct RemoveRider {
-    pub uid: u64,
+    pub uid: UserIdentifier,
 }
 
 #[derive(Serialize)]

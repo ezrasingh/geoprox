@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-use geoprox::server;
+use geoprox_server;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -25,7 +25,7 @@ fn main() {
 
     match &cli.command {
         Some(Commands::RunServer { bind }) => {
-            server::run(bind.unwrap_or(SocketAddr::new(
+            geoprox_server::run(bind.unwrap_or(SocketAddr::new(
                 IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
                 5000,
             )));
