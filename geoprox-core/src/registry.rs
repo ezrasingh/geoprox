@@ -100,16 +100,15 @@ impl PositionRegistry {
         
         let mut subregion_hash = geohash::encode(position.into(), *precision)?;
         
-        {
-        let mut dist = 0.0;
-            // ? truncate subregion hash until it contains our radius
-            while subregion_hash.len() > 1 && dist < radius {
+        // ? truncate subregion hash until it contains our radius
+        while subregion_hash.len() > 1 {
+            let (point, _, _) = geohash::decode(&subregion_hash)?;
+            if SquaredEuclidean::dist(&position, &[point.x, point.y]) > radius {
+                break;
+            } else {
                 subregion_hash.pop();
-                let (point, _, _) = geohash::decode(&subregion_hash)?;
-                dist = SquaredEuclidean::dist(&position, &[point.x, point.y]);
             }
         }
-        dbg!("searching subregion: ", &subregion_hash);
         
         // ? compute nearest neighbors
         let neighbors: Vec<Neighbor<f64>> = self.build_spatial_index(&subregion_hash)
