@@ -11,6 +11,7 @@ documentation = "https://docs.rs/geoprox"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+geoprox-core = {path = "../geoprox-core"}
 geoprox-server = {path = "../geoprox-server"}
 clap = { version = "4.5.4", features = ["derive"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
