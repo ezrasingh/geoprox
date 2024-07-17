@@ -9,6 +9,7 @@ use std::collections::{HashMap, HashSet};
 pub struct PositionRegistry {
     pub prefix_tree: StringPatriciaMap<HashSet<UserIdentifier>>,
     pub position_map: HashMap<UserIdentifier, String>,
+    pub capacity: usize,
 }
 
 impl Default for PositionRegistry {
@@ -16,6 +17,7 @@ impl Default for PositionRegistry {
         PositionRegistry {
             prefix_tree: StringPatriciaMap::new(),
             position_map: HashMap::new(),
+            capacity: 128,
         }
     }
 }
@@ -71,7 +73,7 @@ impl PositionRegistry {
     }
 
     fn build_spatial_index(&self, subregion_hash: &str) -> KdTree<f64, 2> {
-        let mut spatial_index = KdTree::new();
+        let mut spatial_index = KdTree::with_capacity(self.capacity);
         // ? locate nearby geohashes and populate spatial index
         dbg!("building spatial index for: ", subregion_hash);
 
@@ -97,7 +99,7 @@ impl PositionRegistry {
         precision: &usize
     ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
         let radius = within / Self::KM_CONVERSION_FACTOR;
-        
+
         let mut subregion_hash = geohash::encode(position.into(), *precision)?;
         
         // ? truncate subregion hash until it contains our radius
@@ -125,6 +127,7 @@ impl PositionRegistry {
 #[cfg(test)]
 mod test {
     use crate::registry::PositionRegistry;
+    use rand::prelude::*;
 
     #[test]
     fn sandbox() {
@@ -141,6 +144,22 @@ mod test {
         let center = &[0.0, 0.0];
         let radius = &2500.0; // km
         let res = registry.add_contract(center, radius, &10);
+        println!("riders within {}km from ({:?}): {:#?}", radius, center, res);
+    }
+
+    #[test]
+    fn stress_test() {
+        let mut registry = PositionRegistry::default();
+        let mut rng = rand::thread_rng();
+        let precision = 10;
+        for n in 0..0x10000 {
+            let (x, y) = (rng.gen_range(0..100), rng.gen_range(0..100));
+            let _ = registry.store_user(&n, &[x.into(), y.into()], &precision);
+        }
+
+        let center = [0.0, 0.0];
+        let radius = 5.0;
+        let res = registry.add_contract(&center, &radius, &precision);
         println!("riders within {}km from ({:?}): {:#?}", radius, center, res);
     }
 }
