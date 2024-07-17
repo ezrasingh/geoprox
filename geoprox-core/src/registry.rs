@@ -1,6 +1,5 @@
 use crate::models::{LatLongCoord, UserIdentifier, Neighbor};
 use geohash::GeohashError;
-use kiddo::distance_metric::DistanceMetric;
 use kiddo::{KdTree, SquaredEuclidean};
 use patricia_tree::StringPatriciaMap;
 use std::collections::{HashMap, HashSet};
@@ -23,7 +22,12 @@ impl Default for PositionRegistry {
 }
 
 impl PositionRegistry {
-    const KM_CONVERSION_FACTOR: f64 = 1.0;
+    // Constants for approximate degrees per meter, radius of the Earth, and conversion factor
+    const EARTH_RADIUS_METERS: f64 = 6_371_000.0; // Mean radius of the Earth in meters
+    const MEAN_CURVATURE: f64 = Self::EARTH_RADIUS_METERS * std::f64::consts::PI / 180.0;
+    const DEGREES_PER_METER: f64 = 1.0 / Self::MEAN_CURVATURE; // Average degrees per meter
+    const METER_CONVERSION_FACTOR: f64 = 1.40625; // Approximate conversion factor for degrees per meter
+
     
     pub fn new() -> Self {
         PositionRegistry::default()
@@ -56,9 +60,9 @@ impl PositionRegistry {
         Ok(ghash)
     }
 
-    pub fn add_contract(&mut self, position: &LatLongCoord, within: &f64, precision: &usize) -> Result<Vec<Neighbor<f64>>,GeohashError> {
+    pub fn add_contract(&mut self, position: &LatLongCoord, within: &f64) -> Result<Vec<Neighbor<f64>>,GeohashError> {
         // todo! - add queue for each user
-        self.search(*position, within, precision)
+        self.search(*position, within)
     }
 
     pub fn remove_user(&mut self, uid: &UserIdentifier) -> bool {
@@ -95,28 +99,26 @@ impl PositionRegistry {
     fn search(
         &self,
         position: LatLongCoord,
-        within: &f64,
-        precision: &usize
+        radius: &f64,
     ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
-        let radius = within / Self::KM_CONVERSION_FACTOR;
+        let precision: usize = {
+            // Calculate the length of the geohash area in degrees latitude
+            let max_length = 2.0 * radius * Self::DEGREES_PER_METER / Self::METER_CONVERSION_FACTOR;
 
-        let mut subregion_hash = geohash::encode(position.into(), *precision)?;
-        
-        // ? truncate subregion hash until it contains our radius
-        while subregion_hash.len() > 1 {
-            let (point, _, _) = geohash::decode(&subregion_hash)?;
-            if SquaredEuclidean::dist(&position, &[point.x, point.y]) > radius {
-                break;
-            } else {
-                subregion_hash.pop();
-            }
-        }
+            // Calculate the number of bits needed to cover the geohash
+            let bits_needed = max_length.log2().ceil();
+
+            // Ensure the precision is at least 1 (the smallest geohash precision)
+            bits_needed.max(1.0) as usize
+        };
+
+        let subregion_hash = geohash::encode(position.into(), precision)?;
         
         // ? compute nearest neighbors
         let neighbors: Vec<Neighbor<f64>> = self.build_spatial_index(&subregion_hash)
-            .within_unsorted_iter::<SquaredEuclidean>(&position, radius)
+            .within_unsorted_iter::<SquaredEuclidean>(&position, *radius)
             .map(|node| Neighbor {
-                distance: node.distance * Self::KM_CONVERSION_FACTOR,
+                distance: node.distance / Self::METER_CONVERSION_FACTOR,
                 uid: node.item,
             })
             .collect();
@@ -142,8 +144,8 @@ mod test {
         let _ = registry.store_user(&6, &[0.0, -1.0], &10);
         let _ = registry.store_user(&7, &[-0.0, 0.0], &10);
         let center = &[0.0, 0.0];
-        let radius = &2500.0; // km
-        let res = registry.add_contract(center, radius, &10);
+        let radius = &1.0; // m
+        let res = registry.add_contract(center, radius);
         println!("riders within {}km from ({:?}): {:#?}", radius, center, res);
     }
 
@@ -151,15 +153,16 @@ mod test {
     fn stress_test() {
         let mut registry = PositionRegistry::default();
         let mut rng = rand::thread_rng();
+        let scale = 100;
         let precision = 10;
         for n in 0..0x10000 {
-            let (x, y) = (rng.gen_range(0..100), rng.gen_range(0..100));
+            let (x, y) = (rng.gen_range(0..scale), rng.gen_range(0..scale));
             let _ = registry.store_user(&n, &[x.into(), y.into()], &precision);
         }
 
         let center = [0.0, 0.0];
         let radius = 5.0;
-        let res = registry.add_contract(&center, &radius, &precision);
+        let res = registry.add_contract(&center, &radius);
         println!("riders within {}km from ({:?}): {:#?}", radius, center, res);
     }
 }
