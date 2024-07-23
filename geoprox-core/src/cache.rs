@@ -15,15 +15,18 @@ fn generate_id(resource_key: &str) -> ResourceIdentifier {
 
 #[derive(Clone, Default)]
 pub struct SpatialIndex<K = String> {
-    // maps geohash to common resources 
+    /// maps geohash to common resources 
     prefix_tree: StringPatriciaMap<HashSet<ResourceIdentifier>>,
-    // maps resource to geohash
+    /// maps resource to geohash
     position_map: HashMap<ResourceIdentifier, String>,
-    // maps resource hash to resource name
+    /// maps resource hash to resource name
     resource_map: HashMap<ResourceIdentifier, K>,
 }
 
 impl SpatialIndex {
+    /// depth 6 corresponds to ~1kmx1km region
+    pub const DEFAULT_DEPTH: usize = 6;
+
     pub fn new(capacity: usize) -> Self {
         SpatialIndex {
             position_map: HashMap::with_capacity(capacity),
@@ -94,18 +97,20 @@ impl SpatialIndex {
         &self,
         position: LatLngCoord,
         radius: &f64,
+        initial_depth: Option<usize>
     ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
         if self.position_map.is_empty() {
             return Ok(vec![]);
         }
-        let subregion_hash: String = {
-            // ? depth 6 corresponds to ~1kmx1km region
-            let mut ghash  = geohash::encode(position.into(), 6)?;
-        
+        let search_region: String = {
+            let depth = initial_depth.unwrap_or(Self::DEFAULT_DEPTH);
+            let mut ghash  = geohash::encode(position.into(), depth)?;  
+            // ? kiddo uses (lng,lat) for calculations so we flip the LatLngCoord
+            let origin = [position[1], position[0]];
             // ? truncate subregion hash until it contains our radius
             while ghash.len() > 1 {
                 let (point, _, _) = geohash::decode(&ghash)?;
-                if HaversineMetric::dist(&[position[1], position[0]], &[point.x, point.y]) > *radius {
+                if HaversineMetric::dist(&origin, &[point.x, point.y]).gt(radius) {
                     break;
                 } else {
                     ghash.pop();
@@ -115,11 +120,11 @@ impl SpatialIndex {
         };        
 
         // ? compute nearest neighbors
-        let neighbors: Vec<Neighbor<f64>> = self.build_search_tree(&subregion_hash)
+        let neighbors: Vec<Neighbor<f64>> = self.build_search_tree(&search_region)
             .within_unsorted_iter::<HaversineMetric>(&position, *radius)
             .map(|node| Neighbor {
                 distance: node.distance,
-                resource: self.resource_map.get(&node.item).unwrap(),
+                resource: self.resource_map.get(&node.item).unwrap().to_string(),
             })
             .collect();
         Ok(neighbors)
@@ -147,7 +152,7 @@ mod test {
     
         let range = 1.0; // km
         let origin: LatLngCoord = [0f64, 0f64];
-        let res = geo_index.search(origin, &range).unwrap();
+        let res = geo_index.search(origin, &range, None).unwrap();
         assert_eq!(res.len(), 2);
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
@@ -171,7 +176,7 @@ mod test {
 
         let center = [0f64, 0f64];
         let range = 200f64;
-        let res = geo_index.search(center, &range).unwrap();
+        let res = geo_index.search(center, &range, None).unwrap();
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
         });

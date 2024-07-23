@@ -13,13 +13,16 @@ pub enum GeoShardError {
 #[derive(Clone)]
 pub struct GeoShardConfig{
     // geohash length used during insert
-    insert_depth: usize
+    insert_depth: usize,
+    // initial subregion geohash length used during range query
+    search_depth: Option<usize>
 }
 
 impl Default for GeoShardConfig {
     fn default() -> Self {
         GeoShardConfig {
-            insert_depth: 6
+            insert_depth: SpatialIndex::DEFAULT_DEPTH,
+            search_depth: Some(SpatialIndex::DEFAULT_DEPTH)
         }
     }
 }
@@ -76,7 +79,7 @@ impl GeoShard {
     }
     pub fn query_range(&self, index: &str, origin: LatLngCoord, range: &f64) -> Result<Vec<Neighbor>, GeoShardError> {
         if let Some(geo_index) = self.cache.get(index) {
-           match geo_index.search(origin, range) {
+           match geo_index.search(origin, range, self.config.search_depth) {
                 Ok(found) => Ok(found),
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
