@@ -1,6 +1,6 @@
 use crate::app::SharedState;
 use crate::dto;
-use axum::{extract, Json};
+use axum::{extract, http::{header, HeaderMap}, response::IntoResponse, Json};
 use geoprox_core::shard::GeoShardError;
 
 pub async fn decode_geohash(
@@ -23,11 +23,16 @@ pub async fn decode_geohash(
 pub async fn encode_latlng(
     extract::State(_): extract::State<SharedState>,
     extract::Query(payload): extract::Query<dto::EncodeLatLng>,
-) -> Json<dto::EncodeGeohashResponse> {
+) -> impl IntoResponse {
     match geoprox_core::geohash::encode([payload.lng, payload.lat].into(), payload.depth) {
-        Ok(geohash) => Json(dto::EncodeGeohashResponse{
-            geohash
-        }),
+        Ok(geohash) =>{
+            let mut headers = HeaderMap::new();
+            headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+            headers.insert(header::CACHE_CONTROL, "max-age=3600, immutable".parse().unwrap());
+            (headers, Json(dto::EncodeLatLngResponse {
+                geohash
+            }))
+        },
         Err(err) => {
             panic!("could not encode lat/lng ({}, {}): {:#?}", payload.lat, payload.lng, err);
         },

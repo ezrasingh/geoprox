@@ -12,10 +12,10 @@ pub fn routes() -> Router {
     let state = app::SharedState::default();
 
     Router::new()
-        .route("/geohash", routing::get(handlers::encode_latlng))
-        .route("/geohash/:ghash", routing::get(handlers::decode_geohash))
-        .route("/geohash/:ghash/neighbors", routing::get(handlers::geohash_neighbors))
-        .route("/shard/:index", routing::post(handlers::create_index)
+        .route("/geohash/", routing::get(handlers::encode_latlng))
+        .route("/geohash/:ghash/", routing::get(handlers::decode_geohash))
+        .route("/geohash/:ghash/neighbors/", routing::get(handlers::geohash_neighbors))
+        .route("/shard/:index/", routing::post(handlers::create_index)
             .delete(handlers::drop_index)
             .put(handlers::insert_key)
             .get(handlers::query_range)
@@ -41,3 +41,40 @@ pub async fn run(socket: impl ToSocketAddrs) {
     axum::serve(listener, root).await.unwrap();
 }
 
+#[cfg(test)]
+mod test {
+    use crate::{dto, routes};
+    use axum::Router;
+    use axum_test::{TestServerConfig, TestServer};
+    use serde_json::json;
+    
+    fn setup() -> TestServer {
+        let app = Router::new().nest("/api/", routes());
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        TestServer::new_with_config(app, config).unwrap()
+    }
+
+    #[tokio::test]
+    async fn test_geohash_api() {
+        
+        let server = setup();
+        let req = server.get("/api/geohash/").add_query_params(dto::EncodeLatLng {
+            lat: 45.0,
+            lng: 45.0,
+            depth: 6,
+        });
+        let res = req.await;
+        
+        println!("{:#?}", res);
+
+        res.assert_status_ok();
+        assert_eq!(res.header("cache-control").is_empty(), false);
+        res.assert_json(&json!({
+                "geohash": "v00000",
+            })
+        );
+
+    }
+}

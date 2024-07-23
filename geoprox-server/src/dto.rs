@@ -9,7 +9,7 @@ pub struct DecodeGeohashResponse {
     pub lng_error: f64,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct EncodeLatLng {
     pub lat: f64,
     pub lng: f64,
@@ -17,7 +17,7 @@ pub struct EncodeLatLng {
 }
 
 #[derive(Serialize)]
-pub struct EncodeGeohashResponse {
+pub struct EncodeLatLngResponse {
     pub geohash: String,
 }
 
