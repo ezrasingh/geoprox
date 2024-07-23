@@ -2,8 +2,7 @@ pub mod app;
 pub mod handlers;
 pub mod dto;
 
-use crate::handlers::{place_contract, place_user, remove_user};
-use axum::{routing::post, Router};
+use axum::{routing, Router};
 use std::sync::Arc;
 use tokio::net::ToSocketAddrs;
 use tower_http::trace::TraceLayer;
@@ -13,14 +12,17 @@ pub fn routes() -> Router {
     let state = app::SharedState::default();
 
     Router::new()
-        .route("/user/", post(place_user).delete(remove_user))
-        .route("/contract/", post(place_contract))
+        .route("/shard/:index", routing::post(handlers::create_index)
+            .put(handlers::insert_resource)
+            .delete(handlers::drop_index)
+            .get(handlers::query_range)
+        )
         .with_state(Arc::clone(&state))
         .layer(TraceLayer::new_for_http())
 }
 
 #[tokio::main]
-pub async fn run(addr: impl ToSocketAddrs) {
+pub async fn run(socket: impl ToSocketAddrs) {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -29,9 +31,9 @@ pub async fn run(addr: impl ToSocketAddrs) {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
 
-    let root = Router::new().nest("/geoprox/", routes());
+    let root = Router::new().nest("/api/", routes());
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, root).await.unwrap();
 }

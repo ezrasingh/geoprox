@@ -1,35 +1,37 @@
 use serde::{Deserialize, Serialize};
-use geoprox_core::models::{LatLongCoord,Neighbor,UserIdentifier};
+use geoprox_core::models::{LatLngCoord,Neighbor,ResourceIdentifier};
+
+#[derive(Serialize)]
+pub struct CreateIndexResponse {
+    pub created: bool,
+    pub existed: bool,
+}
+
 
 #[derive(Deserialize)]
-pub struct PlaceRider {
-    pub uid: UserIdentifier,
-    pub position: LatLongCoord,
+pub struct InsertResource {
+    pub key: String,
+    pub position: LatLngCoord,
 }
 
 #[derive(Serialize)]
-pub struct PlaceRiderResponse {
+pub struct InsertResourceResponse {
+    pub key: String,
     pub geohash: String,
 }
 
-
-#[derive(Deserialize)]
-pub struct PlaceOrder {
-    pub distance: f64,
-    pub position: LatLongCoord,
-}
-
 #[derive(Serialize)]
-pub struct PlaceOrderResponse {
-    pub riders: Vec<Neighbor<f64>>,
+pub struct DropIndexResponse {
+    pub deleted: bool,
 }
 
 #[derive(Deserialize)]
-pub struct RemoveRider {
-    pub uid: UserIdentifier,
+pub struct QueryRange {
+    pub origin: LatLngCoord,
+    pub range: u16,
 }
 
 #[derive(Serialize)]
-pub struct RemoveRiderResponse {
-    pub removed: bool,
+pub struct QueryRangeResponse {
+    pub found: Vec<Neighbor>,
 }
