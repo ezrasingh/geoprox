@@ -1,9 +1,9 @@
 use kiddo::distance_metric::DistanceMetric;
 use haversine::Units;
 
-pub struct HaversineMetric;
+pub struct HaversineDistance;
 
-impl DistanceMetric<f64, 2> for HaversineMetric {
+impl DistanceMetric<f64, 2> for HaversineDistance {
     /// Computes the Haversine distance between two 2D points given latitude and longitude.
     fn dist(a: &[f64; 2], b: &[f64; 2]) -> f64 {
         haversine::distance(

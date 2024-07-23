@@ -1,4 +1,4 @@
-use crate::metric::HaversineMetric;
+use crate::metric::HaversineDistance;
 use crate::models::{LatLngCoord, Neighbor, ResourceIdentifier};
 use geohash::GeohashError;
 use kiddo::distance_metric::DistanceMetric;
@@ -110,7 +110,7 @@ impl SpatialIndex {
             // ? truncate subregion hash until it contains our radius
             while ghash.len() > 1 {
                 let (point, _, _) = geohash::decode(&ghash)?;
-                if HaversineMetric::dist(&origin, &[point.x, point.y]).gt(radius) {
+                if HaversineDistance::dist(&origin, &[point.x, point.y]).gt(radius) {
                     break;
                 } else {
                     ghash.pop();
@@ -121,7 +121,7 @@ impl SpatialIndex {
 
         // ? compute nearest neighbors
         let neighbors: Vec<Neighbor<f64>> = self.build_search_tree(&search_region)
-            .within_unsorted_iter::<HaversineMetric>(&position, *radius)
+            .within_unsorted_iter::<HaversineDistance>(&position, *radius)
             .map(|node| Neighbor {
                 distance: node.distance,
                 resource: self.resource_map.get(&node.item).unwrap().to_string(),
