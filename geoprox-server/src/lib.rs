@@ -12,9 +12,12 @@ pub fn routes() -> Router {
     let state = app::SharedState::default();
 
     Router::new()
+        .route("/geohash", routing::get(handlers::encode_latlng))
+        .route("/geohash/:ghash", routing::get(handlers::decode_geohash))
+        .route("/geohash/:ghash/neighbors", routing::get(handlers::geohash_neighbors))
         .route("/shard/:index", routing::post(handlers::create_index)
-            .put(handlers::insert_resource)
             .delete(handlers::drop_index)
+            .put(handlers::insert_key)
             .get(handlers::query_range)
         )
         .with_state(Arc::clone(&state))

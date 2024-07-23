@@ -3,6 +3,49 @@ use crate::dto;
 use axum::{extract, Json};
 use geoprox_core::shard::GeoShardError;
 
+pub async fn decode_geohash(
+    extract::State(_): extract::State<SharedState>,
+    extract::Path(ghash): extract::Path<String>
+) -> Json<dto::DecodeGeohashResponse> {
+    match geoprox_core::geohash::decode(&ghash) {
+        Ok((coord, lng_error, lat_error)) => Json(dto::DecodeGeohashResponse { 
+            lat: coord.y, 
+            lng: coord.x,
+            lat_error, 
+            lng_error
+        }),
+        Err(err) => {
+            panic!("could not decode geohash '{}': {:#?}", ghash, err);
+        },
+    }
+}
+
+pub async fn encode_latlng(
+    extract::State(_): extract::State<SharedState>,
+    extract::Query(payload): extract::Query<dto::EncodeLatLng>,
+) -> Json<dto::EncodeGeohashResponse> {
+    match geoprox_core::geohash::encode([payload.lng, payload.lat].into(), payload.depth) {
+        Ok(geohash) => Json(dto::EncodeGeohashResponse{
+            geohash
+        }),
+        Err(err) => {
+            panic!("could not encode lat/lng ({}, {}): {:#?}", payload.lat, payload.lng, err);
+        },
+    }
+}
+
+pub async fn geohash_neighbors(
+    extract::State(_): extract::State<SharedState>,
+    extract::Path(ghash): extract::Path<String>
+) -> Json<dto::GeohashNeighborsResponse> {
+    match geoprox_core::geohash::neighbors(&ghash) {
+        Ok(neighbors) => Json(neighbors.into()),
+        Err(err) => {
+            panic!("could not compute geohash neighbors for '{}': {:#?}", ghash, err);
+        },
+    }
+}
+
 pub async fn create_index(
     extract::State(app_state): extract::State<SharedState>,
     extract::Path(index): extract::Path<String>
@@ -27,10 +70,10 @@ pub async fn create_index(
     }
 }
 
-pub async fn insert_resource(
+pub async fn insert_key(
     extract::State(app_state): extract::State<SharedState>,
+    extract::Path(index): extract::Path<String>,
     extract::Json(payload): extract::Json<dto::InsertResource>,
-    extract::Path(index): extract::Path<String>
 ) -> Json<dto::InsertResourceResponse> {
     let mut state = app_state.write().unwrap();
 
@@ -63,9 +106,9 @@ pub async fn query_range(
     extract::Path(index): extract::Path<String>,
     extract::Query(query): extract::Query<dto::QueryRange>
 ) -> Json<dto::QueryRangeResponse> {
-    let mut state = app_state.read().unwrap();
+    let state = app_state.read().unwrap();
 
-    match state.geoshard.query_range(&index, query.origin, &(query.range as f64)) {
+    match state.geoshard.query_range(&index, [query.lat, query.lng], &query.range.into()) {
         Ok(found) => Json(dto::QueryRangeResponse {
             found
         }),
