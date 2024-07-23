@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 geohash = "0.13.1"
+haversine = "0.2.1"
 kiddo = { version = "4.2.0", features = ["serialize"] }
 patricia_tree = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
