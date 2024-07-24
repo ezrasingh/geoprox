@@ -3,13 +3,20 @@ pub mod handlers;
 pub mod dto;
 
 use axum::{routing, Router};
+use geoprox_core::shard::GeoShardConfig;
 use std::sync::Arc;
 use tokio::net::ToSocketAddrs;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-pub fn routes() -> Router {
-    let state = app::SharedState::default();
+pub fn routes(shard_config: Option<GeoShardConfig>) -> Router {
+    let state: app::SharedState = match shard_config {
+        Some(config) => {
+            let app = app::AppState::from(config);
+            app::SharedState::from(app)
+        },
+        None => app::SharedState::default(),
+    };
 
     Router::new()
         .route("/geohash/", routing::get(handlers::encode_latlng))
@@ -25,7 +32,7 @@ pub fn routes() -> Router {
 }
 
 #[tokio::main]
-pub async fn run(socket: impl ToSocketAddrs) {
+pub async fn run(socket: impl ToSocketAddrs, shard_config: Option<GeoShardConfig>) {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -36,7 +43,7 @@ pub async fn run(socket: impl ToSocketAddrs) {
 
     let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
 
-    let root = Router::new().nest("/api/", routes());
+    let root = Router::new().nest("/api/", routes(shard_config));
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, root).await.unwrap();
 }
@@ -49,7 +56,7 @@ mod test {
     use serde_json::json;
     
     fn setup() -> TestServer {
-        let app = Router::new().nest("/api/", routes());
+        let app = Router::new().nest("/api/", routes(None));
         let config = TestServerConfig::builder()
             .default_content_type("application/json")
             .build();

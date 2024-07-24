@@ -1,87 +1,46 @@
-use clap::{Parser, Subcommand};
-use std::{net::{IpAddr, Ipv4Addr, SocketAddr}, path::PathBuf};
-
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use geoprox_core;
 use geoprox_server;
-mod config;
-
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
-struct Cli {
-    /// specify a config file
-    #[arg(short, long, value_name = "CONFIG")]
-    config: Option<PathBuf>,
-
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    /// start geoprox server
-    Run {
-        /// <addr>:<port> (default 127.0.0.1:5000)
-        #[arg(short, long)]
-        bind: Option<SocketAddr>,
-    },
-    
-    /// hash latitude/longitude into geohash
-    Encode {
-        /// latitude
-        #[arg(long)]
-        lat: f64,
-        
-        /// longitude
-        #[arg(long)]
-        lng: f64,
-        
-        /// geohash length (default 10)
-        #[arg(short, long)]
-        precision: Option<usize>,
-    },
-
-    /// decode geohash into approximate longitude/latitude
-    Decode {
-        /// geohash
-        #[arg(short, long)]
-        ghash: String,
-        
-    }
-}
+mod cli;
 
 fn main() {
-    let cli = Cli::parse();
-    if let Some(config_path) = cli.config.as_deref() {
-        println!("using config: {}", config_path.display());
-    }
+    let (command, settings) = cli::runtime();
 
-
-    match &cli.command {
-        Some(Commands::Run { bind }) => {
+    match &command {
+        Some(cli::Commands::Run { bind }) => {
             let addr: &SocketAddr = match bind {
                 Some(socket) => socket,
                 None => {
-                    &SocketAddr::new(
-                        IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
-                        5000,
-                    )
+                    let default_addr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
+                    let default_port: u16 = 5000;
+                    if let Some(server_conf) = settings.server{
+                        &SocketAddr::new(
+                            server_conf.http_addr.unwrap_or(default_addr), 
+                            server_conf.http_port.unwrap_or(default_port)
+                        )
+                    } else {
+                        &SocketAddr::new(
+                            default_addr,
+                            default_port,
+                        )
+                    }
                 }
             };
-            geoprox_server::run(addr);
+            geoprox_server::run(&addr, settings.shard);
         },
 
-        Some(Commands::Encode { lat, lng, precision }) => {
-            let position : geoprox_core::geohash::Coord<f64> = [*lat, *lng].into();
-            let ghash = geoprox_core::geohash::encode(position, precision.unwrap_or(10));
-            println!("({}, {}) => {}", lat, lng, ghash.unwrap());
+        Some(cli::Commands::Encode { lat, lng, depth }) => {
+            let ghash = geoprox_core::geohash::encode([*lng, *lat].into(), depth.unwrap_or(geoprox_core::cache::SpatialIndex::DEFAULT_DEPTH)).unwrap();
+            println!("({}, {}) => {}", lat, lng, ghash);
         },
 
-        Some(Commands::Decode { ghash }) => {
+        Some(cli::Commands::Decode { ghash }) => {
             let (position, lng_err, lat_err) = geoprox_core::geohash::decode(ghash).unwrap();
-            println!("{:#?}", position);
-            println!("latitiude error: +/- {}", lat_err);
-            println!("longitude error: +/- {}", lng_err);
+            println!("latitude: {} +/- {}", position.y, lat_err);
+            println!("longitude:{} +/- {}", position.x, lng_err);
         }
-        None => {}
+        None => {
+            panic!("invalid command")
+        }
     }
 }

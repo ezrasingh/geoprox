@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use serde::Deserialize;
+
 use crate::models::{LatLngCoord, Neighbor};
 use crate::cache::SpatialIndex;
 
@@ -10,7 +12,7 @@ pub enum GeoShardError {
     GeohashError(geohash::GeohashError)
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct GeoShardConfig{
     // geohash length used during insert
     insert_depth: usize,
