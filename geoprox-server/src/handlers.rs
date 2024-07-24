@@ -1,4 +1,4 @@
-use crate::app::SharedState;
+use crate::{app::SharedState, dto::GeohashNeighborsResponse};
 use crate::dto;
 use axum::{extract, http::{header, HeaderMap}, response::IntoResponse, Json};
 use geoprox_core::shard::GeoShardError;
@@ -6,14 +6,19 @@ use geoprox_core::shard::GeoShardError;
 pub async fn decode_geohash(
     extract::State(_): extract::State<SharedState>,
     extract::Path(ghash): extract::Path<String>
-) -> Json<dto::DecodeGeohashResponse> {
+) -> impl IntoResponse {
     match geoprox_core::geohash::decode(&ghash) {
-        Ok((coord, lng_error, lat_error)) => Json(dto::DecodeGeohashResponse { 
-            lat: coord.y, 
-            lng: coord.x,
-            lat_error, 
-            lng_error
-        }),
+        Ok((coord, lng_error, lat_error)) => {
+            let mut headers = HeaderMap::new();
+            headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+            headers.insert(header::CACHE_CONTROL, "max-age=3600, immutable".parse().unwrap());
+            (headers, Json(dto::DecodeGeohashResponse { 
+                lat: coord.y, 
+                lng: coord.x,
+                lat_error, 
+                lng_error
+            }))
+        },
         Err(err) => {
             panic!("could not decode geohash '{}': {:#?}", ghash, err);
         },
@@ -42,9 +47,15 @@ pub async fn encode_latlng(
 pub async fn geohash_neighbors(
     extract::State(_): extract::State<SharedState>,
     extract::Path(ghash): extract::Path<String>
-) -> Json<dto::GeohashNeighborsResponse> {
+) -> impl IntoResponse {
     match geoprox_core::geohash::neighbors(&ghash) {
-        Ok(neighbors) => Json(neighbors.into()),
+        Ok(neighbors) => {
+            let mut headers = HeaderMap::new();
+            headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+            headers.insert(header::CACHE_CONTROL, "max-age=3600, immutable".parse().unwrap());
+            (headers, Json(Into::<GeohashNeighborsResponse>::into(neighbors)))
+            
+        },
         Err(err) => {
             panic!("could not compute geohash neighbors for '{}': {:#?}", ghash, err);
         },
