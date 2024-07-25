@@ -1,6 +1,6 @@
 pub mod cache;
+mod metric;
 pub mod models;
 pub mod shard;
-mod metric;
 
 pub use geohash;

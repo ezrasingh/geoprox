@@ -2,42 +2,42 @@ use std::collections::HashMap;
 
 use serde::Deserialize;
 
-use crate::models::{LatLngCoord, Neighbor};
 use crate::cache::SpatialIndex;
+use crate::models::{LatLngCoord, Neighbor};
 
 #[derive(Debug)]
 pub enum GeoShardError {
     IndexAlreadyExists(String),
     IndexNotFound(String),
-    GeohashError(geohash::GeohashError)
+    GeohashError(geohash::GeohashError),
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct GeoShardConfig{
+pub struct GeoShardConfig {
     // geohash length used during insert
     insert_depth: usize,
     // initial subregion geohash length used during range query
-    search_depth: Option<usize>
+    search_depth: Option<usize>,
 }
 
 impl Default for GeoShardConfig {
     fn default() -> Self {
         GeoShardConfig {
             insert_depth: SpatialIndex::DEFAULT_DEPTH,
-            search_depth: Some(SpatialIndex::DEFAULT_DEPTH)
+            search_depth: Some(SpatialIndex::DEFAULT_DEPTH),
         }
     }
 }
 
 #[derive(Default, Clone)]
-pub struct GeoShard{
+pub struct GeoShard {
     cache: HashMap<String, SpatialIndex>,
     config: GeoShardConfig,
 }
 
 impl From<GeoShardConfig> for GeoShard {
     fn from(config: GeoShardConfig) -> Self {
-        GeoShard { 
+        GeoShard {
             config,
             ..Default::default()
         }
@@ -59,13 +59,18 @@ impl GeoShard {
         self.cache.remove(index);
     }
 
-    pub fn insert_key(&mut self, index: &str, key: &str, position: &LatLngCoord) -> Result<String, GeoShardError> {
+    pub fn insert_key(
+        &mut self,
+        index: &str,
+        key: &str,
+        position: &LatLngCoord,
+    ) -> Result<String, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
             match geohash::encode([position[1], position[0]].into(), self.config.insert_depth) {
                 Ok(ghash) => {
                     geo_index.place_resource(key, &ghash);
                     Ok(ghash)
-                },
+                }
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
         } else {
@@ -76,12 +81,17 @@ impl GeoShard {
         if let Some(geo_index) = self.cache.get_mut(index) {
             Ok(geo_index.remove_resource(key))
         } else {
-            return Err(GeoShardError::IndexNotFound(index.into()))
+            return Err(GeoShardError::IndexNotFound(index.into()));
         }
     }
-    pub fn query_range(&self, index: &str, origin: LatLngCoord, range: &f64) -> Result<Vec<Neighbor>, GeoShardError> {
+    pub fn query_range(
+        &self,
+        index: &str,
+        origin: LatLngCoord,
+        range: &f64,
+    ) -> Result<Vec<Neighbor>, GeoShardError> {
         if let Some(geo_index) = self.cache.get(index) {
-           match geo_index.search(origin, range, self.config.search_depth) {
+            match geo_index.search(origin, range, self.config.search_depth) {
                 Ok(found) => Ok(found),
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
@@ -105,6 +115,5 @@ mod test {
 
         let res = shard.query_range("drivers", [0.0, 0.0], &150.0).unwrap();
         println!("found: {:#?}", res);
-
     }
 }

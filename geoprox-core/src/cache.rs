@@ -4,8 +4,8 @@ use geohash::GeohashError;
 use kiddo::distance_metric::DistanceMetric;
 use kiddo::KdTree;
 use patricia_tree::StringPatriciaMap;
-use std::hash::{DefaultHasher, Hash, Hasher};
 use std::collections::{HashMap, HashSet};
+use std::hash::{DefaultHasher, Hash, Hasher};
 
 fn generate_id(resource_key: &str) -> ResourceIdentifier {
     let mut s = DefaultHasher::new();
@@ -15,7 +15,7 @@ fn generate_id(resource_key: &str) -> ResourceIdentifier {
 
 #[derive(Clone, Default)]
 pub struct SpatialIndex<K = String> {
-    /// maps geohash to common resources 
+    /// maps geohash to common resources
     prefix_tree: StringPatriciaMap<HashSet<ResourceIdentifier>>,
     /// maps resource to geohash
     position_map: HashMap<ResourceIdentifier, String>,
@@ -40,7 +40,11 @@ impl SpatialIndex {
         dbg!("storing resource: ", resource, resource_key);
         self.resource_map.insert(*resource, resource_key.into());
         if let Some(old_ghash) = self.position_map.insert(*resource, ghash.into()) {
-            dbg!("removing resource from previous ghash: ", resource, &old_ghash);
+            dbg!(
+                "removing resource from previous ghash: ",
+                resource,
+                &old_ghash
+            );
             if let Some(prev_members) = self.prefix_tree.get_mut(&old_ghash) {
                 prev_members.remove(resource);
             } else {
@@ -59,15 +63,11 @@ impl SpatialIndex {
 
     pub fn remove_resource(&mut self, resource_key: &str) -> bool {
         let resource = &generate_id(resource_key);
-        
+
         self.resource_map.remove(resource);
         match self.position_map.remove(resource) {
-            Some(ghash) => self
-                    .prefix_tree
-                    .get_mut(ghash)
-                    .unwrap()
-                    .remove(resource),
-            None => true          
+            Some(ghash) => self.prefix_tree.get_mut(ghash).unwrap().remove(resource),
+            None => true,
         }
     }
 
@@ -76,7 +76,8 @@ impl SpatialIndex {
         // ? locate nearby geohashes and populate spatial index
         dbg!("building spatial index for region: ", &subregion_hash);
 
-        let subtree: patricia_tree::GenericPatriciaMap<String, HashSet<u64>> = self.prefix_tree.clone().split_by_prefix(subregion_hash);
+        let subtree: patricia_tree::GenericPatriciaMap<String, HashSet<u64>> =
+            self.prefix_tree.clone().split_by_prefix(subregion_hash);
 
         subtree.iter().for_each(|(ghash, members)| {
             dbg!("found resources nearby:", &ghash, &members);
@@ -97,14 +98,14 @@ impl SpatialIndex {
         &self,
         position: LatLngCoord,
         radius: &f64,
-        initial_depth: Option<usize>
-    ) -> Result<Vec<Neighbor<f64>>, GeohashError> {
+        initial_depth: Option<usize>,
+    ) -> Result<Vec<Neighbor>, GeohashError> {
         if self.position_map.is_empty() {
             return Ok(vec![]);
         }
         let search_region: String = {
             let depth = initial_depth.unwrap_or(Self::DEFAULT_DEPTH);
-            let mut ghash  = geohash::encode(position.into(), depth)?;  
+            let mut ghash = geohash::encode(position.into(), depth)?;
             // ? kiddo uses (lng,lat) for calculations so we flip the LatLngCoord
             let origin = [position[1], position[0]];
             // ? truncate subregion hash until it contains our radius
@@ -117,14 +118,15 @@ impl SpatialIndex {
                 }
             }
             ghash
-        };        
+        };
 
         // ? compute nearest neighbors
-        let neighbors: Vec<Neighbor<f64>> = self.build_search_tree(&search_region)
+        let neighbors: Vec<Neighbor> = self
+            .build_search_tree(&search_region)
             .within_unsorted_iter::<HaversineDistance>(&position, *radius)
             .map(|node| Neighbor {
                 distance: node.distance,
-                resource: self.resource_map.get(&node.item).unwrap().to_string(),
+                key: self.resource_map.get(&node.item).unwrap().to_string(),
             })
             .collect();
         Ok(neighbors)
@@ -149,7 +151,7 @@ mod test {
         geo_index.place_resource(&"f", &geohash::encode([-1.0, -1.0].into(), depth).unwrap());
         geo_index.place_resource(&"g", &geohash::encode([0.0, -1.0].into(), depth).unwrap());
         geo_index.place_resource(&"h", &geohash::encode([0.0, 0.0].into(), depth).unwrap());
-    
+
         let range = 1.0; // km
         let origin: LatLngCoord = [0f64, 0f64];
         let res = geo_index.search(origin, &range, None).unwrap();
@@ -158,7 +160,10 @@ mod test {
             assert!(neighbor.distance <= range);
         });
         println!("##########");
-        println!("Riders found within {}km from {:?}: {:#?}", range, origin, res);
+        println!(
+            "Riders found within {}km from {:?}: {:#?}",
+            range, origin, res
+        );
     }
 
     #[test]
@@ -169,8 +174,8 @@ mod test {
         for n in 0..u16::MAX {
             let (lat, lng) = (rng.gen_range(-90f64..90f64), rng.gen_range(-180f64..180f64));
             geo_index.place_resource(
-                &n.to_string(), 
-                &geohash::encode([lng, lat].into(), depth).unwrap()
+                &n.to_string(),
+                &geohash::encode([lng, lat].into(), depth).unwrap(),
             );
         }
 

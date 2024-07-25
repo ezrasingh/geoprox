@@ -26,17 +26,17 @@ pub enum Commands {
         #[arg(short, long)]
         bind: Option<SocketAddr>,
     },
-    
+
     /// hash latitude/longitude into geohash
     Encode {
         /// latitude
         #[arg(long)]
         lat: f64,
-        
+
         /// longitude
         #[arg(long)]
         lng: f64,
-        
+
         /// geohash length (default 6)
         #[arg(short, long)]
         depth: Option<usize>,
@@ -47,18 +47,17 @@ pub enum Commands {
         /// geohash
         #[arg(short, long)]
         ghash: String,
-        
-    }
+    },
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ServerConfig{
+pub struct ServerConfig {
     pub http_addr: Option<IpAddr>,
     pub http_port: Option<u16>,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct GeoProxConfig{
+pub struct GeoProxConfig {
     pub server: Option<ServerConfig>,
     pub shard: Option<GeoShardConfig>,
 }

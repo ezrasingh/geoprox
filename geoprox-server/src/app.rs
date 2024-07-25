@@ -2,11 +2,11 @@ use geoprox_core::shard::{GeoShard, GeoShardConfig};
 use std::sync::{Arc, RwLock};
 
 #[derive(Clone)]
-pub struct AppState{
-    pub geoshard: GeoShard
+pub struct AppState {
+    pub geoshard: GeoShard,
 }
 
-impl Default for AppState{
+impl Default for AppState {
     fn default() -> Self {
         AppState {
             geoshard: GeoShard::default(),
@@ -14,9 +14,11 @@ impl Default for AppState{
     }
 }
 
-impl From<GeoShardConfig> for AppState{
+impl From<GeoShardConfig> for AppState {
     fn from(shard_config: GeoShardConfig) -> Self {
-        AppState { geoshard: GeoShard::from(shard_config) }
+        AppState {
+            geoshard: GeoShard::from(shard_config),
+        }
     }
 }
 
