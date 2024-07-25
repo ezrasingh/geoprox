@@ -50,7 +50,7 @@ pub async fn run(socket: impl ToSocketAddrs, shard_config: Option<GeoShardConfig
 
 #[cfg(test)]
 mod test {
-    use crate::{dto, routes};
+    use super::*;
     use axum::Router;
     use axum_test::{TestServerConfig, TestServer};
     use serde_json::json;

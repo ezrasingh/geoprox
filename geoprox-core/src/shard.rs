@@ -93,10 +93,10 @@ impl GeoShard {
 
 #[cfg(test)]
 mod test {
-    use crate::shard::GeoShard;
+    use super::*;
 
     #[test]
-    fn sandbox() {
+    fn test_query_range() {
         let mut shard = GeoShard::default();
         shard.create_index("drivers").unwrap();
 

@@ -133,11 +133,11 @@ impl SpatialIndex {
 
 #[cfg(test)]
 mod test {
-    use crate::{cache::SpatialIndex, models::LatLngCoord};
+    use super::*;
     use rand::prelude::*;
 
     #[test]
-    fn sandbox() {
+    fn test_search() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
 
@@ -162,7 +162,7 @@ mod test {
     }
 
     #[test]
-    fn capacity_test() {
+    fn test_capacity() {
         let mut geo_index = SpatialIndex::new(1_000_000);
         let mut rng = rand::thread_rng();
         let depth: usize = 5;
