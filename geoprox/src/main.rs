@@ -4,7 +4,7 @@ use geoprox_server;
 mod cli;
 
 fn main() {
-    let (command, settings) = cli::runtime();
+    let (command, settings) = cli::runtime().unwrap();
 
     match &command {
         Some(cli::Commands::Run { bind }) => {

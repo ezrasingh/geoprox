@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use config::Config;
+use config::{Config, ConfigError};
 use geoprox_core::shard::GeoShardConfig;
 use serde::Deserialize;
 use std::net::{IpAddr, SocketAddr};
@@ -63,23 +63,19 @@ pub struct GeoProxConfig{
     pub shard: Option<GeoShardConfig>,
 }
 
-pub fn runtime() -> (Option<Commands>, GeoProxConfig) {
+pub fn runtime() -> Result<(Option<Commands>, GeoProxConfig), ConfigError> {
     let cli = Cli::parse();
     let settings: GeoProxConfig = match cli.config.as_deref() {
         Some(config_path) => Config::builder()
             .add_source(config::File::from(config_path))
             .add_source(config::Environment::with_prefix("GEOPROX"))
-            .build()
-            .unwrap()
-            .try_deserialize()
-            .unwrap(),
+            .build()?
+            .try_deserialize()?,
         None => Config::builder()
-            .add_source(config::File::with_name("geoprox/geoprox.toml"))
+            .add_source(config::File::with_name("/etc/geoprox/geoprox"))
             .add_source(config::Environment::with_prefix("GEOPROX"))
-            .build()
-            .unwrap()
-            .try_deserialize()
-            .unwrap(),
+            .build()?
+            .try_deserialize()?,
     };
-    (cli.command, settings)
+    Ok((cli.command, settings))
 }
