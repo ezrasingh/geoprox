@@ -1,0 +1,4 @@
+.git*
+contrib/
+examples/
+target/

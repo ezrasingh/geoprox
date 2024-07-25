@@ -1,0 +1,22 @@
+FROM rust:latest AS builder
+
+WORKDIR /code
+COPY . /code/
+RUN cargo build --release
+
+FROM debian
+
+LABEL "org.opencontainers.image.source"="https://github.com/ezrasingh/geoprox"
+LABEL "org.opencontainers.image.description"="A Geo-Proximity detection service for efficient real-time geo-aware contract pairing"
+LABEL "org.opencontainers.image.licenses"="Apache-2.0,MIT"
+
+RUN groupadd geoprox && \
+    useradd -m -g geoprox geoprox
+
+USER geoprox:geoprox
+
+WORKDIR /usr/local/bin
+COPY --from=builder --chown=geoprox:geoprox /code/target/release/geoprox /usr/local/bin/
+COPY --from=builder /code/geoprox/geoprox.default.toml /etc/geoprox/geoprox.toml
+
+ENTRYPOINT [ "geoprox" ]
