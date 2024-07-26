@@ -5,8 +5,6 @@ use serde::Deserialize;
 use std::net::{IpAddr, SocketAddr};
 use std::path::PathBuf;
 
-use geoprox_core;
-
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {

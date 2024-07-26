@@ -81,7 +81,7 @@ impl GeoShard {
         if let Some(geo_index) = self.cache.get_mut(index) {
             Ok(geo_index.remove_resource(key))
         } else {
-            return Err(GeoShardError::IndexNotFound(index.into()));
+            Err(GeoShardError::IndexNotFound(index.into()))
         }
     }
     pub fn query_range(
@@ -96,7 +96,7 @@ impl GeoShard {
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
         } else {
-            return Err(GeoShardError::IndexNotFound(index.into()));
+            Err(GeoShardError::IndexNotFound(index.into()))
         }
     }
 }

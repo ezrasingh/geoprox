@@ -52,12 +52,12 @@ impl SpatialIndex {
             }
         }
         // ? insert current region into prefix tree
-        if let Some(members) = self.prefix_tree.get_mut(&ghash) {
+        if let Some(members) = self.prefix_tree.get_mut(ghash) {
             members.insert(*resource);
         } else {
             let mut members: HashSet<ResourceIdentifier> = HashSet::new();
             members.insert(*resource);
-            self.prefix_tree.insert(&ghash, members);
+            self.prefix_tree.insert(ghash, members);
         };
     }
 

@@ -1,5 +1,3 @@
-use geoprox_core;
-use geoprox_server;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 mod cli;
 
@@ -23,7 +21,7 @@ fn main() {
                     }
                 }
             };
-            geoprox_server::run(&addr, settings.shard);
+            geoprox_server::run(addr, settings.shard);
         }
 
         Some(cli::Commands::Encode { lat, lng, depth }) => {
