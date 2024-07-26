@@ -6,16 +6,27 @@ This is a service that allows you to determine which users are nearby a contract
 
 [Discussed @ Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024)
 
-## Goals
+## Features
 
-- Keep track of **approximate location of riders**
+- **Geohash Encoding and Decoding**: Convert latitude and longitude coordinates to geohashes and vice versa.
+- **Geohash Neighborhood**: Retrieve neighboring geohashes for a given geohash.
+- **Geospatial Index Management**: Create, update, and delete geospatial indexes to manage geospatial data.
+- **Proximity Searches**: Perform searches within a specified range to find nearby resources based on geohashes.
 
-- When order is placed should return **set of drivers nearby the pickup location**
+## Usage
 
-## Todos
+### Geohash Operations
+- **Encode Coordinates**: Convert latitude and longitude into a geohash for easy geospatial indexing.
+- **Decode Geohash**: Retrieve latitude and longitude from a given geohash.
+- **Get Neighbors**: Find neighboring geohashes in all cardinal directions from a given geohash.
 
-- Improve testing coverage
+### Geoshard Operations
+- **Create Index**: Set up a new geospatial index to manage your data.
+- **Insert Key**: Add a new key to an existing geospatial index.
+- **Search Nearby**: Find keys within a specified range of coordinates.
+- **Remove Key**: Delete a key from a geospatial index.
+- **Drop Index**: Remove an entire geospatial index and its contents.
 
-- Add horizontal scaling support
+## License
 
-- Add client sdk
+This project is licensed under the [Apache 2.0](LICENSE-APACHE) or [MIT License](LICENSE-MIT) (your choice).

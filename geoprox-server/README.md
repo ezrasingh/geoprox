@@ -261,4 +261,4 @@ GeoProx Server provides a geospatial indexing API with capabilities to encode/de
 
 ## License
 
-This project is licensed under the Apache 2.0 or MIT License (your choice).
+This project is licensed under the [Apache 2.0](../LICENSE-APACHE) or [MIT License](../LICENSE-MIT) (your choice).
