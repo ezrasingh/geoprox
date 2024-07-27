@@ -7,8 +7,14 @@ edition = "2021"
 geohash = "0.13.1"
 haversine = "0.2.1"
 kiddo = { version = "4.2.0", features = ["serialize"] }
+log = "0.4.22"
 patricia_tree = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
 
 [dev-dependencies]
+criterion = "0.5.1"
 rand = "0.8.5"
+
+[[bench]]
+name = "spatial_index_benchmark"
+harness = false

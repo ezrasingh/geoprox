@@ -3,6 +3,7 @@ use crate::models::{LatLngCoord, Neighbor, ResourceIdentifier};
 use geohash::GeohashError;
 use kiddo::distance_metric::DistanceMetric;
 use kiddo::KdTree;
+use log::debug;
 use patricia_tree::StringPatriciaMap;
 use std::collections::{HashMap, HashSet};
 use std::hash::{DefaultHasher, Hash, Hasher};
@@ -37,13 +38,12 @@ impl SpatialIndex {
 
     pub fn place_resource(&mut self, resource_key: &str, ghash: &str) {
         let resource = &generate_id(resource_key);
-        dbg!("storing resource: ", resource, resource_key);
+        debug!("storing resource: id={} key={}", resource, resource_key);
         self.resource_map.insert(*resource, resource_key.into());
         if let Some(old_ghash) = self.position_map.insert(*resource, ghash.into()) {
-            dbg!(
-                "removing resource from previous ghash: ",
-                resource,
-                &old_ghash
+            debug!(
+                "removing resource from previous ghash: id={} geohash={}",
+                resource, &old_ghash
             );
             if let Some(prev_members) = self.prefix_tree.get_mut(&old_ghash) {
                 prev_members.remove(resource);
@@ -74,23 +74,29 @@ impl SpatialIndex {
     fn build_search_tree(&self, subregion_hash: &str) -> KdTree<f64, 2> {
         let mut search_tree = KdTree::with_capacity(self.resource_map.len());
         // ? locate nearby geohashes and populate spatial index
-        dbg!("building spatial index for region: ", &subregion_hash);
+        debug!("building spatial index for region: {}", &subregion_hash);
 
         let subtree: patricia_tree::GenericPatriciaMap<String, HashSet<u64>> =
             self.prefix_tree.clone().split_by_prefix(subregion_hash);
 
         subtree.iter().for_each(|(ghash, members)| {
-            dbg!("found resources nearby:", &ghash, &members);
+            debug!(
+                "found resources nearby: geohash={} members={:#?}",
+                &ghash, &members
+            );
             if let Ok((position, _, _)) = geohash::decode(&ghash) {
                 members.iter().for_each(|resource| {
-                    dbg!("adding resource to spatial index", &resource, &ghash);
+                    debug!(
+                        "adding resource to spatial index: id={} geohash={}",
+                        &resource, &ghash
+                    );
                     // ! fixme
                     search_tree.add(&[position.x, position.y], *resource);
                 });
             }
         });
 
-        dbg!("search tree size: ", search_tree.size());
+        debug!("search tree size: {}", search_tree.size());
         search_tree
     }
 
@@ -168,10 +174,12 @@ mod test {
 
     #[test]
     fn test_capacity() {
-        let mut geo_index = SpatialIndex::new(1_000_000);
+        let capacity = u16::MAX;
+        let mut geo_index = SpatialIndex::new(capacity as usize);
         let mut rng = rand::thread_rng();
         let depth: usize = 5;
-        for n in 0..u16::MAX {
+        println!("loading data set...");
+        for n in 0..capacity {
             let (lat, lng) = (rng.gen_range(-90f64..90f64), rng.gen_range(-180f64..180f64));
             geo_index.place_resource(
                 &n.to_string(),
@@ -181,6 +189,7 @@ mod test {
 
         let center = [0f64, 0f64];
         let range = 200f64;
+        println!("searching area...");
         let res = geo_index.search(center, &range, None).unwrap();
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
