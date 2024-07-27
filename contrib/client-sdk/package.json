@@ -1,7 +1,6 @@
 {
-  "scripts": {
-    "openapi": "npx @openapitools/openapi-generator-cli"
-  },
+  "private": true,
+  "license": "(MIT OR Apache-2.0)",
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.13.4"
   }

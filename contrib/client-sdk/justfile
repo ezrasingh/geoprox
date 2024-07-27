@@ -11,7 +11,7 @@ manifest:
 
 # generate sdk client
 codegen TARGET_LANG: manifest
-  yarn openapi generate \
+  npx @openapitools/openapi-generator-cli generate \
     -i $API_SPEC -c generators/{{TARGET_LANG}}.yaml \
     -g {{TARGET_LANG}} -o ./{{TARGET_LANG}}
 
@@ -22,9 +22,7 @@ build: manifest
         if [ -f "$CONFIG" ]; then
             GENERATOR=$(basename $CONFIG)
             LANG=${GENERATOR%.*}
-            yarn openapi generate \
-                -i $API_SPEC -c $CONFIG \
-                -g $LANG -o ./$LANG
+            just codegen $LANG
         fi
     done
 
