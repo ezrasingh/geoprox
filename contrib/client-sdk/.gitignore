@@ -1,0 +1,5 @@
+.direnv/
+node_modules/
+generators/
+openapi.json
+result

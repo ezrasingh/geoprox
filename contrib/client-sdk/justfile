@@ -1,0 +1,42 @@
+set dotenv-load
+
+# default recipe to display help information
+default:
+  @just --list
+
+# build generator configurations
+manifest:
+  mkdir -p generators
+  jsonnet -S manifest.jsonnet -m generators
+
+# generate sdk client
+codegen TARGET_LANG: manifest
+  yarn openapi generate \
+    -i $API_SPEC -c generators/{{TARGET_LANG}}.yaml \
+    -g {{TARGET_LANG}} -o ./{{TARGET_LANG}}
+
+# build all client libraries
+build: manifest
+    #!/usr/bin/env bash
+    for CONFIG in "generators"/*; do
+        if [ -f "$CONFIG" ]; then
+            GENERATOR=$(basename $CONFIG)
+            LANG=${GENERATOR%.*}
+            yarn openapi generate \
+                -i $API_SPEC -c $CONFIG \
+                -g $LANG -o ./$LANG
+        fi
+    done
+
+# setup dotenv file
+setup:
+	#!/usr/bin/env bash
+	if [ ! -f ".env" ]; then
+	cat <<EOF > .env
+	API_SPEC=http://localhost:5000/api-spec/openapi.json
+	EOF
+	echo "Created .env"
+	else
+	echo ".env already exists skipping..."
+	fi;
+
