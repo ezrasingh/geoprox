@@ -1,6 +1,8 @@
 use std::time::Duration;
 
-use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
+use criterion::{
+    black_box, criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion, Throughput,
+};
 use geoprox_core::cache::SpatialIndex;
 use rand::prelude::*;
 
@@ -39,7 +41,21 @@ fn insert_benchmark(c: &mut Criterion) {
             BenchmarkId::from_parameter(capacity),
             capacity,
             |b, &capacity| {
-                b.iter(|| black_box(seed_index(&capacity, &mut rng)));
+                b.iter_batched(
+                    || {
+                        let geo_index = SpatialIndex::new(capacity as usize);
+                        let mut data: Vec<(String, String)> = Vec::new();
+                        for n in 0..capacity {
+                            data.push((n.to_string(), random_geohash(&mut rng)));
+                        }
+                        (black_box(geo_index), data)
+                    },
+                    |(mut geo_index, data)| {
+                        data.iter()
+                            .for_each(|(key, ghash)| geo_index.place_resource(key, ghash))
+                    },
+                    BatchSize::LargeInput,
+                );
             },
         );
     }
@@ -51,20 +67,23 @@ fn query_range_benchmark(c: &mut Criterion) {
     let mut rng = rand::thread_rng();
 
     for capacity in CAPACITY_RANGE.iter() {
-        let geo_index: SpatialIndex<String> = seed_index(&capacity, &mut rng);
-
         group.throughput(Throughput::Elements(*capacity as u64));
         group.bench_with_input(BenchmarkId::from_parameter(capacity), capacity, |b, _| {
-            b.iter(|| {
-                let ((lat, lng), range) = (
-                    (
-                        rng.gen_range(-90f64..90f64).into(),
-                        rng.gen_range(-180f64..180f64).into(),
-                    ),
-                    rng.gen_range(50..500).into(),
-                );
-                geo_index.search([lat, lng], &range, None)
-            });
+            b.iter_batched(
+                || {
+                    let geo_index: SpatialIndex<String> = seed_index(capacity, &mut rng);
+                    let ((lat, lng), range) = (
+                        (
+                            rng.gen_range(-90f64..90f64).into(),
+                            rng.gen_range(-180f64..180f64).into(),
+                        ),
+                        rng.gen_range(50..500).into(),
+                    );
+                    (geo_index, (lat, lng), range)
+                },
+                |(geo_index, (lat, lng), range)| geo_index.search([lat, lng], &range, None),
+                BatchSize::SmallInput,
+            );
         });
     }
     group.finish();
@@ -72,7 +91,7 @@ fn query_range_benchmark(c: &mut Criterion) {
 
 criterion_group!(
     name = benches;
-    config = Criterion::default().measurement_time(Duration::from_secs(60));
+    config = Criterion::default();
     targets = insert_benchmark, query_range_benchmark
 );
 criterion_main!(benches);
