@@ -1,10 +1,18 @@
-use std::time::Duration;
-
 use criterion::{
     black_box, criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion, Throughput,
 };
 use geoprox_core::cache::SpatialIndex;
 use rand::prelude::*;
+
+const UNIT_CAPACITY: i32 = 10;
+const CAPACITY_RANGE: [i32; 6] = [
+    UNIT_CAPACITY,
+    UNIT_CAPACITY * 10,
+    UNIT_CAPACITY * 100,
+    UNIT_CAPACITY * 1000,
+    UNIT_CAPACITY * 10_000,
+    UNIT_CAPACITY * 100_000,
+];
 
 fn random_geohash(rng: &mut ThreadRng) -> String {
     geohash::encode(
@@ -22,19 +30,9 @@ fn seed_index(size: &i32, rng: &mut ThreadRng) -> SpatialIndex<String> {
     geo_index
 }
 
-const UNIT_CAPACITY: i32 = 10;
-const CAPACITY_RANGE: [i32; 6] = [
-    UNIT_CAPACITY,
-    UNIT_CAPACITY * 10,
-    UNIT_CAPACITY * 100,
-    UNIT_CAPACITY * 1000,
-    UNIT_CAPACITY * 10_000,
-    UNIT_CAPACITY * 100_000,
-];
-
 fn insert_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("spatial_index/insert");
-    let mut rng = rand::thread_rng();
+
     for capacity in CAPACITY_RANGE.iter() {
         group.throughput(Throughput::Elements(*capacity as u64));
         group.bench_with_input(
@@ -43,6 +41,7 @@ fn insert_benchmark(c: &mut Criterion) {
             |b, &capacity| {
                 b.iter_batched(
                     || {
+                        let mut rng = rand::thread_rng();
                         let geo_index = SpatialIndex::new(capacity as usize);
                         let mut data: Vec<(String, String)> = Vec::new();
                         for n in 0..capacity {
@@ -64,13 +63,13 @@ fn insert_benchmark(c: &mut Criterion) {
 
 fn query_range_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("spatial_index/range_query");
-    let mut rng = rand::thread_rng();
 
     for capacity in CAPACITY_RANGE.iter() {
         group.throughput(Throughput::Elements(*capacity as u64));
         group.bench_with_input(BenchmarkId::from_parameter(capacity), capacity, |b, _| {
             b.iter_batched(
                 || {
+                    let mut rng = rand::thread_rng();
                     let geo_index: SpatialIndex<String> = seed_index(capacity, &mut rng);
                     let ((lat, lng), range) = (
                         (
