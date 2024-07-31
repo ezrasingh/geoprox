@@ -259,6 +259,9 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `deleted` (boolean, required): True if key was removed
   - `key` (string, required): Resource key
 
+## Contributing
+Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
+
 ## License
 
 This project is licensed under the [Apache 2.0](../LICENSE-APACHE) or [MIT License](../LICENSE-MIT) (your choice).
