@@ -19,7 +19,7 @@ geoprox help
 Usage: geoprox [OPTIONS] [COMMAND]
 
 Commands:
-  run     Start GeoProx server
+  run     Start Geoprox server
   encode  Hash latitude/longitude into geohash
   decode  Decode geohash into approximate longitude/latitude
   help    Print this message or the help of the given subcommand(s)
@@ -31,7 +31,7 @@ Options:
 ```
 
 ## Getting Started
-To start using GeoProx, you can run the following command to start the server:
+To start using Geoprox, you can run the following command to start the server:
 
 ```shell
 geoprox run
