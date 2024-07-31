@@ -1,6 +1,6 @@
 # Geoprox
 
-A standalone runtime CLI for the [Geoprox project](https://github.com/ezrasingh/geoprox/). This crate exposes the CLI runtime, enabling easy integration and usage for geo-aware applications such as rideshare pairing services.
+A standalone runtime for the [Geoprox project](https://github.com/ezrasingh/geoprox/). This crate exposes the CLI runtime, enabling easy integration and usage for geo-aware applications such as rideshare pairing services.
 
 ## Installation
 
@@ -55,7 +55,7 @@ geoprox help encode
 
 ## Configuration
 
-Geoprox allows specifying a configuration file using the -c or --config option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`.
+Geoprox allows specifying a configuration file using the `-c` or `--config` option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`.
 
 ### Example Configuration
 Here's an example configuration file in `TOML` format:
