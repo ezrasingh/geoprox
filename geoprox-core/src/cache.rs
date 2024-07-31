@@ -36,6 +36,7 @@ impl SpatialIndex {
         }
     }
 
+    /// Upsert key into index at some geographical location
     pub fn place_resource(&mut self, resource_key: &str, ghash: &str) {
         let resource = &generate_id(resource_key);
         debug!("storing resource: id={} key={}", resource, resource_key);
@@ -61,6 +62,7 @@ impl SpatialIndex {
         };
     }
 
+    /// Remove key from index
     pub fn remove_resource(&mut self, resource_key: &str) -> bool {
         let resource = &generate_id(resource_key);
 
@@ -71,6 +73,7 @@ impl SpatialIndex {
         }
     }
 
+    /// Construct Kd-Tree for nearest neighbor search
     fn build_search_tree(&self, subregion_hash: &str) -> KdTree<f64, 2> {
         let mut search_tree = KdTree::with_capacity(self.resource_map.len());
         // ? locate nearby geohashes and populate spatial index
@@ -100,6 +103,7 @@ impl SpatialIndex {
         search_tree
     }
 
+    /// Finds nearest keys within the specified search range
     pub fn search(
         &self,
         position: LatLngCoord,

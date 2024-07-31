@@ -12,6 +12,7 @@ pub enum GeoShardError {
     GeohashError(geohash::GeohashError),
 }
 
+/// Configures geoshard parameters
 #[derive(Clone, Debug, Deserialize)]
 pub struct GeoShardConfig {
     // geohash length used during insert
@@ -24,11 +25,12 @@ impl Default for GeoShardConfig {
     fn default() -> Self {
         GeoShardConfig {
             insert_depth: SpatialIndex::DEFAULT_DEPTH,
-            search_depth: Some(SpatialIndex::DEFAULT_DEPTH),
+            search_depth: None,
         }
     }
 }
 
+/// A collection of geospatial indexes stored in-memory
 #[derive(Default, Clone)]
 pub struct GeoShard {
     cache: HashMap<String, SpatialIndex>,
@@ -45,6 +47,7 @@ impl From<GeoShardConfig> for GeoShard {
 }
 
 impl GeoShard {
+    /// Adds a new geospatial index to the shard
     pub fn create_index(&mut self, index: &str) -> Result<Option<()>, GeoShardError> {
         if self.cache.contains_key(index) {
             return Err(GeoShardError::IndexAlreadyExists(index.to_string()));
@@ -59,6 +62,7 @@ impl GeoShard {
         self.cache.remove(index);
     }
 
+    /// Adds a key into the specified index at some geographical position
     pub fn insert_key(
         &mut self,
         index: &str,
@@ -77,6 +81,8 @@ impl GeoShard {
             Err(GeoShardError::IndexNotFound(index.into()))
         }
     }
+
+    /// Deletes a key from the specified index
     pub fn remove_key(&mut self, index: &str, key: &str) -> Result<bool, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
             Ok(geo_index.remove_resource(key))
@@ -84,6 +90,8 @@ impl GeoShard {
             Err(GeoShardError::IndexNotFound(index.into()))
         }
     }
+
+    /// Search index for keys within some range
     pub fn query_range(
         &self,
         index: &str,
