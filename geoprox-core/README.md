@@ -1,6 +1,6 @@
-# GeoProx Core
+# Geoprox Core
 
-GeoProx Core is a Rust crate designed for geospatial indexing and sharding. It includes two primary modules: `cache` and `shard`. These modules facilitate efficient geospatial queries and indexing for applications such as food delivery services, real-time inventory tracking, and more.
+A Rust crate designed for geospatial indexing and sharding. It includes two primary modules: `cache` and `shard`. These modules facilitate efficient geospatial queries and indexing for applications such as food delivery services, real-time inventory tracking, and more.
 
 > **Looking for an API implementation** see, [`geoprox-server`](https://crates.io/crates/geoprox-server/) for the HTTP API version of this service and [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for HTTP client libraries.
 

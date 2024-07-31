@@ -1,8 +1,8 @@
-# GeoProx Server
+# Geoprox Server
 
 ## Overview
 
-GeoProx Server provides a geospatial indexing API with capabilities to encode/decode geohashes, query for neighboring geohashes, and perform geospatial searches within a specified range. This API allows you to efficiently manage and query geospatial data.
+Geoprox Server provides a geospatial indexing API with capabilities to encode/decode geohashes, query for neighboring geohashes, and perform geospatial searches within a specified range. This API allows you to efficiently manage and query geospatial data.
 
 ## Table of Contents
 
