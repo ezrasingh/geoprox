@@ -49,7 +49,7 @@ geoprox decode 9q8yy
 
 For detailed help on any command, use the help command:
 
-```sh
+```shell
 geoprox help encode
 ```
 
