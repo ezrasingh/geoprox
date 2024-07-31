@@ -48,13 +48,13 @@ pub enum Commands {
     },
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub struct ServerConfig {
     pub http_addr: Option<IpAddr>,
     pub http_port: Option<u16>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub struct GeoProxConfig {
     pub server: Option<ServerConfig>,
     pub shard: Option<GeoShardConfig>,
@@ -71,8 +71,10 @@ pub fn runtime() -> Result<(Option<Commands>, GeoProxConfig), ConfigError> {
         None => Config::builder()
             .add_source(config::File::with_name("/etc/geoprox/geoprox"))
             .add_source(config::Environment::with_prefix("GEOPROX"))
-            .build()?
-            .try_deserialize()?,
+            .build()
+            .unwrap_or_default()
+            .try_deserialize()
+            .unwrap_or_default(),
     };
     Ok((cli.command, settings))
 }

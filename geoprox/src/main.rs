@@ -30,7 +30,7 @@ fn main() {
                 depth.unwrap_or(geoprox_core::cache::SpatialIndex::DEFAULT_DEPTH),
             )
             .unwrap();
-            println!("({}, {}) => {}", lat, lng, ghash);
+            println!("{}", ghash);
         }
 
         Some(cli::Commands::Decode { ghash }) => {
