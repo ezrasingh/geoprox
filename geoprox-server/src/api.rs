@@ -1,5 +1,6 @@
 use crate::app::{AppState, SharedState};
 use crate::handlers::{geohash_api, geoshard_api};
+use crate::middleware::set_cache_control;
 use axum::{
     routing::{get, post},
     Router,
@@ -17,11 +18,13 @@ pub fn routes(shard_config: Option<GeoShardConfig>) -> Router {
     };
 
     Router::new()
-        .route("/geohash/", get(geohash_api::encode_latlng))
-        .route("/geohash/:ghash/", get(geohash_api::decode_geohash))
-        .route(
-            "/geohash/:ghash/neighbors/",
-            get(geohash_api::get_neighbors),
+        .nest(
+            "/geohash/",
+            Router::new()
+                .route("/", get(geohash_api::encode_latlng))
+                .route("/:ghash/", get(geohash_api::decode_geohash))
+                .route("/:ghash/neighbors/", get(geohash_api::get_neighbors))
+                .layer(axum::middleware::from_fn(set_cache_control)),
         )
         .route(
             "/shard/:index/",
@@ -118,8 +121,6 @@ mod test {
             });
         let res = req.await;
 
-        println!("{:#?}", res);
-
         res.assert_status_ok();
         assert_eq!(res.header("cache-control").is_empty(), false);
         res.assert_json(&json!({
@@ -145,9 +146,6 @@ mod test {
                 "lat": 0.0, "lng": 0.0, "range": 1000
             }))
             .await;
-
-        println!("{:#?}", res);
-
         res.assert_status_ok();
     }
 }

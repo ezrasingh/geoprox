@@ -3,12 +3,7 @@ pub mod geohash_api {
     use crate::dto::{
         DecodeGeohashResponse, EncodeLatLng, EncodeLatLngResponse, GeohashNeighborsResponse,
     };
-    use axum::{
-        extract,
-        http::{header, HeaderMap},
-        response::IntoResponse,
-        Json,
-    };
+    use axum::{extract, Json};
 
     /// Decode geohash into coordinates.
     ///
@@ -30,25 +25,14 @@ pub mod geohash_api {
     pub async fn decode_geohash(
         extract::State(_state): extract::State<SharedState>,
         extract::Path(ghash): extract::Path<String>,
-    ) -> impl IntoResponse {
+    ) -> Json<DecodeGeohashResponse> {
         match geoprox_core::geohash::decode(&ghash) {
-            Ok((coord, lng_error, lat_error)) => {
-                let mut headers = HeaderMap::new();
-                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
-                headers.insert(
-                    header::CACHE_CONTROL,
-                    "max-age=3600, immutable".parse().unwrap(),
-                );
-                (
-                    headers,
-                    Json(DecodeGeohashResponse {
-                        lat: coord.y,
-                        lng: coord.x,
-                        lat_error,
-                        lng_error,
-                    }),
-                )
-            }
+            Ok((coord, lng_error, lat_error)) => Json(DecodeGeohashResponse {
+                lat: coord.y,
+                lng: coord.x,
+                lat_error,
+                lng_error,
+            }),
             Err(err) => {
                 panic!("could not decode geohash '{}': {:#?}", ghash, err);
             }
@@ -73,17 +57,9 @@ pub mod geohash_api {
     pub async fn encode_latlng(
         extract::State(_state): extract::State<SharedState>,
         extract::Query(payload): extract::Query<EncodeLatLng>,
-    ) -> impl IntoResponse {
+    ) -> Json<EncodeLatLngResponse> {
         match geoprox_core::geohash::encode([payload.lng, payload.lat].into(), payload.depth) {
-            Ok(geohash) => {
-                let mut headers = HeaderMap::new();
-                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
-                headers.insert(
-                    header::CACHE_CONTROL,
-                    "max-age=3600, immutable".parse().unwrap(),
-                );
-                (headers, Json(EncodeLatLngResponse { geohash }))
-            }
+            Ok(geohash) => Json(EncodeLatLngResponse { geohash }),
             Err(err) => {
                 panic!(
                     "could not encode lat/lng ({}, {}): {:#?}",
@@ -113,20 +89,9 @@ pub mod geohash_api {
     pub async fn get_neighbors(
         extract::State(_state): extract::State<SharedState>,
         extract::Path(ghash): extract::Path<String>,
-    ) -> impl IntoResponse {
+    ) -> Json<GeohashNeighborsResponse> {
         match geoprox_core::geohash::neighbors(&ghash) {
-            Ok(neighbors) => {
-                let mut headers = HeaderMap::new();
-                headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
-                headers.insert(
-                    header::CACHE_CONTROL,
-                    "max-age=3600, immutable".parse().unwrap(),
-                );
-                (
-                    headers,
-                    Json(Into::<GeohashNeighborsResponse>::into(neighbors)),
-                )
-            }
+            Ok(neighbors) => Json(Into::<GeohashNeighborsResponse>::into(neighbors)),
             Err(err) => {
                 panic!(
                     "could not compute geohash neighbors for '{}': {:#?}",
@@ -148,7 +113,7 @@ pub mod geoshard_api {
 
     /// Create geospatial index
     ///
-    /// Creates an in-memory index within this geoshard  
+    /// Creates an in-memory index within this geoshard
     #[utoipa::path(
         post,
         path = "/api/v1/shard/{index}",
@@ -186,7 +151,7 @@ pub mod geoshard_api {
 
     /// Insert key into index
     ///
-    /// Inserts key into geospatial index  
+    /// Inserts key into geospatial index
     #[utoipa::path(
         put,
         path = "/api/v1/shard/{index}",
@@ -224,7 +189,7 @@ pub mod geoshard_api {
 
     /// Remove key from index
     ///
-    /// Removed key from geospatial index  
+    /// Removed key from geospatial index
     #[utoipa::path(
         patch,
         path = "/api/v1/shard/{index}",
@@ -259,7 +224,7 @@ pub mod geoshard_api {
 
     /// Drop index
     ///
-    /// Deletes geospatial index, all keys will be lost    
+    /// Deletes geospatial index, all keys will be lost
     #[utoipa::path(
         delete,
         path = "/api/v1/shard/{index}",
@@ -284,7 +249,7 @@ pub mod geoshard_api {
 
     /// Search nearby
     ///
-    /// Search geospatial index for all keys within some distance    
+    /// Search geospatial index for all keys within some distance
     #[utoipa::path(
         get,
         path = "/api/v1/shard/{index}",

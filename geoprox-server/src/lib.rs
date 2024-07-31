@@ -2,6 +2,7 @@ pub mod api;
 pub mod app;
 pub mod dto;
 pub mod handlers;
+pub mod middleware;
 
 use axum::routing::Router;
 use geoprox_core::shard::GeoShardConfig;
