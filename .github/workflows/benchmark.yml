@@ -22,7 +22,7 @@ jobs:
       - name: Store results
         uses: benchmark-action/github-action-benchmark@v1
         with:
-          name: GeoProx Benchmark
+          name: Geoprox Benchmark
           tool: 'cargo'
           output-file-path: output.txt
           github-token: ${{ secrets.GITHUB_TOKEN }}
