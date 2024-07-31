@@ -10,6 +10,7 @@ use tokio::net::ToSocketAddrs;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
+/// Start http server
 #[tokio::main]
 pub async fn run(socket: impl ToSocketAddrs, shard_config: Option<GeoShardConfig>) {
     tracing_subscriber::registry()

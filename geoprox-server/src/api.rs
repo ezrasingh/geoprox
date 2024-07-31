@@ -8,6 +8,7 @@ use axum::{
 use geoprox_core::shard::GeoShardConfig;
 use std::sync::Arc;
 
+/// Returns REST API router
 pub fn routes(shard_config: Option<GeoShardConfig>) -> Router {
     let state: SharedState = match shard_config {
         Some(config) => {
@@ -88,6 +89,7 @@ pub mod docs {
 )]
     struct ApiDoc;
 
+    /// Returns Swagger docs router
     pub fn router() -> Router {
         Router::new()
             .merge(SwaggerUi::new("/swagger-ui").url("/api-spec/openapi.json", ApiDoc::openapi()))
