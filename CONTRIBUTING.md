@@ -1,8 +1,8 @@
-# Contributing to GeoProx
+# Contributing to Geoprox
 
 ## Ideas, Experiences and Questions
 
-The easiest way to contribute to GeoProx is to use it and report your experiences, ask questions and contribute ideas. We'd love to hear your thoughts on how to make GeoProx better, or your comments on why you are or are not currently using it.
+The easiest way to contribute to Geoprox is to use it and report your experiences, ask questions and contribute ideas. We'd love to hear your thoughts on how to make Geoprox better, or your comments on why you are or are not currently using it.
 
 Issues, ideas, requests and questions should be posted on the issue tracker at:
 
@@ -10,7 +10,7 @@ https://github.com/ezrasingh/geoprox/issues
 
 ## A Note on Dependency Updates
 
-GeoProx does not accept pull requests to update dependencies unless specifically
+Geoprox does not accept pull requests to update dependencies unless specifically
 requested by the maintainer(s). Dependencies are updated manually by the maintainer(s) before each
 new release.
 
@@ -64,19 +64,19 @@ When it is time to release the unreleased branch, a PR is made from the unreleas
 
 ## Github Labels
 
-GeoProx uses a simple set of labels to track issues. Most important are the
+Geoprox uses a simple set of labels to track issues. Most important are the
 difficulty labels:
 
-* **Beginner** - Suitable for people new to GeoProx, or even new to Rust in general
+* **Beginner** - Suitable for people new to Geoprox, or even new to Rust in general
 * **Intermediate** - More challenging, likely involves some non-trivial design decisions and/or knowledge
-  of GeoProx's internals
+  of Geoprox's internals
 * **Bigger Project** - Large and/or complex project such as designing a complex new feature
 
 Additionally, there are a few other noteworthy labels:
 
 * **Breaking Change** - Fixing this will have to wait until the next breaking-change release
 * **Bug** - Something isn't working right
-* **Enhancement** - Request to add a new feature or otherwise improve GeoProx in some way
+* **Enhancement** - Request to add a new feature or otherwise improve Geoprox in some way
 
 ## Code of Conduct
 
