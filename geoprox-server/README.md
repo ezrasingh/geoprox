@@ -1,4 +1,4 @@
-# GeoProx Server API
+# GeoProx Server
 
 ## Overview
 
