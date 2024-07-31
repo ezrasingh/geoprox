@@ -2,6 +2,12 @@
 name = "geoprox-server"
 version = "0.1.0"
 edition = "2021"
+authors = ["Ezra Singh <singhezra@gmail.com>"]
+description = "A Geo-Proximity detection service for efficient real-time geo-aware contract pairing. Ideal for rideshare pairing services"
+keywords = ["geo", "proximity", "geohash", "pairing", "api"]
+readme = "README.md"
+repository = "https://github.com/ezrasingh/geoprox"
+documentation = "https://docs.rs/geoprox-server"
 license = "MIT OR Apache-2.0"
 
 [dependencies]

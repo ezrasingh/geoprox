@@ -1,6 +1,6 @@
 use crate::app::{AppState, SharedState};
 use crate::handlers::{geohash_api, geoshard_api};
-use crate::middleware::set_cache_control;
+use crate::middleware::{json_content, set_cache_control};
 use axum::{
     routing::{get, post},
     Router,
@@ -33,6 +33,7 @@ pub fn routes(shard_config: Option<GeoShardConfig>) -> Router {
                 .put(geoshard_api::insert_key)
                 .get(geoshard_api::query_range),
         )
+        .layer(axum::middleware::from_fn(json_content))
         .with_state(Arc::clone(&state))
 }
 
@@ -103,9 +104,7 @@ mod test {
 
     fn setup() -> TestServer {
         let app = Router::new().nest("/api/v1/", routes(None));
-        let config = TestServerConfig::builder()
-            .default_content_type("application/json")
-            .build();
+        let config = TestServerConfig::builder().build();
         TestServer::new_with_config(app, config).unwrap()
     }
 
@@ -123,6 +122,7 @@ mod test {
 
         res.assert_status_ok();
         assert_eq!(res.header("cache-control").is_empty(), false);
+        assert_eq!(res.header("content-type"), "application/json");
         res.assert_json(&json!({
             "geohash": "v00000",
         }));
@@ -147,5 +147,6 @@ mod test {
             }))
             .await;
         res.assert_status_ok();
+        assert_eq!(res.header("content-type"), "application/json");
     }
 }
