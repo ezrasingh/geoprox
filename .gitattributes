@@ -1,0 +1,2 @@
+# ignore language stats for codegen directory
+contrib/client-sdk/* linguist-vendored
