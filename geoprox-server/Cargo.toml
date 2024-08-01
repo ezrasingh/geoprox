@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Ezra Singh <singhezra@gmail.com>"]
 description = "Geoprox server implementation providing a HTTP API for geospatial queries and position tracking"
+categories = ["web-programming::http-server", "caching", "science::geo"]
 keywords = ["geo", "proximity", "geohash", "pairing", "api"]
 readme = "README.md"
 repository = "https://github.com/ezrasingh/geoprox"

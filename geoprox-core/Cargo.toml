@@ -3,6 +3,7 @@ name = "geoprox-core"
 version = "0.1.0"
 edition = "2021"
 description = "Core library for Geoprox, provides geospatial indexing and sharding functionalities."
+categories = ["science::geo", "data-structures", "algorithms"]
 keywords = ["geo", "proximity", "geohash", "pairing", "nearest-neighbor"]
 readme = "README.md"
 repository = "https://github.com/ezrasingh/geoprox"
