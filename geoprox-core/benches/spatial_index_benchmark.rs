@@ -5,13 +5,12 @@ use geoprox_core::cache::SpatialIndex;
 use rand::prelude::*;
 
 const UNIT_CAPACITY: i32 = 10;
-const CAPACITY_RANGE: [i32; 6] = [
+const CAPACITY_RANGE: [i32; 5] = [
     UNIT_CAPACITY,
     UNIT_CAPACITY * 10,
     UNIT_CAPACITY * 100,
     UNIT_CAPACITY * 1000,
     UNIT_CAPACITY * 10_000,
-    UNIT_CAPACITY * 100_000,
 ];
 
 fn random_geohash(rng: &mut ThreadRng) -> String {
