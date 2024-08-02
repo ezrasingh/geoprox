@@ -81,34 +81,34 @@ pub struct CreateIndexResponse {
 /// Arguments for inserting a key
 #[derive(Deserialize, ToSchema)]
 pub struct InsertKey {
-    /// resource key
+    /// Resource key
     pub key: String,
-    /// latitude
+    /// Latitude
     pub lat: f64,
-    /// longitude
+    /// Longitude
     pub lng: f64,
 }
 
 /// Returns key and geohash
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct InsertKeyResponse {
-    /// resource key
+    /// Resource key
     pub key: String,
-    /// geohash encoded latitude/longitude
+    /// Geohash encoded latitude/longitude
     pub geohash: String,
 }
 
 /// Arguments for removing a key
 #[derive(Deserialize, ToSchema)]
 pub struct RemoveKey {
-    /// resource key
+    /// Resource key
     pub key: String,
 }
 
 /// Returns key and deletion status
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct RemoveKeyResponse {
-    /// resource key
+    /// Resource key
     pub key: String,
     /// If true key was removed
     pub deleted: bool,
@@ -124,11 +124,11 @@ pub struct DropIndexResponse {
 /// Arguments for range query
 #[derive(Deserialize, ToSchema, IntoParams)]
 pub struct QueryRange {
-    /// latitude
+    /// Latitude
     pub lat: f64,
-    /// longitude
+    /// Longitude
     pub lng: f64,
-    /// search radius in kilometers
+    /// Search radius in kilometers
     #[schema(minimum = 0, maximum = 0xFFFF)]
     pub range: u16,
 }
@@ -168,6 +168,6 @@ impl<'__s> ToSchema<'__s> for KeysFound {
 /// Returns resource keys found with their distance
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct QueryRangeResponse {
-    /// resource keys found within range
+    /// Resource keys found within range
     pub found: KeysFound,
 }
