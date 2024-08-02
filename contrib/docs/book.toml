@@ -1,0 +1,9 @@
+[book]
+authors = ["Ezra Singh"]
+language = "en"
+multilingual = false
+src = "src"
+title = "geoprox-docs"
+
+[output.html]
+site-url = "/contrib/docs/"
