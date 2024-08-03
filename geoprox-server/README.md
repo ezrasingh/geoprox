@@ -7,17 +7,18 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
 ## Table of Contents
 
 1. [Geohash API](#geohash-api)
-    - [Encode Coordinates into Geohash](#encode-coordinates-into-geohash)
-    - [Decode Geohash into Coordinates](#decode-geohash-into-coordinates)
-    - [Neighboring Regions](#neighboring-regions)
+   - [Encode Coordinates into Geohash](#encode-coordinates-into-geohash)
+   - [Decode Geohash into Coordinates](#decode-geohash-into-coordinates)
+   - [Neighboring Regions](#neighboring-regions)
 2. [Geoshard API](#geoshard-api)
-    - [Search Nearby](#search-nearby)
-    - [Create Geospatial Index](#create-geospatial-index)
-    - [Insert Key into Index](#insert-key-into-index)
-    - [Drop Index](#drop-index)
-    - [Remove Key from Index](#remove-key-from-index)
+   - [Search Nearby](#search-nearby)
+   - [Create Geospatial Index](#create-geospatial-index)
+   - [Insert Key into Index](#insert-key-into-index)
+   - [Drop Index](#drop-index)
+   - [Remove Key from Index](#remove-key-from-index)
 3. [Components](#components)
-    - [Schemas](#schemas)
+   - [Schemas](#schemas)
+4. [Contributing](#contributing)
 5. [License](#license)
 
 ## API Endpoints
@@ -102,8 +103,8 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
       ```json
       {
         "found": [
-          {"key": "resource1", "distance": 0.5},
-          {"key": "resource2", "distance": 1.2}
+          { "key": "resource1", "distance": 0.5 },
+          { "key": "resource2", "distance": 1.2 }
         ]
       }
       ```
@@ -186,6 +187,7 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
 ### Schemas
 
 #### EncodeLatLng
+
 - **Description:** Arguments for encoding latitude/longitude as geohash.
 - **Properties:**
   - `lat` (number, required): Latitude
@@ -193,11 +195,13 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `depth` (integer, required): Determines geohash length (1-10)
 
 #### EncodeLatLngResponse
+
 - **Description:** Returns geohash encoded latitude/longitude.
 - **Properties:**
   - `geohash` (string, required): Geohash string
 
 #### DecodeGeohashResponse
+
 - **Description:** Returns geohash decoded as latitude/longitude with precision errors.
 - **Properties:**
   - `lat` (number, required): Latitude
@@ -206,6 +210,7 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `lng_error` (number, required): Longitude error
 
 #### GeohashNeighborsResponse
+
 - **Description:** Neighboring geohash regions.
 - **Properties:**
   - `sw` (string, required): Southwest neighbor
@@ -218,17 +223,20 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `ne` (string, required): Northeast neighbor
 
 #### CreateIndexResponse
+
 - **Description:** Returns index creation status.
 - **Properties:**
   - `created` (boolean, required): True if index was created
   - `existed` (boolean, required): True if index already existed
 
 #### DropIndexResponse
+
 - **Description:** Returns index deletion status.
 - **Properties:**
   - `deleted` (boolean, required): True if index was deleted
 
 #### InsertKey
+
 - **Description:** Arguments for inserting a key.
 - **Properties:**
   - `key` (string, required): Resource key
@@ -236,12 +244,14 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `lng` (number, required): Longitude
 
 #### InsertKeyResponse
+
 - **Description:** Returns key and geohash.
 - **Properties:**
   - `key` (string, required): Resource key
   - `geohash` (string, required): Geohash encoded latitude/longitude
 
 #### QueryRangeResponse
+
 - **Description:** Returns resource keys found with their distance.
 - **Properties:**
   - `found` (array, required): List of keys and their distances
@@ -249,17 +259,20 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
     - `distance` (number): Distance in kilometers
 
 #### RemoveKey
+
 - **Description:** Arguments for removing a key.
 - **Properties:**
   - `key` (string, required): Resource key
 
 #### RemoveKeyResponse
+
 - **Description:** Returns key and deletion status.
 - **Properties:**
   - `deleted` (boolean, required): True if key was removed
   - `key` (string, required): Resource key
 
 ## Contributing
+
 Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
 
 ## License
