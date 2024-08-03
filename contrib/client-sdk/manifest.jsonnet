@@ -28,6 +28,7 @@ https://openapi-generator.tech/docs/generators/
     {
       packageName: meta.clientName,
       packageVersion: meta.clientVersion,
+      hideGenerationTimestamp: false,
     },
   ),
   'typescript-axios.yaml': std.manifestYamlDoc({
