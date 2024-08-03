@@ -2,19 +2,15 @@ name: Security audit
 
 on:
   push:
-    branches:
-      - main
-    #paths:
-    #  - "**/Cargo.toml"
-    #  - "**/Cargo.lock"
+    paths:
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     permissions:
-      security-events: write
-      issues: write
-      deployments: write
+      checks: write
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/audit-check@v1
