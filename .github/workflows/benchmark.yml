@@ -6,7 +6,7 @@ on:
 
 jobs:
   benchmark:
-    name: Run crate benchmarks
+    name: Bench
     runs-on: ubuntu-latest
     permissions:
       # deployments permission to deploy GitHub pages website
