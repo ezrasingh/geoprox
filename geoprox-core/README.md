@@ -2,7 +2,7 @@
 
 A Rust crate designed for geospatial indexing and sharding. It includes two primary modules: `cache` and `shard`. These modules facilitate efficient geospatial queries and indexing for applications such as food delivery services, real-time inventory tracking, and more.
 
-> **Looking for an API implementation** see, [`geoprox-server`](https://crates.io/crates/geoprox-server/) for the HTTP API version of this service and [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for HTTP client libraries.
+> **Looking for an API implementation?** See, [`geoprox-server`](https://crates.io/crates/geoprox-server/) for the HTTP API version of this service and [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for HTTP client libraries.
 
 ## Features
 
@@ -40,6 +40,7 @@ res.iter().for_each(|neighbor| {
 ```
 
 ### GeoShard
+
 The `shard` module, implemented as `GeoShard`, provides a mechanism for sharding datasets geographically and performing range queries. Key features include:
 
 - **Creating Indexes**: Initialize geospatial indexes for different datasets.
@@ -48,6 +49,7 @@ The `shard` module, implemented as `GeoShard`, provides a mechanism for sharding
 - **Drop Index**: Deletes the index and its associated keys.
 
 #### Example Usage
+
 ```rust
 extern crate geoprox_core;
 
@@ -63,6 +65,7 @@ println!("found: {:#?}", res);
 ```
 
 ## Contributing
+
 Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
 
 ## License
