@@ -9,13 +9,10 @@ use geoprox_core::shard::GeoShardConfig;
 use std::sync::Arc;
 
 /// Returns REST API router
-pub fn routes(shard_config: Option<GeoShardConfig>) -> Router {
-    let state: SharedState = match shard_config {
-        Some(config) => {
-            let app = AppState::from(config);
-            SharedState::from(app)
-        }
-        None => SharedState::default(),
+pub fn routes(shard_config: GeoShardConfig) -> Router {
+    let state: SharedState = {
+        let app = AppState::from(shard_config);
+        SharedState::from(app)
     };
 
     Router::new()
@@ -64,7 +61,6 @@ pub mod docs {
         dto::InsertKey,
         dto::RemoveKey,
         dto::QueryRange,
-        dto::KeysFound,
         dto::DecodeGeohashResponse,
         dto::EncodeLatLngResponse,
         dto::GeohashNeighborsResponse,

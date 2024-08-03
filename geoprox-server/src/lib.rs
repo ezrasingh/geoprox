@@ -1,18 +1,20 @@
 pub mod api;
 pub mod app;
+pub mod config;
 pub mod dto;
 pub mod handlers;
 pub mod middleware;
 
-use axum::routing::Router;
+use config::ServerConfig;
 use geoprox_core::shard::GeoShardConfig;
-use tokio::net::ToSocketAddrs;
+
+use axum::routing::Router;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Start http server
 #[tokio::main]
-pub async fn run(socket: impl ToSocketAddrs, shard_config: Option<GeoShardConfig>) {
+pub async fn run(server_config: ServerConfig, shard_config: GeoShardConfig) {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -21,6 +23,7 @@ pub async fn run(socket: impl ToSocketAddrs, shard_config: Option<GeoShardConfig
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    let socket: std::net::SocketAddr = server_config.into();
     let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
 
     let router = Router::new()
