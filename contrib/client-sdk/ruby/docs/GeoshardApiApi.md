@@ -220,9 +220,9 @@ require 'time'
 require 'geoprox_client'
 
 api_instance = GeoproxClient::GeoshardApiApi.new
-lat = 1.2 # Float | latitude
-lng = 1.2 # Float | longitude
-range = 56 # Integer | search radius in kilometers
+lat = 1.2 # Float | Latitude
+lng = 1.2 # Float | Longitude
+range = 56 # Integer | Search radius in kilometers
 index = 'index_example' # String | 
 
 begin
@@ -256,9 +256,9 @@ end
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **lat** | **Float** | latitude |  |
-| **lng** | **Float** | longitude |  |
-| **range** | **Integer** | search radius in kilometers |  |
+| **lat** | **Float** | Latitude |  |
+| **lng** | **Float** | Longitude |  |
+| **range** | **Integer** | Search radius in kilometers |  |
 | **index** | **String** |  |  |
 
 ### Return type

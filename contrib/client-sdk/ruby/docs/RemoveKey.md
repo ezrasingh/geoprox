@@ -4,7 +4,7 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **key** | **String** | resource key |  |
+| **key** | **String** | Resource key |  |
 
 ## Example
 

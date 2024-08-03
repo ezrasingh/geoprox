@@ -4,9 +4,9 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **lat** | **Float** | latitude |  |
-| **lng** | **Float** | longitude |  |
-| **range** | **Integer** | search radius in kilometers |  |
+| **lat** | **Float** | Latitude |  |
+| **lng** | **Float** | Longitude |  |
+| **range** | **Integer** | Search radius in kilometers |  |
 
 ## Example
 

@@ -8,7 +8,7 @@ export * from './encodeLatLngResponse';
 export * from './geohashNeighborsResponse';
 export * from './insertKey';
 export * from './insertKeyResponse';
-export * from './keysFoundInner';
+export * from './neighbor';
 export * from './queryRange';
 export * from './queryRangeResponse';
 export * from './removeKey';
@@ -35,7 +35,7 @@ import { EncodeLatLngResponse } from './encodeLatLngResponse';
 import { GeohashNeighborsResponse } from './geohashNeighborsResponse';
 import { InsertKey } from './insertKey';
 import { InsertKeyResponse } from './insertKeyResponse';
-import { KeysFoundInner } from './keysFoundInner';
+import { Neighbor } from './neighbor';
 import { QueryRange } from './queryRange';
 import { QueryRangeResponse } from './queryRangeResponse';
 import { RemoveKey } from './removeKey';
@@ -65,7 +65,7 @@ let typeMap: {[index: string]: any} = {
     "GeohashNeighborsResponse": GeohashNeighborsResponse,
     "InsertKey": InsertKey,
     "InsertKeyResponse": InsertKeyResponse,
-    "KeysFoundInner": KeysFoundInner,
+    "Neighbor": Neighbor,
     "QueryRange": QueryRange,
     "QueryRangeResponse": QueryRangeResponse,
     "RemoveKey": RemoveKey,

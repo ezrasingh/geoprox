@@ -6,7 +6,7 @@ Returns resource keys found with their distance
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**found** | [**List[KeysFoundInner]**](KeysFoundInner.md) | Resource keys found within range | 
+**found** | [**List[Neighbor]**](Neighbor.md) | Resource keys found within range | 
 
 ## Example
 

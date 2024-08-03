@@ -245,9 +245,9 @@ configuration = geoprox_client.Configuration(
 with geoprox_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = geoprox_client.GeoshardApiApi(api_client)
-    lat = 3.4 # float | latitude
-    lng = 3.4 # float | longitude
-    range = 56 # int | search radius in kilometers
+    lat = 3.4 # float | Latitude
+    lng = 3.4 # float | Longitude
+    range = 56 # int | Search radius in kilometers
     index = 'index_example' # str | 
 
     try:
@@ -266,9 +266,9 @@ with geoprox_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **lat** | **float**| latitude | 
- **lng** | **float**| longitude | 
- **range** | **int**| search radius in kilometers | 
+ **lat** | **float**| Latitude | 
+ **lng** | **float**| Longitude | 
+ **range** | **int**| Search radius in kilometers | 
  **index** | **str**|  | 
 
 ### Return type

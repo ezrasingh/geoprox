@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 apis/GeohashApiApi.ts
 apis/GeoshardApiApi.ts
@@ -13,7 +12,7 @@ models/EncodeLatLngResponse.ts
 models/GeohashNeighborsResponse.ts
 models/InsertKey.ts
 models/InsertKeyResponse.ts
-models/KeysFoundInner.ts
+models/Neighbor.ts
 models/QueryRange.ts
 models/QueryRangeResponse.ts
 models/RemoveKey.ts

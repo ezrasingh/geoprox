@@ -115,9 +115,9 @@ Search geospatial index for all keys within some distance
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**lat** | **f64** | latitude | [required] |
-**lng** | **f64** | longitude | [required] |
-**range** | **i32** | search radius in kilometers | [required] |
+**lat** | **f64** | Latitude | [required] |
+**lng** | **f64** | Longitude | [required] |
+**range** | **i32** | Search radius in kilometers | [required] |
 **index** | **String** |  | [required] |
 
 ### Return type

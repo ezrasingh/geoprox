@@ -4,8 +4,8 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **geohash** | **String** | geohash encoded latitude/longitude |  |
-| **key** | **String** | resource key |  |
+| **geohash** | **String** | Geohash encoded latitude/longitude |  |
+| **key** | **String** | Resource key |  |
 
 ## Example
 

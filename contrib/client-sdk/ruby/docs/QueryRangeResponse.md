@@ -4,7 +4,7 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **found** | [**Array&lt;KeysFoundInner&gt;**](KeysFoundInner.md) | Resource keys found within range |  |
+| **found** | [**Array&lt;Neighbor&gt;**](Neighbor.md) | Resource keys found within range |  |
 
 ## Example
 

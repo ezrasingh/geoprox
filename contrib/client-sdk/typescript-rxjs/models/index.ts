@@ -6,7 +6,7 @@ export * from './EncodeLatLngResponse';
 export * from './GeohashNeighborsResponse';
 export * from './InsertKey';
 export * from './InsertKeyResponse';
-export * from './KeysFoundInner';
+export * from './Neighbor';
 export * from './QueryRange';
 export * from './QueryRangeResponse';
 export * from './RemoveKey';

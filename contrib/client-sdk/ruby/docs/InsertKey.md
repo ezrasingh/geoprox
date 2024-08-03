@@ -4,9 +4,9 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **key** | **String** | resource key |  |
-| **lat** | **Float** | latitude |  |
-| **lng** | **Float** | longitude |  |
+| **key** | **String** | Resource key |  |
+| **lat** | **Float** | Latitude |  |
+| **lng** | **Float** | Longitude |  |
 
 ## Example
 

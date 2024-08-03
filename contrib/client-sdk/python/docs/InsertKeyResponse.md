@@ -6,8 +6,8 @@ Returns key and geohash
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**geohash** | **str** | geohash encoded latitude/longitude | 
-**key** | **str** | resource key | 
+**geohash** | **str** | Geohash encoded latitude/longitude | 
+**key** | **str** | Resource key | 
 
 ## Example
 

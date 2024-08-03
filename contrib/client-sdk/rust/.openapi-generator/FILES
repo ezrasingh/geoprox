@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 Cargo.toml
 README.md
@@ -13,7 +12,7 @@ docs/GeohashNeighborsResponse.md
 docs/GeoshardApiApi.md
 docs/InsertKey.md
 docs/InsertKeyResponse.md
-docs/KeysFoundInner.md
+docs/Neighbor.md
 docs/QueryRange.md
 docs/QueryRangeResponse.md
 docs/RemoveKey.md
@@ -32,8 +31,8 @@ src/models/encode_lat_lng_response.rs
 src/models/geohash_neighbors_response.rs
 src/models/insert_key.rs
 src/models/insert_key_response.rs
-src/models/keys_found_inner.rs
 src/models/mod.rs
+src/models/neighbor.rs
 src/models/query_range.rs
 src/models/query_range_response.rs
 src/models/remove_key.rs

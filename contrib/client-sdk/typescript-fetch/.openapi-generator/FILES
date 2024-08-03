@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 README.md
 package.json
 src/apis/GeohashApiApi.ts
@@ -15,7 +14,7 @@ src/models/EncodeLatLngResponse.ts
 src/models/GeohashNeighborsResponse.ts
 src/models/InsertKey.ts
 src/models/InsertKeyResponse.ts
-src/models/KeysFoundInner.ts
+src/models/Neighbor.ts
 src/models/QueryRange.ts
 src/models/QueryRangeResponse.ts
 src/models/RemoveKey.ts

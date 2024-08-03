@@ -6,9 +6,9 @@ Arguments for range query
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**lat** | **float** | latitude | 
-**lng** | **float** | longitude | 
-**range** | **int** | search radius in kilometers | 
+**lat** | **float** | Latitude | 
+**lng** | **float** | Longitude | 
+**range** | **int** | Search radius in kilometers | 
 
 ## Example
 

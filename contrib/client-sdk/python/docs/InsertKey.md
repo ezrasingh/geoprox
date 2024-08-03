@@ -6,9 +6,9 @@ Arguments for inserting a key
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**key** | **str** | resource key | 
-**lat** | **float** | latitude | 
-**lng** | **float** | longitude | 
+**key** | **str** | Resource key | 
+**lat** | **float** | Latitude | 
+**lng** | **float** | Longitude | 
 
 ## Example
 
