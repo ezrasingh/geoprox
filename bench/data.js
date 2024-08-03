@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1722713806043,
+  "lastUpdate": 1722713949189,
   "repoUrl": "https://github.com/ezrasingh/geoprox",
   "entries": {
     "Geoprox Benchmark": [
@@ -1091,6 +1091,90 @@ window.BENCHMARK_DATA = {
             "name": "spatial_index/range_query/100000",
             "value": 57553282,
             "range": "± 16364940",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "singhezra@gmail.com",
+            "name": "Ezra Singh",
+            "username": "ezrasingh"
+          },
+          "committer": {
+            "email": "singhezra@gmail.com",
+            "name": "Ezra Singh",
+            "username": "ezrasingh"
+          },
+          "distinct": true,
+          "id": "2e8fc0c814c07ad7b90a72da350893a8a5b6d2b0",
+          "message": "DEBUG_CI",
+          "timestamp": "2024-08-03T15:35:12-04:00",
+          "tree_id": "91fbca5912a24bece83d6b64804e5fd2dee60359",
+          "url": "https://github.com/ezrasingh/geoprox/commit/2e8fc0c814c07ad7b90a72da350893a8a5b6d2b0"
+        },
+        "date": 1722713948220,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "spatial_index/insert/10",
+            "value": 3760,
+            "range": "± 159",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100",
+            "value": 75058,
+            "range": "± 921",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/1000",
+            "value": 1071389,
+            "range": "± 50387",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/10000",
+            "value": 14523408,
+            "range": "± 67872",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100000",
+            "value": 252587088,
+            "range": "± 13033120",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10",
+            "value": 9758,
+            "range": "± 532",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100",
+            "value": 27776,
+            "range": "± 1380",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/1000",
+            "value": 209346,
+            "range": "± 296331",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10000",
+            "value": 2523369,
+            "range": "± 482871",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100000",
+            "value": 85539731,
+            "range": "± 23896249",
             "unit": "ns/iter"
           }
         ]
