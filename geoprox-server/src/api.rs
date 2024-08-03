@@ -97,12 +97,11 @@ pub mod docs {
 mod test {
     use super::*;
     use crate::dto;
-    use axum::Router;
     use axum_test::{TestServer, TestServerConfig};
     use serde_json::json;
 
     fn setup() -> TestServer {
-        let app = Router::new().nest("/api/v1/", routes(None));
+        let app = Router::new().nest("/api/v1/", routes(GeoShardConfig::default()));
         let config = TestServerConfig::builder().build();
         TestServer::new_with_config(app, config).unwrap()
     }
