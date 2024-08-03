@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.2.0
+
+- Removed `KeysFound` enum which was a workaround to avoid packaging `geoprox-core` with [`utoipa`](https://crates.io/crates/utoipa) (since core shouldnt be concerned with OpenAPI). However, this was resolved by adding a crate feature on `geoprox-core` (see [v0.2.0](https://crates.io/crates/geoprox-core/0.2.0)) to conditionally derive `ToSchema` trait needed by `utoipa` for OpenAPI schema generation.
+- Moved `ServerConfig` from `geoprox` to `geoprox-server` crate for future-proofing and improved seperation of concerns.
+- Improved API error handling by returning structured errors in the response body, this was achieved using [`anyhow`](https://crates.io/crates/anyhow).
+
 ## 0.1.0
 
 > Initial release
