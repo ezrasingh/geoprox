@@ -1,4 +1,6 @@
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use geoprox_core::shard::GeoShardConfig;
+use geoprox_server::config::ServerConfig;
+
 mod cli;
 
 fn main() {
@@ -6,22 +8,21 @@ fn main() {
 
     match &command {
         Some(cli::Commands::Run { bind }) => {
-            let addr: &SocketAddr = match bind {
-                Some(socket) => socket,
-                None => {
-                    let default_addr = IpAddr::V4(Ipv4Addr::UNSPECIFIED);
-                    let default_port: u16 = 5000;
-                    if let Some(server_conf) = settings.server {
-                        &SocketAddr::new(
-                            server_conf.http_addr.unwrap_or(default_addr),
-                            server_conf.http_port.unwrap_or(default_port),
-                        )
-                    } else {
-                        &SocketAddr::new(default_addr, default_port)
-                    }
-                }
-            };
-            geoprox_server::run(addr, settings.shard);
+            let server_conf: ServerConfig = settings.server.unwrap_or_default();
+            let shard_conf: GeoShardConfig = settings.shard.unwrap_or_default();
+
+            if let Some(socket) = bind {
+                // ? merge arguments with any existing config
+                geoprox_server::run(
+                    ServerConfig {
+                        http_addr: Some(socket.ip()),
+                        http_port: Some(socket.port()),
+                    },
+                    shard_conf,
+                )
+            } else {
+                geoprox_server::run(server_conf, shard_conf);
+            }
         }
 
         Some(cli::Commands::Encode { lat, lng, depth }) => {
@@ -39,7 +40,7 @@ fn main() {
             println!("longitude:{} +/- {}", position.x, lng_err);
         }
         None => {
-            panic!("invalid command")
+            println!("Invalid command. Please try '--help' for more information.");
         }
     }
 }

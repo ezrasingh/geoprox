@@ -1,8 +1,9 @@
 use clap::{Parser, Subcommand};
 use config::{Config, ConfigError};
 use geoprox_core::shard::GeoShardConfig;
+use geoprox_server::config::ServerConfig;
 use serde::Deserialize;
-use std::net::{IpAddr, SocketAddr};
+use std::net::SocketAddr;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -46,12 +47,6 @@ pub enum Commands {
         #[arg(short, long)]
         ghash: String,
     },
-}
-
-#[derive(Debug, Default, Deserialize)]
-pub struct ServerConfig {
-    pub http_addr: Option<IpAddr>,
-    pub http_port: Option<u16>,
 }
 
 #[derive(Debug, Default, Deserialize)]
