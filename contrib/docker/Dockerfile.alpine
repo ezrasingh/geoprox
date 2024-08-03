@@ -4,7 +4,7 @@ WORKDIR /code
 COPY . /code/
 RUN cargo build --release
 
-FROM alpine
+FROM alpine:3
 
 LABEL "org.opencontainers.image.source"="https://github.com/ezrasingh/geoprox"
 LABEL "org.opencontainers.image.description"="A Geo-Proximity detection service for efficient real-time geo-aware contract pairing"
