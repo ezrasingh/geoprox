@@ -6,15 +6,14 @@ on:
       - main
   pull_request:
 
-permissions:
-  # deployments permission to deploy GitHub pages website
-  deployments: write
-  # contents permission to update book contents in gh-pages branch
-  contents: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      # deployments permission to deploy GitHub pages website
+      deployments: write
+      # contents permission to update benchmark contents in gh-pages branch
+      contents: write
     steps:
       - uses: actions/checkout@v2
 

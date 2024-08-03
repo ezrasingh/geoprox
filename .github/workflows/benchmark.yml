@@ -4,16 +4,15 @@ on:
     branches:
       - main
 
-permissions:
-  # deployments permission to deploy GitHub pages website
-  deployments: write
-  # contents permission to update benchmark contents in gh-pages branch
-  contents: write
-
 jobs:
   benchmark:
     name: Run crate benchmarks
     runs-on: ubuntu-latest
+    permissions:
+      # deployments permission to deploy GitHub pages website
+      deployments: write
+      # contents permission to update benchmark contents in gh-pages branch
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
