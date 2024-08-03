@@ -1,6 +1,6 @@
 [package]
 name = "geoprox-core"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Core library for Geoprox, provides geospatial indexing and sharding functionalities."
 categories = ["science::geo", "data-structures", "algorithms"]
@@ -17,10 +17,14 @@ kiddo = { version = "4.2.0", features = ["serialize"] }
 log = "0.4.22"
 patricia_tree = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
+utoipa = { version = "4.2.3", optional = true }
 
 [dev-dependencies]
 criterion = "0.5.1"
 rand = "0.8.5"
+
+[features]
+utoipa = ["dep:utoipa"]
 
 [[bench]]
 name = "spatial_index_benchmark"

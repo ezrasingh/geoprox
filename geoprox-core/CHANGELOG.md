@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.2.0
+
+- Added support for OpenAPI schema generation by adding a `utoipa` crate feature, which conditionally derive `utoipa::ToSchema` trait.
+
 ## 0.1.0
 
 > Initial release
