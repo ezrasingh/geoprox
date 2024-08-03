@@ -49,7 +49,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
             ${{ env.REGISTRY }}/${{ github.repository }}
           tags: |
-            type=raw,value=latest,enable=${{ matrix.target == 'alpine' && github.ref == github.event.repository.default_branch }}
+            type=raw,value=latest,enable=${{ matrix.target == 'alpine' && github.ref_name == github.event.repository.default_branch }}
             type=raw,value={{tag}},enable=${{ matrix.target == 'alpine' && github.ref_type == 'tag' }}
             type=raw,value=latest-${{ matrix.target }},enable={{is_default_branch}}
             type=raw,value=${{ matrix.target }},enable={{is_default_branch}}
