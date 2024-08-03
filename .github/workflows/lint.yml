@@ -1,32 +1,27 @@
-on: push
+on: [push, pull_request]
 
-name: Continuous integration
+name: Lints
 
 jobs:
-  ci:
-    name: Build Crate
+  clippy:
+    name: Clippy
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - beta
-          - nightly
-
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: ${{ matrix.rust }}
+          toolchain: nightly
           override: true
           components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
-          command: build
+          command: fmt
+          args: --all -- --check
 
       - uses: actions-rs/cargo@v1
         with:
-          command: test
+          command: clippy
+          args: -- -D warnings
