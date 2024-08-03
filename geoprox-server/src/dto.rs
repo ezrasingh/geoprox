@@ -136,6 +136,8 @@ pub struct QueryRange {
 #[derive(Serialize)]
 pub struct KeysFound(pub Vec<Neighbor>);
 
+// ? This is to avoid having to package geoprox-core with utoipa due to seperation of concerns
+// ? I should explore adding utoipa as a feature to the core and simply include that feature in the geoprox-server
 impl<'__s> ToSchema<'__s> for KeysFound {
     fn schema() -> (&'__s str, openapi::RefOr<openapi::schema::Schema>) {
         (
@@ -170,4 +172,11 @@ impl<'__s> ToSchema<'__s> for KeysFound {
 pub struct QueryRangeResponse {
     /// Resource keys found within range
     pub found: KeysFound,
+}
+
+/// Returns structured error message
+#[derive(Serialize, ToSchema, ToResponse)]
+pub struct AppErrorResponse {
+    /// Error details
+    pub message: String,
 }

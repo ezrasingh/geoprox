@@ -1,8 +1,9 @@
 pub mod geohash_api {
-    use crate::app::SharedState;
+    use crate::app::{AppError, SharedState};
     use crate::dto::{
         DecodeGeohashResponse, EncodeLatLng, EncodeLatLngResponse, GeohashNeighborsResponse,
     };
+    use anyhow::anyhow;
     use axum::{extract, Json};
 
     /// Decode geohash into coordinates.
@@ -25,17 +26,15 @@ pub mod geohash_api {
     pub async fn decode_geohash(
         extract::State(_state): extract::State<SharedState>,
         extract::Path(ghash): extract::Path<String>,
-    ) -> Json<DecodeGeohashResponse> {
+    ) -> Result<Json<DecodeGeohashResponse>, AppError> {
         match geoprox_core::geohash::decode(&ghash) {
-            Ok((coord, lng_error, lat_error)) => Json(DecodeGeohashResponse {
+            Ok((coord, lng_error, lat_error)) => Ok(Json(DecodeGeohashResponse {
                 lat: coord.y,
                 lng: coord.x,
                 lat_error,
                 lng_error,
-            }),
-            Err(err) => {
-                panic!("could not decode geohash '{}': {:#?}", ghash, err);
-            }
+            })),
+            Err(err) => Err(anyhow!("could not decode geohash '{}': {:#?}", ghash, err).into()),
         }
     }
 
@@ -57,15 +56,16 @@ pub mod geohash_api {
     pub async fn encode_latlng(
         extract::State(_state): extract::State<SharedState>,
         extract::Query(payload): extract::Query<EncodeLatLng>,
-    ) -> Json<EncodeLatLngResponse> {
+    ) -> Result<Json<EncodeLatLngResponse>, AppError> {
         match geoprox_core::geohash::encode([payload.lng, payload.lat].into(), payload.depth) {
-            Ok(geohash) => Json(EncodeLatLngResponse { geohash }),
-            Err(err) => {
-                panic!(
-                    "could not encode lat/lng ({}, {}): {:#?}",
-                    payload.lat, payload.lng, err
-                );
-            }
+            Ok(geohash) => Ok(Json(EncodeLatLngResponse { geohash })),
+            Err(err) => Err(anyhow!(
+                "could not encode lat/lng ({}, {}): {:#?}",
+                payload.lat,
+                payload.lng,
+                err
+            )
+            .into()),
         }
     }
 
@@ -89,25 +89,26 @@ pub mod geohash_api {
     pub async fn get_neighbors(
         extract::State(_state): extract::State<SharedState>,
         extract::Path(ghash): extract::Path<String>,
-    ) -> Json<GeohashNeighborsResponse> {
+    ) -> Result<Json<GeohashNeighborsResponse>, AppError> {
         match geoprox_core::geohash::neighbors(&ghash) {
-            Ok(neighbors) => Json(Into::<GeohashNeighborsResponse>::into(neighbors)),
-            Err(err) => {
-                panic!(
-                    "could not compute geohash neighbors for '{}': {:#?}",
-                    ghash, err
-                );
-            }
+            Ok(neighbors) => Ok(Json(Into::<GeohashNeighborsResponse>::into(neighbors))),
+            Err(err) => Err(anyhow!(
+                "could not compute geohash neighbors for '{}': {:#?}",
+                ghash,
+                err
+            )
+            .into()),
         }
     }
 }
 
 pub mod geoshard_api {
-    use crate::app::SharedState;
+    use crate::app::{AppError, SharedState};
     use crate::dto::{
         CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyResponse, KeysFound,
         QueryRange, QueryRangeResponse, RemoveKey, RemoveKeyResponse,
     };
+    use anyhow::anyhow;
     use axum::{extract, Json};
     use geoprox_core::shard::GeoShardError;
 
@@ -128,22 +129,22 @@ pub mod geoshard_api {
     pub async fn create_index(
         extract::State(state): extract::State<SharedState>,
         extract::Path(index): extract::Path<String>,
-    ) -> Json<CreateIndexResponse> {
+    ) -> Result<Json<CreateIndexResponse>, AppError> {
         let mut state = state.write().unwrap();
 
         match state.geoshard.create_index(&index) {
-            Ok(_) => Json(CreateIndexResponse {
+            Ok(_) => Ok(Json(CreateIndexResponse {
                 created: true,
                 existed: false,
-            }),
+            })),
             Err(err) => {
                 if let GeoShardError::IndexAlreadyExists(_) = err {
-                    Json(CreateIndexResponse {
+                    Ok(Json(CreateIndexResponse {
                         created: false,
                         existed: true,
-                    })
+                    }))
                 } else {
-                    panic!("could not create index '{}': {:#?}", index, err);
+                    Err(anyhow!("could not create index '{}': {:#?}", index, err).into())
                 }
             }
         }
@@ -167,23 +168,24 @@ pub mod geoshard_api {
         extract::State(state): extract::State<SharedState>,
         extract::Path(index): extract::Path<String>,
         extract::Json(payload): extract::Json<InsertKey>,
-    ) -> Json<InsertKeyResponse> {
+    ) -> Result<Json<InsertKeyResponse>, AppError> {
         let mut state = state.write().unwrap();
 
         match state
             .geoshard
             .insert_key(&index, &payload.key, &[payload.lat, payload.lng])
         {
-            Ok(geohash) => Json(InsertKeyResponse {
+            Ok(geohash) => Ok(Json(InsertKeyResponse {
                 key: payload.key,
                 geohash,
-            }),
-            Err(err) => {
-                panic!(
-                    "could not insert key '{}' at index '{}': {:#?}",
-                    payload.key, index, err
-                );
-            }
+            })),
+            Err(err) => Err(anyhow!(
+                "could not insert key '{}' at index '{}': {:#?}",
+                payload.key,
+                index,
+                err
+            )
+            .into()),
         }
     }
 
@@ -205,20 +207,21 @@ pub mod geoshard_api {
         extract::State(state): extract::State<SharedState>,
         extract::Path(index): extract::Path<String>,
         extract::Json(payload): extract::Json<RemoveKey>,
-    ) -> Json<RemoveKeyResponse> {
+    ) -> Result<Json<RemoveKeyResponse>, AppError> {
         let mut state = state.write().unwrap();
 
         match state.geoshard.remove_key(&index, &payload.key) {
-            Ok(deleted) => Json(RemoveKeyResponse {
+            Ok(deleted) => Ok(Json(RemoveKeyResponse {
                 key: payload.key,
                 deleted,
-            }),
-            Err(err) => {
-                panic!(
-                    "could not remove key '{}' at index '{}': {:#?}",
-                    payload.key, index, err
-                );
-            }
+            })),
+            Err(err) => Err(anyhow!(
+                "could not remove key '{}' at index '{}': {:#?}",
+                payload.key,
+                index,
+                err
+            )
+            .into()),
         }
     }
 
@@ -266,19 +269,17 @@ pub mod geoshard_api {
         extract::State(state): extract::State<SharedState>,
         extract::Path(index): extract::Path<String>,
         extract::Query(query): extract::Query<QueryRange>,
-    ) -> Json<QueryRangeResponse> {
+    ) -> Result<Json<QueryRangeResponse>, AppError> {
         let state = state.read().unwrap();
 
         match state
             .geoshard
             .query_range(&index, [query.lat, query.lng], &query.range.into())
         {
-            Ok(found) => Json(QueryRangeResponse {
+            Ok(found) => Ok(Json(QueryRangeResponse {
                 found: KeysFound(found),
-            }),
-            Err(err) => {
-                panic!("query range search failed: {:#?}", err);
-            }
+            })),
+            Err(err) => Err(anyhow!("query range search failed: {:#?}", err).into()),
         }
     }
 }

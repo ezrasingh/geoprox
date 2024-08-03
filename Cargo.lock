@@ -857,6 +857,7 @@ dependencies = [
 name = "geoprox-server"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
  "axum-test",
  "geoprox-core",
