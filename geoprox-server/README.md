@@ -1,10 +1,8 @@
 # Geoprox Server
 
-> **Need an API Client?** See, [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for available HTTP client libraries or generate your own.
-
-## Overview
-
 Geoprox Server provides a geospatial indexing API with capabilities to encode/decode geohashes, query for neighboring geohashes, and perform geospatial searches within a specified range. This API allows you to efficiently manage and query geospatial data.
+
+> **Need an API Client?** See, [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for available HTTP client libraries or generate your own.
 
 ## Table of Contents
 
