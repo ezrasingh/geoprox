@@ -1,5 +1,5 @@
 [workspace]
-members = ["geoprox", "geoprox-*"]
+members = ["geoprox", "geoprox-*", "contrib/client-sdk/rust"]
 # Only check / build main crates by default (check all with `--workspace`)
 default-members = ["geoprox", "geoprox-*"]
 resolver = "2"
