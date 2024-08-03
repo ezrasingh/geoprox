@@ -73,6 +73,7 @@ pub mod docs {
         dto::RemoveKeyResponse,
         dto::DropIndexResponse,
         dto::QueryRangeResponse,
+        geoprox_core::models::Neighbor,
     ), responses(
         dto::DecodeGeohashResponse,
         dto::EncodeLatLngResponse,
@@ -84,7 +85,7 @@ pub mod docs {
         dto::QueryRangeResponse,
     )),
     tags(
-        (name = "GeoProx", description = "Geospatial index API")
+        (name = "Geoprox", description = "Geospatial index API")
     )
 )]
     struct ApiDoc;

@@ -105,8 +105,8 @@ pub mod geohash_api {
 pub mod geoshard_api {
     use crate::app::{AppError, SharedState};
     use crate::dto::{
-        CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyResponse, KeysFound,
-        QueryRange, QueryRangeResponse, RemoveKey, RemoveKeyResponse,
+        CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyResponse, QueryRange,
+        QueryRangeResponse, RemoveKey, RemoveKeyResponse,
     };
     use anyhow::anyhow;
     use axum::{extract, Json};
@@ -276,9 +276,7 @@ pub mod geoshard_api {
             .geoshard
             .query_range(&index, [query.lat, query.lng], &query.range.into())
         {
-            Ok(found) => Ok(Json(QueryRangeResponse {
-                found: KeysFound(found),
-            })),
+            Ok(found) => Ok(Json(QueryRangeResponse { found })),
             Err(err) => Err(anyhow!("query range search failed: {:#?}", err).into()),
         }
     }

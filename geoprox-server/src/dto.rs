@@ -1,6 +1,6 @@
 use geoprox_core::models::Neighbor;
 use serde::{Deserialize, Serialize};
-use utoipa::{openapi, IntoParams, ToResponse, ToSchema};
+use utoipa::{IntoParams, ToResponse, ToSchema};
 
 /// Returns geohash decoded as latitude/longitude with precision errors
 #[derive(Serialize, ToSchema, ToResponse)]
@@ -133,45 +133,11 @@ pub struct QueryRange {
     pub range: u16,
 }
 
-#[derive(Serialize)]
-pub struct KeysFound(pub Vec<Neighbor>);
-
-// ? This is to avoid having to package geoprox-core with utoipa due to seperation of concerns
-// ? I should explore adding utoipa as a feature to the core and simply include that feature in the geoprox-server
-impl<'__s> ToSchema<'__s> for KeysFound {
-    fn schema() -> (&'__s str, openapi::RefOr<openapi::schema::Schema>) {
-        (
-            "KeysFound",
-            openapi::ArrayBuilder::new()
-                .unique_items(true)
-                .items(
-                    openapi::ObjectBuilder::new()
-                        .property(
-                            "key",
-                            openapi::ObjectBuilder::new().schema_type(openapi::SchemaType::String),
-                        )
-                        .property(
-                            "distance",
-                            openapi::ObjectBuilder::new()
-                                .schema_type(openapi::SchemaType::Number)
-                                .format(Some(openapi::SchemaFormat::KnownFormat(
-                                    openapi::KnownFormat::Float,
-                                )))
-                                .description(Some("Distance in kilometers")),
-                        ),
-                )
-                .description(Some("Resource keys found within range"))
-                .build()
-                .into(),
-        )
-    }
-}
-
 /// Returns resource keys found with their distance
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct QueryRangeResponse {
     /// Resource keys found within range
-    pub found: KeysFound,
+    pub found: Vec<Neighbor>,
 }
 
 /// Returns structured error message
