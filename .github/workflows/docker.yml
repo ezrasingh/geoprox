@@ -1,9 +1,6 @@
 name: Publish Docker images
 
 on:
-  push:
-    branches:
-      - main
   release:
     types: [published]
 
@@ -48,9 +45,12 @@ jobs:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
             ${{ env.REGISTRY }}/${{ github.repository }}
-          flavor: |
-            latest=auto
-            prefix=${{ matrix.target }}
+          tags: |
+            type=raw,value=latest,enable=${{ matrix.target == 'alpine' && github.ref == github.event.repository.default_branch }}
+            type=raw,value={{tag}},enable=${{ matrix.target == 'alpine' && github.ref_type == 'tag' }}
+            type=raw,value=latest-${{ matrix.target }},enable={{is_default_branch}}
+            type=raw,value=${{ matrix.target }},enable={{is_default_branch}}
+            type=raw,value={{tag}}-${{ matrix.target }},enable=${{ github.ref_type == 'tag' }}
           labels: |
             maintainer=ezrasingh
             org.opencontainers.image.title=Geoprox
