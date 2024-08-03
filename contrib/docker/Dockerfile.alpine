@@ -6,10 +6,6 @@ RUN cargo build --release
 
 FROM alpine:3
 
-LABEL "org.opencontainers.image.source"="https://github.com/ezrasingh/geoprox"
-LABEL "org.opencontainers.image.description"="A Geo-Proximity detection service for efficient real-time geo-aware contract pairing"
-LABEL "org.opencontainers.image.licenses"="Apache-2.0,MIT"
-
 RUN apk add libc6-compat libgcc
 
 RUN adduser -D geoprox

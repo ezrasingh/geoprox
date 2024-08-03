@@ -1,6 +1,9 @@
 name: Publish Docker images
 
 on:
+  push:
+    branches:
+      - main
   release:
     types: [published]
 
@@ -20,7 +23,7 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        dockerfile: ["Dockerfile.alpine", "Dockerfile.debian"]
+        target: ["alpine", "debian"]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -45,13 +48,21 @@ jobs:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
             ${{ env.REGISTRY }}/${{ github.repository }}
+          flavor: |
+            latest=auto
+            prefix=${{ matrix.target }}
+          labels: |
+            maintainer=ezrasingh
+            org.opencontainers.image.title=Geoprox
+            org.opencontainers.image.description=A Geo-Proximity detection service for efficient real-time geo-aware contract pairing
+            org.opencontainers.image.licenses=Apache-2.0,MIT
 
       - name: Build and push Alpine images
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: contrib/docker/${{ matrix.dockerfile }}
+          file: contrib/docker/Dockerfile.${{ matrix.target }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -59,6 +70,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.target }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
