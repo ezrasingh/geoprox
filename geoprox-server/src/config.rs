@@ -19,11 +19,11 @@ impl Default for ServerConfig {
     }
 }
 
-impl Into<SocketAddr> for ServerConfig {
-    fn into(self) -> SocketAddr {
+impl From<ServerConfig> for SocketAddr {
+    fn from(config: ServerConfig) -> Self {
         SocketAddr::new(
-            self.http_addr.unwrap_or(DEFAULT_ADDR),
-            self.http_port.unwrap_or(DEFAULT_PORT),
+            config.http_addr.unwrap_or(DEFAULT_ADDR),
+            config.http_port.unwrap_or(DEFAULT_PORT),
         )
     }
 }
