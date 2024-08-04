@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Using [`ahash`](https://crates.io/crates/ahash) as the internal hasher, since it out performed previous benchmarks
+- Swapped `std::collections` for `hashbrown` implementations
+- Replaced `position_map` implementation from `HashMap` to [`HashTable`](https://docs.rs/hashbrown/0.14.5/hashbrown/struct.HashTable.html) improving key lookup speeds.
+- `search` and `range_query` support `count` and `sorted` arguments
+
 ## 0.2.0
 
 - Added support for OpenAPI schema generation by adding a `utoipa` crate feature, which conditionally derive `utoipa::ToSchema` trait.

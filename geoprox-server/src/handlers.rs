@@ -272,10 +272,13 @@ pub mod geoshard_api {
     ) -> Result<Json<QueryRangeResponse>, AppError> {
         let state = state.read().unwrap();
 
-        match state
-            .geoshard
-            .query_range(&index, [query.lat, query.lng], &query.range.into())
-        {
+        match state.geoshard.query_range(
+            &index,
+            [query.lat, query.lng],
+            query.range.into(),
+            query.count.unwrap_or(100),
+            query.sorted.unwrap_or(false),
+        ) {
             Ok(found) => Ok(Json(QueryRangeResponse { found })),
             Err(err) => Err(anyhow!("query range search failed: {:#?}", err).into()),
         }

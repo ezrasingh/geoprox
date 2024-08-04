@@ -11,11 +11,14 @@ documentation = "https://docs.rs/geoprox-core"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+ahash = "0.8.11"
 geohash = "0.13.1"
+hashbrown = { version = "0.14.5", features = ["serde"] }
 haversine = "0.2.1"
 kiddo = { version = "4.2.0", features = ["serialize"] }
 log = "0.4.22"
 patricia_tree = { version = "0.8.0", features = ["serde"] }
+rayon = "1.10.0"
 serde = { version = "1.0.199", features = ["derive", "rc"] }
 utoipa = { version = "4.2.3", optional = true }
 

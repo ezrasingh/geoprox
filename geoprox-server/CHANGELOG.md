@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- `GET /api/v1/shard/:index` now supports optional `count` and `sorted` query parameters
+
 ## 0.2.0
 
 - Removed `KeysFound` enum which was a workaround to avoid packaging `geoprox-core` with [`utoipa`](https://crates.io/crates/utoipa) (since core shouldnt be concerned with OpenAPI). However, this was resolved by adding a crate feature on `geoprox-core` (see [v0.2.0](https://crates.io/crates/geoprox-core/0.2.0)) to conditionally derive `ToSchema` trait needed by `utoipa` for OpenAPI schema generation.

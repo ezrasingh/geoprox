@@ -131,6 +131,11 @@ pub struct QueryRange {
     /// Search radius in kilometers
     #[schema(minimum = 0, maximum = 0xFFFF)]
     pub range: u16,
+    /// Maximum number of neighbors that can be returned (default 100)
+    #[schema(minimum = 1, maximum = 0xFFFF)]
+    pub count: Option<usize>,
+    /// If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+    pub sorted: Option<bool>,
 }
 
 /// Returns resource keys found with their distance

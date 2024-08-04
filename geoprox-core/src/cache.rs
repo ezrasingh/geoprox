@@ -1,113 +1,134 @@
 use crate::metric::HaversineDistance;
 use crate::models::{LatLngCoord, Neighbor, ResourceIdentifier};
+use ahash::AHasher;
 use geohash::GeohashError;
+use hashbrown::hash_table::Entry;
+use hashbrown::{HashSet, HashTable};
 use kiddo::distance_metric::DistanceMetric;
 use kiddo::KdTree;
 use log::debug;
 use patricia_tree::StringPatriciaMap;
-use std::collections::{HashMap, HashSet};
-use std::hash::{DefaultHasher, Hash, Hasher};
+use rayon::prelude::*;
+use std::hash::{BuildHasher, BuildHasherDefault};
 
-fn generate_id(resource_key: &str) -> ResourceIdentifier {
-    let mut s = DefaultHasher::new();
-    resource_key.hash(&mut s);
-    s.finish()
+fn build_search_space(
+    prefix_tree: &StringPatriciaMap<HashSet<ResourceIdentifier>>,
+    subregion_hash: &str,
+) -> KdTree<f64, 2> {
+    let mut search_tree = KdTree::new();
+
+    // ? locate nearby geohashes and populate spatial index
+    debug!("building spatial index for region: {}", &subregion_hash);
+
+    for (ghash, members) in prefix_tree.iter_prefix(subregion_hash) {
+        debug!(
+            "found resources nearby: geohash={} members={:#?}",
+            &ghash, &members
+        );
+        if let Ok((position, _, _)) = geohash::decode(&ghash) {
+            members.iter().for_each(|resource| {
+                debug!(
+                    "adding resource to spatial index: id={} geohash={}",
+                    &resource, &ghash
+                );
+                search_tree.add(&[position.x, position.y], *resource);
+            });
+        }
+    }
+
+    search_tree
 }
 
 #[derive(Clone, Default)]
 pub struct SpatialIndex<K = String> {
     /// maps geohash to common resources
     prefix_tree: StringPatriciaMap<HashSet<ResourceIdentifier>>,
-    /// maps resource to geohash
-    position_map: HashMap<ResourceIdentifier, String>,
-    /// maps resource hash to resource name
-    resource_map: HashMap<ResourceIdentifier, K>,
+    /// maps resource key, geohash to hash id (resource id)
+    position_map: HashTable<(K, String)>,
+    /// internal hasher
+    hasher: BuildHasherDefault<AHasher>,
 }
 
 impl SpatialIndex {
     /// depth 6 corresponds to ~1kmx1km region
     pub const DEFAULT_DEPTH: usize = 6;
+    pub const MAX_CAPACITY: usize = u16::MAX as usize;
 
     pub fn new(capacity: usize) -> Self {
-        SpatialIndex {
-            position_map: HashMap::with_capacity(capacity),
-            resource_map: HashMap::with_capacity(capacity),
+        let position_map = {
+            if capacity.gt(&Self::MAX_CAPACITY) {
+                HashTable::with_capacity(Self::MAX_CAPACITY)
+            } else {
+                HashTable::with_capacity(capacity)
+            }
+        };
+        Self {
+            position_map,
             ..Default::default()
         }
     }
 
     /// Upsert key into index at some geographical location
     pub fn place_resource(&mut self, resource_key: &str, ghash: &str) {
-        let resource = &generate_id(resource_key);
-        debug!("storing resource: id={} key={}", resource, resource_key);
-        self.resource_map.insert(*resource, resource_key.into());
-        if let Some(old_ghash) = self.position_map.insert(*resource, ghash.into()) {
+        let resource_id: ResourceIdentifier = self.hasher.hash_one(resource_key);
+        // ? remove resource from previous locations
+        if let Entry::Occupied(entry) = self.position_map.entry(
+            resource_id,
+            |(key, _)| key.eq(resource_key),
+            |(key, _)| self.hasher.hash_one(key),
+        ) {
+            let ((_, old_ghash), _) = entry.remove();
             debug!(
                 "removing resource from previous ghash: id={} geohash={}",
-                resource, &old_ghash
+                resource_id, &old_ghash
             );
             if let Some(prev_members) = self.prefix_tree.get_mut(&old_ghash) {
-                prev_members.remove(resource);
+                prev_members.remove(&resource_id);
             } else {
                 self.prefix_tree.remove(old_ghash);
             }
         }
+        // ? update position_map & prefix_tree
+        debug!("storing resource: id={} key={}", resource_id, resource_key);
+
+        self.position_map.insert_unique(
+            resource_id,
+            (resource_key.to_owned(), ghash.into()),
+            |(key, _)| self.hasher.hash_one(key),
+        );
         // ? insert current region into prefix tree
         if let Some(members) = self.prefix_tree.get_mut(ghash) {
-            members.insert(*resource);
+            members.insert(resource_id);
         } else {
-            let mut members: HashSet<ResourceIdentifier> = HashSet::new();
-            members.insert(*resource);
-            self.prefix_tree.insert(ghash, members);
+            self.prefix_tree.insert(ghash, HashSet::from([resource_id]));
         };
     }
 
     /// Remove key from index
     pub fn remove_resource(&mut self, resource_key: &str) -> bool {
-        let resource = &generate_id(resource_key);
-
-        self.resource_map.remove(resource);
-        match self.position_map.remove(resource) {
-            Some(ghash) => self.prefix_tree.get_mut(ghash).unwrap().remove(resource),
-            None => true,
-        }
-    }
-
-    /// Construct Kd-Tree for nearest neighbor search
-    fn build_search_tree(&self, subregion_hash: &str) -> KdTree<f64, 2> {
-        let mut search_tree = KdTree::with_capacity(self.resource_map.len());
-        // ? locate nearby geohashes and populate spatial index
-        debug!("building spatial index for region: {}", &subregion_hash);
-
-        let subtree: patricia_tree::GenericPatriciaMap<String, HashSet<u64>> =
-            self.prefix_tree.clone().split_by_prefix(subregion_hash);
-
-        subtree.iter().for_each(|(ghash, members)| {
-            debug!(
-                "found resources nearby: geohash={} members={:#?}",
-                &ghash, &members
-            );
-            if let Ok((position, _, _)) = geohash::decode(&ghash) {
-                members.iter().for_each(|resource| {
-                    debug!(
-                        "adding resource to spatial index: id={} geohash={}",
-                        &resource, &ghash
-                    );
-                    // ! fixme
-                    search_tree.add(&[position.x, position.y], *resource);
-                });
+        let resource_id = self.hasher.hash_one(resource_key);
+        if let Entry::Occupied(entry) = self.position_map.entry(
+            resource_id,
+            |(key, _)| key.eq(resource_key),
+            |(key, _)| self.hasher.hash_one(key),
+        ) {
+            let ((_, ghash), _) = entry.remove();
+            if let Some(members) = self.prefix_tree.get_mut(&ghash) {
+                members.remove(&resource_id);
+                if members.is_empty() {
+                    self.prefix_tree.remove(&ghash);
+                }
             }
-        });
-
-        debug!("search tree size: {}", search_tree.size());
-        search_tree
+        }
+        true
     }
 
-    /// Finds nearest keys within the specified search range
     pub fn search(
         &self,
         position: LatLngCoord,
-        radius: &f64,
+        radius: f64,
+        count: usize,
+        sorted: bool,
         initial_depth: Option<usize>,
     ) -> Result<Vec<Neighbor>, GeohashError> {
         if self.position_map.is_empty() {
@@ -119,9 +140,9 @@ impl SpatialIndex {
             // ? kiddo uses (lng,lat) for calculations so we flip the LatLngCoord
             let origin = [position[1], position[0]];
             // ? truncate subregion hash until it contains our radius
-            while ghash.len() > 1 {
+            while ghash.len().gt(&1) {
                 let (point, _, _) = geohash::decode(&ghash)?;
-                if HaversineDistance::dist(&origin, &[point.x, point.y]).gt(radius) {
+                if HaversineDistance::dist(&origin, &[point.x, point.y]).gt(&radius) {
                     break;
                 } else {
                     ghash.pop();
@@ -131,12 +152,20 @@ impl SpatialIndex {
         };
 
         // ? compute nearest neighbors
-        let neighbors: Vec<Neighbor> = self
-            .build_search_tree(&search_region)
-            .within_unsorted_iter::<HaversineDistance>(&position, *radius)
-            .map(|node| Neighbor {
-                distance: node.distance,
-                key: self.resource_map.get(&node.item).unwrap().to_string(),
+        let neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
+            .nearest_n_within::<HaversineDistance>(&position, radius, count, sorted)
+            .par_iter()
+            .map(|node| {
+                let (resource_key, _) = self
+                    .position_map
+                    .find(node.item, |(key, _)| {
+                        self.hasher.hash_one(key).eq(&node.item)
+                    })
+                    .unwrap();
+                Neighbor {
+                    distance: node.distance,
+                    key: resource_key.to_owned(),
+                }
             })
             .collect();
         Ok(neighbors)
@@ -145,6 +174,8 @@ impl SpatialIndex {
 
 #[cfg(test)]
 mod test {
+    use std::i32;
+
     use super::*;
     use rand::prelude::*;
 
@@ -164,7 +195,7 @@ mod test {
 
         let range = 1.0; // km
         let origin: LatLngCoord = [0f64, 0f64];
-        let res = geo_index.search(origin, &range, None).unwrap();
+        let res = geo_index.search(origin, range, 100, false, None).unwrap();
         assert_eq!(res.len(), 2);
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
@@ -178,7 +209,7 @@ mod test {
 
     #[test]
     fn test_capacity() {
-        let capacity = u16::MAX;
+        let capacity = i32::MAX;
         let mut geo_index = SpatialIndex::new(capacity as usize);
         let mut rng = rand::thread_rng();
         let depth: usize = 5;
@@ -194,7 +225,7 @@ mod test {
         let center = [0f64, 0f64];
         let range = 200f64;
         println!("searching area...");
-        let res = geo_index.search(center, &range, None).unwrap();
+        let res = geo_index.search(center, range, 100, true, None).unwrap();
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
         });

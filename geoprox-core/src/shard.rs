@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 use serde::Deserialize;
 
@@ -96,10 +96,12 @@ impl GeoShard {
         &self,
         index: &str,
         origin: LatLngCoord,
-        range: &f64,
+        range: f64,
+        count: usize,
+        sorted: bool,
     ) -> Result<Vec<Neighbor>, GeoShardError> {
         if let Some(geo_index) = self.cache.get(index) {
-            match geo_index.search(origin, range, self.config.search_depth) {
+            match geo_index.search(origin, range, count, sorted, self.config.search_depth) {
                 Ok(found) => Ok(found),
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
@@ -121,7 +123,9 @@ mod test {
         shard.insert_key("drivers", "alice", &[-0.25, 1.0]).unwrap();
         shard.insert_key("drivers", "bob", &[1.0, 0.5]).unwrap();
 
-        let res = shard.query_range("drivers", [0.0, 0.0], &150.0).unwrap();
+        let res = shard
+            .query_range("drivers", [0.0, 0.0], 150.0, 100, true)
+            .unwrap();
         println!("found: {:#?}", res);
     }
 }
