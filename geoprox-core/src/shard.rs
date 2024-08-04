@@ -67,7 +67,7 @@ impl GeoShard {
         &mut self,
         index: &str,
         key: &str,
-        position: &LatLngCoord,
+        position: LatLngCoord,
     ) -> Result<String, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
             match geohash::encode([position[1], position[0]].into(), self.config.insert_depth) {
@@ -120,8 +120,8 @@ mod test {
         let mut shard = GeoShard::default();
         shard.create_index("drivers").unwrap();
 
-        shard.insert_key("drivers", "alice", &[-0.25, 1.0]).unwrap();
-        shard.insert_key("drivers", "bob", &[1.0, 0.5]).unwrap();
+        shard.insert_key("drivers", "alice", [-0.25, 1.0]).unwrap();
+        shard.insert_key("drivers", "bob", [1.0, 0.5]).unwrap();
 
         let res = shard
             .query_range("drivers", [0.0, 0.0], 150.0, 100, true)
