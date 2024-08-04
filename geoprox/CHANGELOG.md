@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.3.0
+
+- Bumped `geoprox-core` to [v0.3.0](https://crates.io/crates/geoprox-core/0.3.0)
+- Bumped `geoprox-server` to [v0.3.0](https://crates.io/crates/geoprox-server/0.3.0)
+
 ## 0.2.0
 
 - Moved `ServerConfig` into `geoprox-server` to simplify handling defaults and merging configuration options with command line arguments.
