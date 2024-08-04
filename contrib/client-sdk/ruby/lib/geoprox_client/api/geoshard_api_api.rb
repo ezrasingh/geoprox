@@ -226,6 +226,8 @@ module GeoproxClient
     # @param range [Integer] Search radius in kilometers
     # @param index [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :count Maximum number of neighbors that can be returned (default 100)
+    # @option opts [Boolean] :sorted If enabled neighbors will be sorted by distance, nearest to furthest (default false)
     # @return [QueryRangeResponse]
     def query_range(lat, lng, range, index, opts = {})
       data, _status_code, _headers = query_range_with_http_info(lat, lng, range, index, opts)
@@ -239,6 +241,8 @@ module GeoproxClient
     # @param range [Integer] Search radius in kilometers
     # @param index [String] 
     # @param [Hash] opts the optional parameters
+    # @option opts [Integer] :count Maximum number of neighbors that can be returned (default 100)
+    # @option opts [Boolean] :sorted If enabled neighbors will be sorted by distance, nearest to furthest (default false)
     # @return [Array<(QueryRangeResponse, Integer, Hash)>] QueryRangeResponse data, response status code and response headers
     def query_range_with_http_info(lat, lng, range, index, opts = {})
       if @api_client.config.debugging
@@ -264,6 +268,10 @@ module GeoproxClient
       if @api_client.config.client_side_validation && index.nil?
         fail ArgumentError, "Missing the required parameter 'index' when calling GeoshardApiApi.query_range"
       end
+      if @api_client.config.client_side_validation && !opts[:'count'].nil? && opts[:'count'] < 0
+        fail ArgumentError, 'invalid value for "opts[:"count"]" when calling GeoshardApiApi.query_range, must be greater than or equal to 0.'
+      end
+
       # resource path
       local_var_path = '/api/v1/shard/{index}'.sub('{' + 'index' + '}', CGI.escape(index.to_s))
 
@@ -272,6 +280,8 @@ module GeoproxClient
       query_params[:'lat'] = lat
       query_params[:'lng'] = lng
       query_params[:'range'] = range
+      query_params[:'count'] = opts[:'count'] if !opts[:'count'].nil?
+      query_params[:'sorted'] = opts[:'sorted'] if !opts[:'sorted'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}

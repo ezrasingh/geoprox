@@ -17,6 +17,10 @@ import { RequestFile } from './models';
 */
 export class QueryRange {
     /**
+    * Maximum number of neighbors that can be returned (default 100)
+    */
+    'count'?: number | null;
+    /**
     * Latitude
     */
     'lat': number;
@@ -28,10 +32,19 @@ export class QueryRange {
     * Search radius in kilometers
     */
     'range': number;
+    /**
+    * If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+    */
+    'sorted'?: boolean | null;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "count",
+            "baseName": "count",
+            "type": "number"
+        },
         {
             "name": "lat",
             "baseName": "lat",
@@ -46,6 +59,11 @@ export class QueryRange {
             "name": "range",
             "baseName": "range",
             "type": "number"
+        },
+        {
+            "name": "sorted",
+            "baseName": "sorted",
+            "type": "boolean"
         }    ];
 
     static getAttributeTypeMap() {

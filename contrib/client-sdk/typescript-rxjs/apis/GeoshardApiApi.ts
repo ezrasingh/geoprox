@@ -42,6 +42,8 @@ export interface QueryRangeRequest {
     lng: number;
     range: number;
     index: string;
+    count?: number | null;
+    sorted?: boolean | null;
 }
 
 export interface RemoveKeyRequest {
@@ -110,9 +112,9 @@ export class GeoshardApiApi extends BaseAPI {
      * Search geospatial index for all keys within some distance
      * Search nearby
      */
-    queryRange({ lat, lng, range, index }: QueryRangeRequest): Observable<QueryRangeResponse>
-    queryRange({ lat, lng, range, index }: QueryRangeRequest, opts?: OperationOpts): Observable<AjaxResponse<QueryRangeResponse>>
-    queryRange({ lat, lng, range, index }: QueryRangeRequest, opts?: OperationOpts): Observable<QueryRangeResponse | AjaxResponse<QueryRangeResponse>> {
+    queryRange({ lat, lng, range, index, count, sorted }: QueryRangeRequest): Observable<QueryRangeResponse>
+    queryRange({ lat, lng, range, index, count, sorted }: QueryRangeRequest, opts?: OperationOpts): Observable<AjaxResponse<QueryRangeResponse>>
+    queryRange({ lat, lng, range, index, count, sorted }: QueryRangeRequest, opts?: OperationOpts): Observable<QueryRangeResponse | AjaxResponse<QueryRangeResponse>> {
         throwIfNullOrUndefined(lat, 'lat', 'queryRange');
         throwIfNullOrUndefined(lng, 'lng', 'queryRange');
         throwIfNullOrUndefined(range, 'range', 'queryRange');
@@ -123,6 +125,9 @@ export class GeoshardApiApi extends BaseAPI {
             'lng': lng,
             'range': range,
         };
+
+        if (count != null) { query['count'] = count; }
+        if (sorted != null) { query['sorted'] = sorted; }
 
         return this.request<QueryRangeResponse>({
             url: '/api/v1/shard/{index}'.replace('{index}', encodeURI(index)),

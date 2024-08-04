@@ -105,7 +105,7 @@ No authorization required
 
 ## query_range
 
-> models::QueryRangeResponse query_range(lat, lng, range, index)
+> models::QueryRangeResponse query_range(lat, lng, range, index, count, sorted)
 Search nearby
 
 Search geospatial index for all keys within some distance
@@ -119,6 +119,8 @@ Name | Type | Description  | Required | Notes
 **lng** | **f64** | Longitude | [required] |
 **range** | **i32** | Search radius in kilometers | [required] |
 **index** | **String** |  | [required] |
+**count** | Option<**i32**> | Maximum number of neighbors that can be returned (default 100) |  |
+**sorted** | Option<**bool**> | If enabled neighbors will be sorted by distance, nearest to furthest (default false) |  |
 
 ### Return type
 

@@ -17,8 +17,8 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictFloat, StrictInt, StrictStr
-from typing import Union
+from pydantic import Field, StrictBool, StrictFloat, StrictInt, StrictStr
+from typing import Optional, Union
 from typing_extensions import Annotated
 from geoprox_client.models.create_index_response import CreateIndexResponse
 from geoprox_client.models.drop_index_response import DropIndexResponse
@@ -854,6 +854,8 @@ class GeoshardApiApi:
         lng: Annotated[Union[StrictFloat, StrictInt], Field(description="Longitude")],
         range: Annotated[int, Field(strict=True, ge=0, description="Search radius in kilometers")],
         index: StrictStr,
+        count: Annotated[Optional[Annotated[int, Field(strict=True, ge=0)]], Field(description="Maximum number of neighbors that can be returned (default 100)")] = None,
+        sorted: Annotated[Optional[StrictBool], Field(description="If enabled neighbors will be sorted by distance, nearest to furthest (default false)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -879,6 +881,10 @@ class GeoshardApiApi:
         :type range: int
         :param index: (required)
         :type index: str
+        :param count: Maximum number of neighbors that can be returned (default 100)
+        :type count: int
+        :param sorted: If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+        :type sorted: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -906,6 +912,8 @@ class GeoshardApiApi:
             lng=lng,
             range=range,
             index=index,
+            count=count,
+            sorted=sorted,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -933,6 +941,8 @@ class GeoshardApiApi:
         lng: Annotated[Union[StrictFloat, StrictInt], Field(description="Longitude")],
         range: Annotated[int, Field(strict=True, ge=0, description="Search radius in kilometers")],
         index: StrictStr,
+        count: Annotated[Optional[Annotated[int, Field(strict=True, ge=0)]], Field(description="Maximum number of neighbors that can be returned (default 100)")] = None,
+        sorted: Annotated[Optional[StrictBool], Field(description="If enabled neighbors will be sorted by distance, nearest to furthest (default false)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -958,6 +968,10 @@ class GeoshardApiApi:
         :type range: int
         :param index: (required)
         :type index: str
+        :param count: Maximum number of neighbors that can be returned (default 100)
+        :type count: int
+        :param sorted: If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+        :type sorted: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -985,6 +999,8 @@ class GeoshardApiApi:
             lng=lng,
             range=range,
             index=index,
+            count=count,
+            sorted=sorted,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1012,6 +1028,8 @@ class GeoshardApiApi:
         lng: Annotated[Union[StrictFloat, StrictInt], Field(description="Longitude")],
         range: Annotated[int, Field(strict=True, ge=0, description="Search radius in kilometers")],
         index: StrictStr,
+        count: Annotated[Optional[Annotated[int, Field(strict=True, ge=0)]], Field(description="Maximum number of neighbors that can be returned (default 100)")] = None,
+        sorted: Annotated[Optional[StrictBool], Field(description="If enabled neighbors will be sorted by distance, nearest to furthest (default false)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1037,6 +1055,10 @@ class GeoshardApiApi:
         :type range: int
         :param index: (required)
         :type index: str
+        :param count: Maximum number of neighbors that can be returned (default 100)
+        :type count: int
+        :param sorted: If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+        :type sorted: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1064,6 +1086,8 @@ class GeoshardApiApi:
             lng=lng,
             range=range,
             index=index,
+            count=count,
+            sorted=sorted,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1086,6 +1110,8 @@ class GeoshardApiApi:
         lng,
         range,
         index,
+        count,
+        sorted,
         _request_auth,
         _content_type,
         _headers,
@@ -1119,6 +1145,14 @@ class GeoshardApiApi:
         if range is not None:
             
             _query_params.append(('range', range))
+            
+        if count is not None:
+            
+            _query_params.append(('count', count))
+            
+        if sorted is not None:
+            
+            _query_params.append(('sorted', sorted))
             
         # process the header parameters
         # process the form parameters

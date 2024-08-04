@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface QueryRange {
     /**
+     * Maximum number of neighbors that can be returned (default 100)
+     * @type {number}
+     * @memberof QueryRange
+     */
+    count?: number | null;
+    /**
      * Latitude
      * @type {number}
      * @memberof QueryRange
@@ -37,6 +43,12 @@ export interface QueryRange {
      * @memberof QueryRange
      */
     range: number;
+    /**
+     * If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+     * @type {boolean}
+     * @memberof QueryRange
+     */
+    sorted?: boolean | null;
 }
 
 /**
@@ -59,9 +71,11 @@ export function QueryRangeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
+        'count': json['count'] == null ? undefined : json['count'],
         'lat': json['lat'],
         'lng': json['lng'],
         'range': json['range'],
+        'sorted': json['sorted'] == null ? undefined : json['sorted'],
     };
 }
 
@@ -71,9 +85,11 @@ export function QueryRangeToJSON(value?: QueryRange | null): any {
     }
     return {
         
+        'count': value['count'],
         'lat': value['lat'],
         'lng': value['lng'],
         'range': value['range'],
+        'sorted': value['sorted'],
     };
 }
 

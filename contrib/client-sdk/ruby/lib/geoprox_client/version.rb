@@ -11,5 +11,5 @@ Generator version: 7.7.0
 =end
 
 module GeoproxClient
-  VERSION = '0.2.0'
+  VERSION = '0.3.0'
 end

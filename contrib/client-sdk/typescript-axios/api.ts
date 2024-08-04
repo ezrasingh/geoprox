@@ -249,6 +249,12 @@ export interface Neighbor {
  */
 export interface QueryRange {
     /**
+     * Maximum number of neighbors that can be returned (default 100)
+     * @type {number}
+     * @memberof QueryRange
+     */
+    'count'?: number | null;
+    /**
      * Latitude
      * @type {number}
      * @memberof QueryRange
@@ -266,6 +272,12 @@ export interface QueryRange {
      * @memberof QueryRange
      */
     'range': number;
+    /**
+     * If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+     * @type {boolean}
+     * @memberof QueryRange
+     */
+    'sorted'?: boolean | null;
 }
 /**
  * Returns resource keys found with their distance
@@ -703,10 +715,12 @@ export const GeoshardApiApiAxiosParamCreator = function (configuration?: Configu
          * @param {number} lng Longitude
          * @param {number} range Search radius in kilometers
          * @param {string} index 
+         * @param {number | null} [count] Maximum number of neighbors that can be returned (default 100)
+         * @param {boolean | null} [sorted] If enabled neighbors will be sorted by distance, nearest to furthest (default false)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        queryRange: async (lat: number, lng: number, range: number, index: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        queryRange: async (lat: number, lng: number, range: number, index: string, count?: number | null, sorted?: boolean | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'lat' is not null or undefined
             assertParamExists('queryRange', 'lat', lat)
             // verify required parameter 'lng' is not null or undefined
@@ -738,6 +752,14 @@ export const GeoshardApiApiAxiosParamCreator = function (configuration?: Configu
 
             if (range !== undefined) {
                 localVarQueryParameter['range'] = range;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+            if (sorted !== undefined) {
+                localVarQueryParameter['sorted'] = sorted;
             }
 
 
@@ -848,11 +870,13 @@ export const GeoshardApiApiFp = function(configuration?: Configuration) {
          * @param {number} lng Longitude
          * @param {number} range Search radius in kilometers
          * @param {string} index 
+         * @param {number | null} [count] Maximum number of neighbors that can be returned (default 100)
+         * @param {boolean | null} [sorted] If enabled neighbors will be sorted by distance, nearest to furthest (default false)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async queryRange(lat: number, lng: number, range: number, index: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryRangeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.queryRange(lat, lng, range, index, options);
+        async queryRange(lat: number, lng: number, range: number, index: string, count?: number | null, sorted?: boolean | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<QueryRangeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.queryRange(lat, lng, range, index, count, sorted, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GeoshardApiApi.queryRange']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -919,11 +943,13 @@ export const GeoshardApiApiFactory = function (configuration?: Configuration, ba
          * @param {number} lng Longitude
          * @param {number} range Search radius in kilometers
          * @param {string} index 
+         * @param {number | null} [count] Maximum number of neighbors that can be returned (default 100)
+         * @param {boolean | null} [sorted] If enabled neighbors will be sorted by distance, nearest to furthest (default false)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        queryRange(lat: number, lng: number, range: number, index: string, options?: any): AxiosPromise<QueryRangeResponse> {
-            return localVarFp.queryRange(lat, lng, range, index, options).then((request) => request(axios, basePath));
+        queryRange(lat: number, lng: number, range: number, index: string, count?: number | null, sorted?: boolean | null, options?: any): AxiosPromise<QueryRangeResponse> {
+            return localVarFp.queryRange(lat, lng, range, index, count, sorted, options).then((request) => request(axios, basePath));
         },
         /**
          * Removed key from geospatial index
@@ -990,12 +1016,14 @@ export class GeoshardApiApi extends BaseAPI {
      * @param {number} lng Longitude
      * @param {number} range Search radius in kilometers
      * @param {string} index 
+     * @param {number | null} [count] Maximum number of neighbors that can be returned (default 100)
+     * @param {boolean | null} [sorted] If enabled neighbors will be sorted by distance, nearest to furthest (default false)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GeoshardApiApi
      */
-    public queryRange(lat: number, lng: number, range: number, index: string, options?: RawAxiosRequestConfig) {
-        return GeoshardApiApiFp(this.configuration).queryRange(lat, lng, range, index, options).then((request) => request(this.axios, this.basePath));
+    public queryRange(lat: number, lng: number, range: number, index: string, count?: number | null, sorted?: boolean | null, options?: RawAxiosRequestConfig) {
+        return GeoshardApiApiFp(this.configuration).queryRange(lat, lng, range, index, count, sorted, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

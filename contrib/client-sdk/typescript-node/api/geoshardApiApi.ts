@@ -312,8 +312,10 @@ export class GeoshardApiApi {
      * @param lng Longitude
      * @param range Search radius in kilometers
      * @param index 
+     * @param count Maximum number of neighbors that can be returned (default 100)
+     * @param sorted If enabled neighbors will be sorted by distance, nearest to furthest (default false)
      */
-    public async queryRange (lat: number, lng: number, range: number, index: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: QueryRangeResponse;  }> {
+    public async queryRange (lat: number, lng: number, range: number, index: string, count?: number, sorted?: boolean, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: QueryRangeResponse;  }> {
         const localVarPath = this.basePath + '/api/v1/shard/{index}'
             .replace('{' + 'index' + '}', encodeURIComponent(String(index)));
         let localVarQueryParameters: any = {};
@@ -357,6 +359,14 @@ export class GeoshardApiApi {
 
         if (range !== undefined) {
             localVarQueryParameters['range'] = ObjectSerializer.serialize(range, "number");
+        }
+
+        if (count !== undefined) {
+            localVarQueryParameters['count'] = ObjectSerializer.serialize(count, "number");
+        }
+
+        if (sorted !== undefined) {
+            localVarQueryParameters['sorted'] = ObjectSerializer.serialize(sorted, "boolean");
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);

@@ -14,6 +14,9 @@ use serde::{Deserialize, Serialize};
 /// QueryRange : Arguments for range query
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct QueryRange {
+    /// Maximum number of neighbors that can be returned (default 100)
+    #[serde(rename = "count", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub count: Option<Option<i32>>,
     /// Latitude
     #[serde(rename = "lat")]
     pub lat: f64,
@@ -23,15 +26,20 @@ pub struct QueryRange {
     /// Search radius in kilometers
     #[serde(rename = "range")]
     pub range: i32,
+    /// If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+    #[serde(rename = "sorted", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub sorted: Option<Option<bool>>,
 }
 
 impl QueryRange {
     /// Arguments for range query
     pub fn new(lat: f64, lng: f64, range: i32) -> QueryRange {
         QueryRange {
+            count: None,
             lat,
             lng,
             range,
+            sorted: None,
         }
     }
 }

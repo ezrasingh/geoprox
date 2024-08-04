@@ -137,7 +137,7 @@ pub async fn insert_key(configuration: &configuration::Configuration, index: &st
 }
 
 /// Search geospatial index for all keys within some distance
-pub async fn query_range(configuration: &configuration::Configuration, lat: f64, lng: f64, range: i32, index: &str) -> Result<models::QueryRangeResponse, Error<QueryRangeError>> {
+pub async fn query_range(configuration: &configuration::Configuration, lat: f64, lng: f64, range: i32, index: &str, count: Option<i32>, sorted: Option<bool>) -> Result<models::QueryRangeResponse, Error<QueryRangeError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -148,6 +148,12 @@ pub async fn query_range(configuration: &configuration::Configuration, lat: f64,
     local_var_req_builder = local_var_req_builder.query(&[("lat", &lat.to_string())]);
     local_var_req_builder = local_var_req_builder.query(&[("lng", &lng.to_string())]);
     local_var_req_builder = local_var_req_builder.query(&[("range", &range.to_string())]);
+    if let Some(ref local_var_str) = count {
+        local_var_req_builder = local_var_req_builder.query(&[("count", &local_var_str.to_string())]);
+    }
+    if let Some(ref local_var_str) = sorted {
+        local_var_req_builder = local_var_req_builder.query(&[("sorted", &local_var_str.to_string())]);
+    }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
     }

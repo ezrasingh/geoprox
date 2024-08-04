@@ -55,6 +55,8 @@ export interface QueryRangeRequest {
     lng: number;
     range: number;
     index: string;
+    count?: number | null;
+    sorted?: boolean | null;
 }
 
 export interface RemoveKeyRequest {
@@ -227,6 +229,14 @@ export class GeoshardApiApi extends runtime.BaseAPI {
 
         if (requestParameters['range'] != null) {
             queryParameters['range'] = requestParameters['range'];
+        }
+
+        if (requestParameters['count'] != null) {
+            queryParameters['count'] = requestParameters['count'];
+        }
+
+        if (requestParameters['sorted'] != null) {
+            queryParameters['sorted'] = requestParameters['sorted'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

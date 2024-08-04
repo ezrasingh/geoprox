@@ -18,6 +18,12 @@
  */
 export interface QueryRange {
     /**
+     * Maximum number of neighbors that can be returned (default 100)
+     * @type {number}
+     * @memberof QueryRange
+     */
+    count?: number | null;
+    /**
      * Latitude
      * @type {number}
      * @memberof QueryRange
@@ -35,4 +41,10 @@ export interface QueryRange {
      * @memberof QueryRange
      */
     range: number;
+    /**
+     * If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+     * @type {boolean}
+     * @memberof QueryRange
+     */
+    sorted?: boolean | null;
 }

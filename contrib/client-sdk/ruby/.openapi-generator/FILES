@@ -43,5 +43,4 @@ lib/geoprox_client/models/query_range_response.rb
 lib/geoprox_client/models/remove_key.rb
 lib/geoprox_client/models/remove_key_response.rb
 lib/geoprox_client/version.rb
-spec/models/neighbor_spec.rb
 spec/spec_helper.rb

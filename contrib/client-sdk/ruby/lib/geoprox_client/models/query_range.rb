@@ -16,6 +16,9 @@ require 'time'
 module GeoproxClient
   # Arguments for range query
   class QueryRange
+    # Maximum number of neighbors that can be returned (default 100)
+    attr_accessor :count
+
     # Latitude
     attr_accessor :lat
 
@@ -25,12 +28,17 @@ module GeoproxClient
     # Search radius in kilometers
     attr_accessor :range
 
+    # If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+    attr_accessor :sorted
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
+        :'count' => :'count',
         :'lat' => :'lat',
         :'lng' => :'lng',
-        :'range' => :'range'
+        :'range' => :'range',
+        :'sorted' => :'sorted'
       }
     end
 
@@ -42,15 +50,19 @@ module GeoproxClient
     # Attribute type mapping.
     def self.openapi_types
       {
+        :'count' => :'Integer',
         :'lat' => :'Float',
         :'lng' => :'Float',
-        :'range' => :'Integer'
+        :'range' => :'Integer',
+        :'sorted' => :'Boolean'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'count',
+        :'sorted'
       ])
     end
 
@@ -69,6 +81,10 @@ module GeoproxClient
         h[k.to_sym] = v
       }
 
+      if attributes.key?(:'count')
+        self.count = attributes[:'count']
+      end
+
       if attributes.key?(:'lat')
         self.lat = attributes[:'lat']
       else
@@ -86,6 +102,10 @@ module GeoproxClient
       else
         self.range = nil
       end
+
+      if attributes.key?(:'sorted')
+        self.sorted = attributes[:'sorted']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -93,6 +113,14 @@ module GeoproxClient
     def list_invalid_properties
       warn '[DEPRECATED] the `list_invalid_properties` method is obsolete'
       invalid_properties = Array.new
+      if !@count.nil? && @count > 65535
+        invalid_properties.push('invalid value for "count", must be smaller than or equal to 65535.')
+      end
+
+      if !@count.nil? && @count < 1
+        invalid_properties.push('invalid value for "count", must be greater than or equal to 1.')
+      end
+
       if @lat.nil?
         invalid_properties.push('invalid value for "lat", lat cannot be nil.')
       end
@@ -120,12 +148,28 @@ module GeoproxClient
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
+      return false if !@count.nil? && @count > 65535
+      return false if !@count.nil? && @count < 1
       return false if @lat.nil?
       return false if @lng.nil?
       return false if @range.nil?
       return false if @range > 65535
       return false if @range < 0
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] count Value to be assigned
+    def count=(count)
+      if !count.nil? && count > 65535
+        fail ArgumentError, 'invalid value for "count", must be smaller than or equal to 65535.'
+      end
+
+      if !count.nil? && count < 1
+        fail ArgumentError, 'invalid value for "count", must be greater than or equal to 1.'
+      end
+
+      @count = count
     end
 
     # Custom attribute writer method with validation
@@ -151,9 +195,11 @@ module GeoproxClient
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
+          count == o.count &&
           lat == o.lat &&
           lng == o.lng &&
-          range == o.range
+          range == o.range &&
+          sorted == o.sorted
     end
 
     # @see the `==` method
@@ -165,7 +211,7 @@ module GeoproxClient
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [lat, lng, range].hash
+      [count, lat, lng, range, sorted].hash
     end
 
     # Builds the object from hash

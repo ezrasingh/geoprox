@@ -219,7 +219,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **query_range**
-> QueryRangeResponse query_range(lat, lng, range, index)
+> QueryRangeResponse query_range(lat, lng, range, index, count=count, sorted=sorted)
 
 Search nearby
 
@@ -249,10 +249,12 @@ with geoprox_client.ApiClient(configuration) as api_client:
     lng = 3.4 # float | Longitude
     range = 56 # int | Search radius in kilometers
     index = 'index_example' # str | 
+    count = 56 # int | Maximum number of neighbors that can be returned (default 100) (optional)
+    sorted = True # bool | If enabled neighbors will be sorted by distance, nearest to furthest (default false) (optional)
 
     try:
         # Search nearby
-        api_response = api_instance.query_range(lat, lng, range, index)
+        api_response = api_instance.query_range(lat, lng, range, index, count=count, sorted=sorted)
         print("The response of GeoshardApiApi->query_range:\n")
         pprint(api_response)
     except Exception as e:
@@ -270,6 +272,8 @@ Name | Type | Description  | Notes
  **lng** | **float**| Longitude | 
  **range** | **int**| Search radius in kilometers | 
  **index** | **str**|  | 
+ **count** | **int**| Maximum number of neighbors that can be returned (default 100) | [optional] 
+ **sorted** | **bool**| If enabled neighbors will be sorted by distance, nearest to furthest (default false) | [optional] 
 
 ### Return type
 

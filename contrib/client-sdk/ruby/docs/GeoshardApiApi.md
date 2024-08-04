@@ -207,7 +207,7 @@ No authorization required
 
 ## query_range
 
-> <QueryRangeResponse> query_range(lat, lng, range, index)
+> <QueryRangeResponse> query_range(lat, lng, range, index, opts)
 
 Search nearby
 
@@ -224,10 +224,14 @@ lat = 1.2 # Float | Latitude
 lng = 1.2 # Float | Longitude
 range = 56 # Integer | Search radius in kilometers
 index = 'index_example' # String | 
+opts = {
+  count: 56, # Integer | Maximum number of neighbors that can be returned (default 100)
+  sorted: true # Boolean | If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+}
 
 begin
   # Search nearby
-  result = api_instance.query_range(lat, lng, range, index)
+  result = api_instance.query_range(lat, lng, range, index, opts)
   p result
 rescue GeoproxClient::ApiError => e
   puts "Error when calling GeoshardApiApi->query_range: #{e}"
@@ -238,12 +242,12 @@ end
 
 This returns an Array which contains the response data, status code and headers.
 
-> <Array(<QueryRangeResponse>, Integer, Hash)> query_range_with_http_info(lat, lng, range, index)
+> <Array(<QueryRangeResponse>, Integer, Hash)> query_range_with_http_info(lat, lng, range, index, opts)
 
 ```ruby
 begin
   # Search nearby
-  data, status_code, headers = api_instance.query_range_with_http_info(lat, lng, range, index)
+  data, status_code, headers = api_instance.query_range_with_http_info(lat, lng, range, index, opts)
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <QueryRangeResponse>
@@ -260,6 +264,8 @@ end
 | **lng** | **Float** | Longitude |  |
 | **range** | **Integer** | Search radius in kilometers |  |
 | **index** | **String** |  |  |
+| **count** | **Integer** | Maximum number of neighbors that can be returned (default 100) | [optional] |
+| **sorted** | **Boolean** | If enabled neighbors will be sorted by distance, nearest to furthest (default false) | [optional] |
 
 ### Return type
 

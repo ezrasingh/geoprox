@@ -15,7 +15,7 @@
 """  # noqa: E501
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 # import apis into sdk package
 from geoprox_client.api.geohash_api_api import GeohashApiApi

@@ -18,8 +18,8 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt
-from typing import Any, ClassVar, Dict, List, Union
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt
+from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,10 +28,12 @@ class QueryRange(BaseModel):
     """
     Arguments for range query
     """ # noqa: E501
+    count: Optional[Annotated[int, Field(le=65535, strict=True, ge=1)]] = Field(default=None, description="Maximum number of neighbors that can be returned (default 100)")
     lat: Union[StrictFloat, StrictInt] = Field(description="Latitude")
     lng: Union[StrictFloat, StrictInt] = Field(description="Longitude")
     range: Annotated[int, Field(le=65535, strict=True, ge=0)] = Field(description="Search radius in kilometers")
-    __properties: ClassVar[List[str]] = ["lat", "lng", "range"]
+    sorted: Optional[StrictBool] = Field(default=None, description="If enabled neighbors will be sorted by distance, nearest to furthest (default false)")
+    __properties: ClassVar[List[str]] = ["count", "lat", "lng", "range", "sorted"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -72,6 +74,16 @@ class QueryRange(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if count (nullable) is None
+        # and model_fields_set contains the field
+        if self.count is None and "count" in self.model_fields_set:
+            _dict['count'] = None
+
+        # set to None if sorted (nullable) is None
+        # and model_fields_set contains the field
+        if self.sorted is None and "sorted" in self.model_fields_set:
+            _dict['sorted'] = None
+
         return _dict
 
     @classmethod
@@ -84,9 +96,11 @@ class QueryRange(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "count": obj.get("count"),
             "lat": obj.get("lat"),
             "lng": obj.get("lng"),
-            "range": obj.get("range")
+            "range": obj.get("range"),
+            "sorted": obj.get("sorted")
         })
         return _obj
 
