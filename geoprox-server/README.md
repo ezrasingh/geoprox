@@ -97,6 +97,8 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
   - `lng` (number, required): Longitude
   - `range` (integer, required): Search radius in kilometers
   - `index` (string, required): Geospatial index name
+  - `count` (integer, optional): Maximum number of neighbors that can be returned (default 100)
+  - `sorted` (boolean, optional): If enabled, neighbors will be sorted by distance, nearest to furthest (default false)
 - **Responses:**
   - `200`: List of resource keys found within range
     - Example:
@@ -255,8 +257,8 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
 - **Description:** Returns resource keys found with their distance.
 - **Properties:**
   - `found` (array, required): List of keys and their distances
-    - `key` (string): Resource key
-    - `distance` (number): Distance in kilometers
+    - `key` (string, required): Resource key
+    - `distance` (number, required): Distance in kilometers
 
 #### RemoveKey
 
@@ -266,15 +268,15 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
 
 #### RemoveKeyResponse
 
-- **Description:** Returns key and deletion status.
+- **Description:** Returns key removal status.
 - **Properties:**
-  - `deleted` (boolean, required): True if key was removed
   - `key` (string, required): Resource key
+  - `deleted` (boolean, required): True if key was deleted
 
 ## Contributing
 
-Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-This project is licensed under the [Apache 2.0](../LICENSE-APACHE) or [MIT License](../LICENSE-MIT) (your choice).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
