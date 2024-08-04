@@ -24,14 +24,18 @@ The `cache` module, implemented as `SpatialIndex`, allows for placing and search
 extern crate geoprox_core;
 
 let mut geo_index = geoprox_core::SpatialIndex::default();
+
+// ? place elements into index
+geo_index.place_resource("player1", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
+geo_index.place_resource("player2", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
+
+// ? search index for elements near New York
+let nearby: LatLngCoord = [40.7128, 74.006];
+let within: f64 = 200.0; // 200km radius
+let count = 100; // return up to 100 results
+let sorted = true; // sort results by distance
 let depth = 6; // ? determines geohash length (i.e precision)
-
-geo_index.place_resource("alice", &geohash::encode([1.0, 0.0].into(), depth).unwrap());
-geo_index.place_resource("bob", &geohash::encode([1.0, 1.0].into(), depth).unwrap());
-
-let range = 1.0; // radius in kilometers
-let origin = [0f64, 0f64]; // lat/lng
-let res = geo_index.search(origin, &range, None).unwrap();
+let res = geo_index.search(nearby, range, count, sorted, Some(depth)).unwrap();
 
 assert_eq!(res.len(), 2);
 res.iter().for_each(|neighbor| {
@@ -56,11 +60,16 @@ extern crate geoprox_core;
 let mut shard = geoprox_core::GeoShard::default();
 shard.create_index("drivers").unwrap();
 
-shard.insert_key("drivers", "alice", &[-0.25, 1.0]).unwrap();
-shard.insert_key("drivers", "bob", &[1.0, 0.5]).unwrap();
+// ? place drivers in index
+shard.insert_key("drivers", "alice", [36.2049, 138.253]).unwrap();
+shard.insert_key("drivers", "bob", [36.2047, 138.2528]).unwrap();
 
-// ? search 'drivers' within 150km radius near (1, 0.5)
-let res = shard.query_range("drivers", [1.0, 0.5], &150.0).unwrap();
+// ? search 'drivers' near Japan
+let nearby: LatLngCoord = [36.2048, 138.2529];
+let within: f64 = 50.0; // 50km radius
+let count: usize = 100; // return up to 100 results
+let sorted: bool = true; // sort results by distance
+let res = shard.query_range("drivers", nearby, within, count, sorted).unwrap();
 println!("found: {:#?}", res);
 ```
 
