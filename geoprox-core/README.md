@@ -67,8 +67,8 @@ shard.insert_key("drivers", "bob", [36.2047, 138.2528]).unwrap();
 // ? search 'drivers' near Japan
 let nearby: LatLngCoord = [36.2048, 138.2529];
 let within: f64 = 50.0; // 50km radius
-let count: usize = 100; // return up to 100 results
-let sorted: bool = true; // sort results by distance
+let count = 100; // return up to 100 results
+let sorted = true; // sort results by distance
 let res = shard.query_range("drivers", nearby, within, count, sorted).unwrap();
 println!("found: {:#?}", res);
 ```
