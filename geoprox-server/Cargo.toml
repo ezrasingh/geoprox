@@ -1,6 +1,6 @@
 [package]
 name = "geoprox-server"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Ezra Singh <singhezra@gmail.com>"]
 description = "Geoprox server implementation providing a HTTP API for geospatial queries and position tracking"
