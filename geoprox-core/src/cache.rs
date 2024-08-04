@@ -174,8 +174,6 @@ impl SpatialIndex {
 
 #[cfg(test)]
 mod test {
-    use std::i32;
-
     use super::*;
     use rand::prelude::*;
 
@@ -209,7 +207,7 @@ mod test {
 
     #[test]
     fn test_capacity() {
-        let capacity = i32::MAX;
+        let capacity = i16::MAX;
         let mut geo_index = SpatialIndex::new(capacity as usize);
         let mut rng = rand::thread_rng();
         let depth: usize = 5;
