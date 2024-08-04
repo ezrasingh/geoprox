@@ -173,7 +173,7 @@ pub mod geoshard_api {
 
         match state
             .geoshard
-            .insert_key(&index, &payload.key, &[payload.lat, payload.lng])
+            .insert_key(&index, &payload.key, [payload.lat, payload.lng])
         {
             Ok(geohash) => Ok(Json(InsertKeyResponse {
                 key: payload.key,
