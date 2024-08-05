@@ -212,26 +212,26 @@
 </ul>
 </li>
 </ul>
-<h3 id="b-trees-and-ss-tables"><a class="header" href="#b-trees-and-ss-tables">B-Trees and SS-Tables</a></h3>
-<p><a href="https://en.wikipedia.org/wiki/B-tree">B-Trees</a> are balanced tree data structures that maintain sorted data and allow for searches, sequential access, insertions, and deletions in logarithmic time. <a href="https://www.mauriciopoppe.com/notes/computer-science/data-structures/memtable-sstable/">SS-Tables (Sorted String Tables)</a> are immutable data structures often used in conjunction with B-Trees for efficient storage and retrieval of key-value pairs.</p>
+<h3 id="b-trees-and-memtables"><a class="header" href="#b-trees-and-memtables">B-Trees and MemTables</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/B-tree">B-Trees</a> are balanced tree data structures that maintain sorted data and enable searches, sequential access, insertions, and deletions with logarithmic time complexity. <a href="https://www.mauriciopoppe.com/notes/computer-science/data-structures/memtable-sstable/">MemTables</a> are in-memory data structures used in conjunction with B-Trees to facilitate efficient storage and retrieval of key-value pairs before persisting data to disk.</p>
 <ul>
 <li>
 <p><strong>Pros:</strong></p>
 <ul>
-<li><strong>Efficient Disk-based Storage:</strong> Suitable for handling large datasets and are particularly effective for disk-based storage solutions.</li>
-<li><strong>Range Queries and Sorted Data Retrieval:</strong> Excellent for performing range queries and retrieving sorted data efficiently.</li>
+<li><strong>Efficient Disk-based Storage:</strong> Ideal for managing large datasets and effective for disk-based storage solutions.</li>
+<li><strong>Range Queries and Sorted Data Retrieval:</strong> Provides excellent performance for range queries and retrieving sorted data efficiently.</li>
 </ul>
 </li>
 <li>
 <p><strong>Cons:</strong></p>
 <ul>
-<li><strong>Disk I/O Dependency:</strong> Involves disk I/O operations, which can be slower for real-time updates.</li>
-<li><strong>Less Efficient for In-memory Operations:</strong> Compared to Patricia Trie, B-Trees and SS-Tables are less efficient for in-memory operations.</li>
+<li><strong>Memory Usage:</strong> MemTables require significant memory to store data before flushing to disk, which can be a limitation for very large datasets.</li>
+<li><strong>Complexity in Merging:</strong> Managing and merging data between MemTables and disk-based storage can introduce complexity and overhead in maintaining data consistency.</li>
 </ul>
 </li>
 </ul>
 <h3 id="why-patricia-trie"><a class="header" href="#why-patricia-trie">Why Patricia Trie?</a></h3>
-<p>For geospatial data, where object locations might change in real-time, in-memory solutions like Patricia Trie are preferred due to their speed and efficiency in handling dynamic data without incurring the latency of disk I/O.</p>
+<p>For geospatial data, where object locations might change frequently, in-memory solutions like Patricia Trie are preferred. They offer superior speed and efficiency in managing dynamic data, avoiding the latency associated with disk I/O operations.</p>
 
                     </main>
 
