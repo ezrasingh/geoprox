@@ -1,30 +1,20 @@
-# What is a Geohash?
+# How Geoprox Works
 
-A geohash is a string representation of a geographic location, encoded as a series of characters. This encoding allows for efficient storage and querying of spatial data. Geohashes are hierarchical, meaning that as the string length increases, the represented area becomes more precise.
+## The Problem
 
-## How Geohashes Work
+Initially, for the [May 2024 Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024/-/blob/main/Geo-Proximity-Detection-With-Rust.pdf), the proof of concept problem began with ride-share pairing like Uber or Lyft.
 
-![](assets/geohash-level-1-level-2.png)
+Ride pairing depends on being able to track and pair a set of drivers within the vicinity of some location (i.e., the pickup location of an order).
 
-Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base32). The precision of the geohash can be adjusted by changing its length:
+Since then, the problem has generalized to how can we efficiently track and retrieve resources geographically near some location.
 
-* Short geohashes represent larger areas.
-* Long geohashes represent smaller, more precise areas.
+## Requirements
 
-| Geohash Length | Lat Bits | Lng Bits | Lat Error    | Lng Error    | Km Error                           |
-|----------------|----------|----------|--------------|--------------|------------------------------------|
-| 1              | 2        | 3        | ±23          | ±23          | ±2,500 km (1,600 mi)               |
-| 2              | 5        | 5        | ±2.8         | ±5.6         | ±630 km (390 mi)                   |
-| 3              | 7        | 8        | ±0.70        | ±0.70        | ±78 km (48 mi)                     |
-| 4              | 10       | 10       | ±0.087       | ±0.18        | ±20 km (12 mi)                     |
-| 5              | 12       | 13       | ±0.022       | ±0.022       | ±2.4 km (1.5 mi; 2,400 m)          |
-| 6              | 15       | 15       | ±0.0027      | ±0.0055      | ±0.61 km (0.38 mi; 610 m)          |
-| 7              | 17       | 18       | ±0.00068     | ±0.00068     | ±0.076 km (0.047 mi; 76 m)         |
-| 8              | 20       | 20       | ±0.000085    | ±0.00017     | ±0.019 km (0.012 mi; 19 m)         |
+- Keep track of the _approximate_ location of objects.
+- Search should return a set of objects within a radius of the search location.
 
+## Solution
 
-## Benefits of Using Geohashes
+We index the objects and hash their key and geographical position. Using a [geohash](https://en.wikipedia.org/wiki/Geohash) to encode the approximate location, we can map geohash prefixes into the set of objects contained in the Geohash using a [Prefix Tree](https://en.wikipedia.org/wiki/Trie) stored in-memory.
 
-* **Compact Representation**: Efficiently stores geographic coordinates.
-* **Hierarchical Structure**: Allows for easy aggregation and precision adjustment.
-* **Proximity Queries**: Simplifies the process of finding nearby locations.
+We can efficiently partition the search space and perform a [nearest neighbor search](https://en.wikipedia.org/wiki/Nearest_neighbour_algorithm) on a merged set of objects in the search region and return the results.
