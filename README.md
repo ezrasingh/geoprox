@@ -70,7 +70,7 @@ just geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
 just geoprox decode 9q8yy
 ```
 
-For detailed help on any command, use the help command:
+For detailed help on any command, use the `help` command:
 
 ```shell
 just geoprox help encode
