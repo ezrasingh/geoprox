@@ -35,7 +35,7 @@ This is a service that allows you to determine which users are nearby a contract
 
 ### API Client Libraries
 
-HTTP Client libraries are generated from an [OpenAPI](https://www.openapis.org/) spec using [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator/).
+HTTP Client libraries are generated from an [OpenAPI](https://www.openapis.org/) spec (made available from the `/api-spec/openapi.json` endpoint) using [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator/).
 
 Availble clients can be found at [`contrib/client-sdk`](contrib/client-sdk/README.md), along with steps for generating your own client if needed.
 
