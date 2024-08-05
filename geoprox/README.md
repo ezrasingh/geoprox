@@ -31,6 +31,7 @@ Options:
 ```
 
 ## Getting Started
+
 To start using Geoprox, you can run the following command to start the server:
 
 ```shell
@@ -58,6 +59,7 @@ geoprox help encode
 Geoprox allows specifying a configuration file using the `-c` or `--config` option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`.
 
 ### Example Configuration
+
 Here's an example configuration file in `TOML` format:
 
 ```toml
@@ -72,19 +74,19 @@ search_depth = 6
 
 ### Configuration Details
 
-| Setting              | Description                                             |
-|----------------------|---------------------------------------------------------|
-| `server.http_addr`   | The address the server will bind to.                    |
-| `server.http_port`   | The port the server will listen on.                     |
-| `shard.insert_depth` | Determines the default geohash length for inserts.      |
-| `shard.search_depth` | Determines the default geohash length for searches.     |
-
+| Setting              | Description                                         |
+| -------------------- | --------------------------------------------------- |
+| `server.http_addr`   | The address the server will bind to.                |
+| `server.http_port`   | The port the server will listen on.                 |
+| `shard.insert_depth` | Determines the default geohash length for inserts.  |
+| `shard.search_depth` | Determines the default geohash length for searches. |
 
 The `insert_depth` and `search_depth` settings control the precision of the geohash. A longer geohash means more granular precision.
 
 For example, a **depth of 6 corresponds to a geohash precision of approximately 1km x 1km**. This is the default depth and generally recommended, as greater precision (smaller depths) may not be necessary for most use cases.
 
 ## Contributing
+
 Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
 
 ## License

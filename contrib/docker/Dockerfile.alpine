@@ -2,6 +2,7 @@ FROM rust:latest AS builder
 
 WORKDIR /code
 COPY . /code/
+
 RUN cargo build --release
 
 FROM alpine:3
@@ -13,6 +14,5 @@ USER geoprox:geoprox
 
 WORKDIR /usr/local/bin
 COPY --from=builder --chown=geoprox:geoprox /code/target/release/geoprox /usr/local/bin/
-COPY --from=builder /code/geoprox/geoprox.default.toml /etc/geoprox/geoprox.toml
 
-ENTRYPOINT [ "geoprox" ]
+ENTRYPOINT [ "geoprox", "run" ]

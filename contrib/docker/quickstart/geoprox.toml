@@ -1,0 +1,12 @@
+# All settings are optional; these are the default values.
+[server]
+# The address the server will bind to
+http_addr = '0.0.0.0'
+# The port the server will listen on
+http_port = 5000
+
+[shard]
+# Determines the default geohash length for inserts
+insert_depth = 6
+# Determines the default geohash length for searches
+search_depth = 6

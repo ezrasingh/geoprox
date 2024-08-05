@@ -13,6 +13,5 @@ USER geoprox:geoprox
 
 WORKDIR /usr/local/bin
 COPY --from=builder --chown=geoprox:geoprox /code/target/release/geoprox /usr/local/bin/
-COPY --from=builder /code/geoprox/geoprox.default.toml /etc/geoprox/geoprox.toml
 
-ENTRYPOINT [ "geoprox" ]
+ENTRYPOINT [ "geoprox", "run" ]
