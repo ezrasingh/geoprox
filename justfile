@@ -7,6 +7,6 @@ fmt ARGS='':
   cargo +nightly fmt {{ARGS}}
 
 # Run geoprox CLI
-geoprox ARGS='':
+geoprox +ARGS='--help':
     cargo run -- {{ARGS}}
 
