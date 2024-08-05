@@ -45,7 +45,7 @@ Use `cargo run` to access the Geoprox CLI. For additional information try `cargo
 
 ### Using Just
 
-The `just` command runner is included to help manage and run tasks easily. Here are the available tasks:
+The [`just` command runner](https://github.com/casey/just) is included to help manage and run tasks easily. Here are the available tasks:
 
 ```shell
 Available recipes:
