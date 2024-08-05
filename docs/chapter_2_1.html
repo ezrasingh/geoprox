@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>How Geoprox Works - geoprox-docs</title>
+        <title>What is a Geohash? - geoprox-docs</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html" class="active"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html" class="active"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,29 +173,54 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="how-geoprox-works"><a class="header" href="#how-geoprox-works">How Geoprox Works</a></h1>
-<h2 id="the-problem"><a class="header" href="#the-problem">The Problem</a></h2>
-<p>Initially, for the <a href="https://gitlab.com/indyrs/may2024/-/blob/main/Geo-Proximity-Detection-With-Rust.pdf">May 2024 Rust Indy.rs meetup</a>, the proof of concept problem began with ride-share pairing like Uber or Lyft.</p>
-<p>Ride pairing depends on being able to track and pair a set of drivers within the vicinity of some location (i.e., the pickup location of an order).</p>
-<p>Since then, the problem has generalized to how can we efficiently track and retrieve resources geographically near some location.</p>
-<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+                        <h1 id="what-is-a-geohash"><a class="header" href="#what-is-a-geohash">What is a Geohash?</a></h1>
+<p>A geohash is a string representation of a geographic location, encoded as a series of characters. This encoding allows for efficient storage and querying of spatial data. Geohashes are hierarchical, meaning that as the string length increases, the represented area becomes more precise.</p>
+<h2 id="how-geohashes-work"><a class="header" href="#how-geohashes-work">How Geohashes Work</a></h2>
+<p><img src="assets/geohash-levels.png" alt="" /></p>
+<p>Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base32). The precision of the geohash can be adjusted by changing its length:</p>
 <ul>
-<li>Keep track of the <em>approximate</em> location of objects.</li>
-<li>Search should return a set of objects within a radius of the search location.</li>
+<li>Short geohashes represent larger areas.</li>
+<li>Long geohashes represent smaller, more precise areas.</li>
 </ul>
-<h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
-<p>We index the objects and hash their key and geographical position. Using a <a href="https://en.wikipedia.org/wiki/Geohash">geohash</a> to encode the approximate location, we can map geohash prefixes into the set of objects contained in the Geohash using a <a href="https://en.wikipedia.org/wiki/Trie">Prefix Tree</a> stored in-memory.</p>
-<p>We can efficiently partition the search space and perform a <a href="https://en.wikipedia.org/wiki/Nearest_neighbour_algorithm">nearest neighbor search</a> on a merged set of objects in the search region and return the results.</p>
+<div class="table-wrapper"><table><thead><tr><th>Geohash Length</th><th>Lat Bits</th><th>Lng Bits</th><th>Lat Error</th><th>Lng Error</th><th>Km Error</th></tr></thead><tbody>
+<tr><td>1</td><td>2</td><td>3</td><td>±23</td><td>±23</td><td>±2,500 km (1,600 mi)</td></tr>
+<tr><td>2</td><td>5</td><td>5</td><td>±2.8</td><td>±5.6</td><td>±630 km (390 mi)</td></tr>
+<tr><td>3</td><td>7</td><td>8</td><td>±0.70</td><td>±0.70</td><td>±78 km (48 mi)</td></tr>
+<tr><td>4</td><td>10</td><td>10</td><td>±0.087</td><td>±0.18</td><td>±20 km (12 mi)</td></tr>
+<tr><td>5</td><td>12</td><td>13</td><td>±0.022</td><td>±0.022</td><td>±2.4 km (1.5 mi; 2,400 m)</td></tr>
+<tr><td>6</td><td>15</td><td>15</td><td>±0.0027</td><td>±0.0055</td><td>±0.61 km (0.38 mi; 610 m)</td></tr>
+<tr><td>7</td><td>17</td><td>18</td><td>±0.00068</td><td>±0.00068</td><td>±0.076 km (0.047 mi; 76 m)</td></tr>
+<tr><td>8</td><td>20</td><td>20</td><td>±0.000085</td><td>±0.00017</td><td>±0.019 km (0.012 mi; 19 m)</td></tr>
+</tbody></table>
+</div>
+<p>For example, the following geohashes are all within a maximum distance of +/- 78km (48mi) from each other:</p>
+<ul>
+<li><strong>s00</strong>8nb00j8</li>
+<li><strong>s00</strong>twy01mt</li>
+<li><strong>s00</strong>j8n012j</li>
+</ul>
+<p>However, these geohashes represent completely different regions:</p>
+<ul>
+<li><strong>s12</strong>8nb00j8</li>
+<li><strong>s34</strong>twy01mt</li>
+<li><strong>s56</strong>j8n012j</li>
+</ul>
+<h2 id="benefits-of-using-geohashes"><a class="header" href="#benefits-of-using-geohashes">Benefits of Using Geohashes</a></h2>
+<ul>
+<li><strong>Compact Representation</strong>: Efficiently stores geographic coordinates.</li>
+<li><strong>Hierarchical Structure</strong>: Allows for easy aggregation and precision adjustment.</li>
+<li><strong>Proximity Queries</strong>: Simplifies the process of finding nearby locations.</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="chapter_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_2_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="chapter_2_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -205,11 +230,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="chapter_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_2_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="chapter_2_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
