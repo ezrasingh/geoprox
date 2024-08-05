@@ -28,10 +28,10 @@ This is a service that allows you to determine which users are nearby a contract
 
 ### Crates
 
-- [geoprox](geoprox/README.md) - Standalone CLI for running the Geoprox service
-- [geoprox-core](geoprox-core/README.md) - Core data structure implementations
-- [geoprox-server](geoprox-server/README.md) - HTTP API wrapper around `geoprox-core`
-- [geoprox-client](contrib/client-sdk/rust/README.md) - HTTP client library for `geoprox-server`
+- [geoprox](geoprox/) - Standalone CLI for running the Geoprox service
+- [geoprox-core](geoprox-core/) - Core data structure implementations
+- [geoprox-server](geoprox-server/) - HTTP API wrapper around `geoprox-core`
+- [geoprox-client](contrib/client-sdk/rust/) - HTTP client library for `geoprox-server`
 
 ### API Client Libraries
 
