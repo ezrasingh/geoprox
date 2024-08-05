@@ -1,6 +1,8 @@
 # Geoprox
 
-A standalone runtime for the [Geoprox project](https://github.com/ezrasingh/geoprox/). This crate exposes the CLI runtime, enabling easy integration and usage for geo-aware applications such as rideshare pairing services.
+A standalone runtime for the [Geoprox project](https://github.com/ezrasingh/geoprox/).
+
+This crate offers a command-line tool for launching and managing the Geoprox server.
 
 ## Installation
 
