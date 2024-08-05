@@ -2,11 +2,11 @@
 default:
   @just --list
 
-# Runs cargo fmt (nightly)
-fmt ARGS='':
+# Run cargo formatter
+fmt +ARGS='':
   cargo +nightly fmt {{ARGS}}
 
-# Run geoprox CLI
+# Geoprox CLI
 geoprox +ARGS='--help':
     cargo run -- {{ARGS}}
 
