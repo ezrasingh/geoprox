@@ -5,7 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **distance** | **Float** | Distance in kilometers |  |
-| **key** | **String** | Resource key |  |
+| **key** | **String** | Object key |  |
 
 ## Example
 

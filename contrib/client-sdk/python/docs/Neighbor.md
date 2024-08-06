@@ -1,13 +1,13 @@
 # Neighbor
 
-Nearby resource key
+Nearby object
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **distance** | **float** | Distance in kilometers | 
-**key** | **str** | Resource key | 
+**key** | **str** | Object key | 
 
 ## Example
 

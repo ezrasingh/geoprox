@@ -1,6 +1,6 @@
 local meta = {
   clientName: 'geoprox-client',
-  clientVersion: '0.3.0',
+  clientVersion: '0.3.1',
   clientRepo: 'https://github.com/ezrasingh/geoprox/contrib/client-sdk',
 };
 

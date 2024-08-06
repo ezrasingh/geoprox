@@ -1,6 +1,6 @@
 [package]
 name = "geoprox-client"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["singhezra@gmail.com"]
 description = "Geoprox server implementation providing a HTTP API for geospatial queries and position tracking"
 license = "MIT OR Apache-2.0"
