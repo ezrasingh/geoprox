@@ -36,7 +36,7 @@ fn random_query(rng: &mut ThreadRng) -> (LatLngCoord, f64) {
 fn seed_index(size: &i32, rng: &mut ThreadRng) -> SpatialIndex<String> {
     let mut geo_index = SpatialIndex::new(*size as usize);
     for n in 0..*size {
-        geo_index.place_resource(&n.to_string(), &random_geohash(rng));
+        geo_index.insert(&n.to_string(), &random_geohash(rng));
     }
     geo_index
 }
@@ -61,7 +61,7 @@ fn insert_benchmark(c: &mut Criterion) {
                     },
                     |mut geo_index| {
                         data.iter()
-                            .for_each(|(key, ghash)| geo_index.place_resource(key, ghash))
+                            .for_each(|(key, ghash)| geo_index.insert(key, ghash))
                     },
                     BatchSize::LargeInput,
                 );

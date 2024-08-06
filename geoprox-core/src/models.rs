@@ -1,17 +1,17 @@
 use serde::Serialize;
 
-/// Resource key indentifier
-pub type ResourceIdentifier = u64;
+/// Object indentifier
+pub type ObjectIdentifier = u64;
 
-/// Latitude/longitude pair
+/// Latitude/longitude coordinate pair
 pub type LatLngCoord = [f64; 2];
 
-/// Nearby resource key
+/// Nearby object
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq)]
 pub struct Neighbor {
     /// Distance in kilometers
     pub distance: f64,
-    /// Resource key
+    /// Object key
     pub key: String,
 }

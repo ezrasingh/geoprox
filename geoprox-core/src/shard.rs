@@ -58,6 +58,7 @@ impl GeoShard {
         }
     }
 
+    /// Deletes index from the shard
     pub fn drop_index(&mut self, index: &str) {
         self.cache.remove(index);
     }
@@ -72,7 +73,7 @@ impl GeoShard {
         if let Some(geo_index) = self.cache.get_mut(index) {
             match geohash::encode([position[1], position[0]].into(), self.config.insert_depth) {
                 Ok(ghash) => {
-                    geo_index.place_resource(key, &ghash);
+                    geo_index.insert(key, &ghash);
                     Ok(ghash)
                 }
                 Err(err) => Err(GeoShardError::GeohashError(err)),
@@ -85,7 +86,7 @@ impl GeoShard {
     /// Deletes a key from the specified index
     pub fn remove_key(&mut self, index: &str, key: &str) -> Result<bool, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
-            Ok(geo_index.remove_resource(key))
+            Ok(geo_index.remove(key))
         } else {
             Err(GeoShardError::IndexNotFound(index.into()))
         }
@@ -100,6 +101,9 @@ impl GeoShard {
         count: usize,
         sorted: bool,
     ) -> Result<Vec<Neighbor>, GeoShardError> {
+        if count.eq(&0) {
+            return Ok(vec![]);
+        }
         if let Some(geo_index) = self.cache.get(index) {
             match geo_index.search(origin, range, count, sorted, self.config.search_depth) {
                 Ok(found) => Ok(found),
@@ -116,16 +120,106 @@ mod test {
     use super::*;
 
     #[test]
+    fn test_create_index() {
+        let mut shard = GeoShard::default();
+        let mock_index = "mock-index";
+
+        let res = shard.create_index(mock_index);
+        assert!(res.is_ok());
+
+        let res = shard.create_index(mock_index);
+        assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_drop_index() {
+        let mut shard = GeoShard::default();
+        let mock_index = "mock-index";
+
+        let res = shard.create_index(mock_index);
+        assert!(res.is_ok());
+
+        shard.drop_index(mock_index);
+
+        let res = shard.create_index(mock_index);
+        assert!(res.is_ok());
+    }
+
+    #[test]
     fn test_query_range() {
         let mut shard = GeoShard::default();
-        shard.create_index("drivers").unwrap();
+        let mock_index = "mock-index";
+        let count = 100;
+        let sorted = false;
+        shard.create_index(mock_index).unwrap();
 
-        shard.insert_key("drivers", "alice", [-0.25, 1.0]).unwrap();
-        shard.insert_key("drivers", "bob", [1.0, 0.5]).unwrap();
+        shard.insert_key(mock_index, "a", [-0.25, 1.0]).unwrap();
+        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
+        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
 
         let res = shard
-            .query_range("drivers", [0.0, 0.0], 150.0, 100, true)
+            .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
             .unwrap();
-        println!("found: {:#?}", res);
+        assert_eq!(res.len(), 2);
+    }
+
+    #[test]
+    fn test_query_range_sorted() {
+        let mut shard = GeoShard::default();
+        let mock_index = "mock-index";
+        let count = 100;
+        let sorted = true;
+        shard.create_index(mock_index).unwrap();
+
+        shard.insert_key(mock_index, "a", [0.0, 1.0]).unwrap();
+        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
+        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
+        shard.insert_key(mock_index, "d", [0.0, -1.0]).unwrap();
+        shard.insert_key(mock_index, "e", [-1.0, -0.5]).unwrap();
+        shard.insert_key(mock_index, "f", [0.0, 0.0]).unwrap();
+
+        let res = shard
+            .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
+            .unwrap();
+
+        let mut sorted_neighbors = res.to_vec();
+
+        sorted_neighbors.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
+
+        assert_eq!(res, sorted_neighbors);
+    }
+
+    #[test]
+    fn test_query_range_count() {
+        let mut shard = GeoShard::default();
+        let mock_index = "mock-index";
+        let sorted = true;
+        shard.create_index(mock_index).unwrap();
+
+        shard.insert_key(mock_index, "a", [0.0, 1.0]).unwrap();
+        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
+        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
+        shard.insert_key(mock_index, "d", [0.0, -1.0]).unwrap();
+        shard.insert_key(mock_index, "e", [-1.0, -0.5]).unwrap();
+        shard.insert_key(mock_index, "f", [0.0, 0.0]).unwrap();
+
+        {
+            let count = 100;
+            let res = shard
+                .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
+                .unwrap();
+
+            assert!(res.len() <= count);
+        }
+
+        {
+            let count = 0;
+
+            let res = shard
+                .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
+                .unwrap();
+
+            assert!(res.len() <= count);
+        }
     }
 }

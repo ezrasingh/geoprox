@@ -28,8 +28,8 @@ extern crate geoprox_core;
 let mut geo_index = geoprox_core::SpatialIndex::default();
 
 // ? place object keys into index
-geo_index.place_resource("player1", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
-geo_index.place_resource("player2", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
+geo_index.insert("player1", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
+geo_index.insert("player2", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
 
 // ? search index for objects near New York
 let nearby: LatLngCoord = [40.7128, 74.006];
