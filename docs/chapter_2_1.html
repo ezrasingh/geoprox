@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html" class="active"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html" class="active"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -177,7 +177,7 @@
 <p>A geohash is a string representation of a geographic location, encoded as a series of characters. This encoding allows for efficient storage and querying of spatial data. Geohashes are hierarchical, meaning that as the string length increases, the represented area becomes more precise.</p>
 <h2 id="how-geohashes-work"><a class="header" href="#how-geohashes-work">How Geohashes Work</a></h2>
 <p><img src="assets/geohash-levels.png" alt="" /></p>
-<p>Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base32). The precision of the geohash can be adjusted by changing its length:</p>
+<p>Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base 32). The precision of the geohash can be adjusted by changing its length:</p>
 <ul>
 <li>Short geohashes represent larger areas.</li>
 <li>Long geohashes represent smaller, more precise areas.</li>
@@ -211,6 +211,10 @@
 <li><strong>Hierarchical Structure</strong>: Allows for easy aggregation and precision adjustment.</li>
 <li><strong>Proximity Queries</strong>: Simplifies the process of finding nearby locations.</li>
 </ul>
+<blockquote>
+<p>Check out the <a href="https://geohash.softeng.co/">Geohash Explorer</a> for an interactive map to help visualize geohashing.</p>
+</blockquote>
+<iframe src="https://geohash.softeng.co/" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" width="100%" height="500" style="border: none;"></iframe>
 
                     </main>
 

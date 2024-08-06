@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Insertion and Query - geoprox-docs</title>
+        <title>Getting Started - geoprox-docs</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html" class="active"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html" class="active"><strong aria-hidden="true">3.</strong> Getting Started</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,95 +173,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="insertion-and-query"><a class="header" href="#insertion-and-query">Insertion and Query</a></h1>
-<p>This section outlines the fundamental design strategy behind Geoprox, detailing the algorithms used for inserting and querying geospatial data.</p>
-<p>The core approach involves encoding geographic coordinates into geohashes, utilizing a <a href="https://en.wikipedia.org/wiki/Radix_tree#Variants">Patricia Trie</a> for efficient storage and retrieval, and employing a <a href="https://en.wikipedia.org/wiki/K-d_tree">KD-Tree</a> for fast <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">nearest neighbor searches</a>. These techniques collectively enable Geoprox to efficiently manage and query large volumes of geospatial data.</p>
-<h2 id="data-structures"><a class="header" href="#data-structures">Data Structures</a></h2>
-<ul>
-<li>
-<p><strong>Approximate Position Tracking:</strong></p>
-<ul>
-<li>Utilize a <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html"><code>HashMap</code></a> (<a href="https://github.com/ezrasingh/geoprox/releases/tag/v0.3.0">* see v0.3.0 release notes</a>) to track approximate positions.</li>
-<li>Format: <code>object_key</code> =&gt; <code>geohash(lat, lng)</code></li>
-</ul>
-</li>
-<li>
-<p><strong>Key/Value Storage:</strong></p>
-<ul>
-<li>Use <a href="https://docs.rs/patricia_tree/0.8.0/patricia_tree/map/type.StringPatriciaMap.html"><code>StringPatriciaMap</code></a> for efficient key/value storage.</li>
-<li>Format: <code>geohash_region</code> =&gt; <code>HashSet(object_key)</code></li>
-</ul>
-</li>
-</ul>
-<h2 id="insert-procedure"><a class="header" href="#insert-procedure">Insert Procedure</a></h2>
-<ol>
-<li>
-<p><strong>Hash Object's Latitude/Longitude:</strong></p>
-<ul>
-<li>Hash the object's latitude and longitude up to a certain depth (e.g., 6). This depth, called <code>insert_depth</code>, should be sufficient to ensure the resulting geohash region is large enough to store the density of objects in that area.</li>
-</ul>
-</li>
-<li>
-<p><strong>Upsert Object Key:</strong></p>
-<ul>
-<li>Insert or update the <code>object_key</code> in the <code>StringPatriciaMap</code> with its <code>geohash_region</code>.</li>
-<li>If <code>object_key</code> had an existing <code>geohash_region</code>, remove its entry from that region in the <code>StringPatriciaMap</code>.</li>
-</ul>
-</li>
-</ol>
-<h2 id="search-procedure"><a class="header" href="#search-procedure">Search Procedure</a></h2>
-<ol>
-<li>
-<p><strong>Initiate Search:</strong></p>
-<ul>
-<li>A search is initiated at a specific location with a given search range (in kilometers).</li>
-</ul>
-</li>
-<li>
-<p><strong>Encode Latitude/Longitude:</strong></p>
-<ul>
-<li>Encode the latitude and longitude into a geohash up to a specific depth (e.g., 6). This depth, called <code>search_depth</code>, should ensure the geohash region is small enough to fit within the search radius.</li>
-</ul>
-</li>
-<li>
-<p><strong>Optimize Geohash Search Region:</strong></p>
-<ul>
-<li>Optimize the geohash search region by expanding it until it covers the search area.</li>
-<li>If the geohash search region does not contain the search radius, remove the last character (effectively expanding the region) until it fits within the search area.</li>
-</ul>
-</li>
-<li>
-<p><strong>Partition <code>StringPatriciaMap</code>:</strong></p>
-<ul>
-<li>Partition the <code>StringPatriciaMap</code> by the common prefix of the optimized geohash.</li>
-</ul>
-</li>
-<li>
-<p><strong>Construct <a href="https://docs.rs/kiddo/4.2.0/kiddo/type.KdTree.html"><code>KdTree</code></a>:</strong></p>
-<ul>
-<li>Iterate over the partition and construct a <code>KdTree</code>.</li>
-<li>Store objects and their approximate locations in the <code>KdTree</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Compute Nearest Neighbor:</strong></p>
-<ul>
-<li>Perform nearest neighbor computation with the search requirements against the <code>KdTree</code> to get the final result.</li>
-</ul>
-</li>
-</ol>
+                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_2_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="chapter_2_3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -269,13 +190,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_2_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="chapter_2_3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

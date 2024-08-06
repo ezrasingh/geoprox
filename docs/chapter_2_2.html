@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html" class="active"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html" class="active"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -178,15 +178,15 @@
 <p>Prefix search is a method for quickly finding all entries in a dataset that share a common prefix. In the context of geohashes, it allows us to retrieve all geohashes that start with the same characters, which is useful for geographical proximity searches.</p>
 <h2 id="trie-tree"><a class="header" href="#trie-tree">Trie Tree</a></h2>
 <p><img src="assets/trie.png" alt="" /></p>
-<p>We can store Geohashes in a Trie Tree data structure. Tries enable us to efficiently retrieve geohashes with a common prefix in O(L) time, where L is the length of the prefix being searched.</p>
+<p>We can store Geohashes in a <a href="https://en.wikipedia.org/wiki/Trie">Trie Tree</a> data structure. Tries enable us to efficiently retrieve geohashes with a common prefix in <code>O(L)</code> time, where <code>L</code> is the length of the prefix being searched.</p>
 <h3 id="key-features-of-trie-tree"><a class="header" href="#key-features-of-trie-tree">Key Features of Trie Tree:</a></h3>
 <ul>
 <li><strong>Efficient Retrieval:</strong> Quickly find geohashes sharing a common prefix.</li>
 <li><strong>Time Complexity:</strong> <code>O(L)</code>, where <code>L</code> is the prefix length.</li>
 </ul>
-<h2 id="patricia-trie-tree"><a class="header" href="#patricia-trie-tree">Patricia Trie Tree</a></h2>
+<h2 id="patricia-trie"><a class="header" href="#patricia-trie">Patricia Trie</a></h2>
 <p><img src="assets/patricia-trie.png" alt="" /></p>
-<p>A Patricia Trie Tree, also known as a Radix Tree, is a type of Trie Tree that optimizes space by merging common prefixes into single nodes. This further enhances the efficiency of prefix searching by reducing the number of nodes.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Radix_tree#Variants">Patricia Trie</a>, also known as a <a href="https://en.wikipedia.org/wiki/Radix_tree">Radix Tree</a>, is a type of Trie Tree that optimizes space by merging common prefixes into single nodes. This further enhances the efficiency of prefix searching by reducing the number of nodes.</p>
 <h3 id="key-features-of-patricia-trie-tree"><a class="header" href="#key-features-of-patricia-trie-tree">Key Features of Patricia Trie Tree:</a></h3>
 <ul>
 <li><strong>Space Optimization:</strong> Merges common prefixes to save space.</li>
