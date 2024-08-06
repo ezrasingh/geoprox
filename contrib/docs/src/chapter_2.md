@@ -15,6 +15,6 @@ Since then, the problem has generalized to how can we efficiently track and retr
 
 ## Solution
 
-We index the objects and hash their key and geographical position. Using a [geohash](https://en.wikipedia.org/wiki/Geohash) to encode the approximate location, we can map geohash prefixes into the set of objects contained in the Geohash using a [Prefix Tree](https://en.wikipedia.org/wiki/Trie) stored in-memory.
+Index the objects and hash their key and geographical position. Using a [geohash](https://en.wikipedia.org/wiki/Geohash) to encode the approximate location, we can map geohash prefixes into the set of objects contained in the geohash using a [Prefix Tree](https://en.wikipedia.org/wiki/Trie) stored in-memory.
 
 We can efficiently partition the search space and perform a [nearest neighbor search](https://en.wikipedia.org/wiki/Nearest_neighbour_algorithm) on a merged set of objects in the search region and return the results.
