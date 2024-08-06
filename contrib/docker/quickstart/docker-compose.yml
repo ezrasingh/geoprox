@@ -7,7 +7,7 @@ services:
     # This is optional, demonstrating how to specify your config path.
     # The default path is /etc/geoprox/
     # Feel free to remove this command if you are fine with the default config path
-    command: run -c /etc/geoprox/geoprox.toml
+    command: -c /etc/geoprox/geoprox.toml
 
     ports:
       - 5000:5000

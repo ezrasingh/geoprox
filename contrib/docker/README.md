@@ -59,13 +59,13 @@ If you need to specify a different path or file name for your configuration, use
 docker run -t -p 5000:5000 \
     -v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro \
     ezrasingh/geoprox:latest \
-    run -c /some/path/custom-config.toml
+    -c /some/path/custom-config.toml
 ```
 
 In this command:
 
-- `-v $(pwd)/custom-config.toml:/etc/geoprox/custom-config.toml:ro` mounts the local configuration file into the container.
-- `run -c /etc/geoprox/custom-config.toml` specifies the configuration file to be used by the Geoprox server.
+- `-v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro` mounts the local configuration file into the container.
+- `-c /some/path/custom-config.toml` specifies the configuration file to be used by the Geoprox server.
 
 ## Quick Start
 
