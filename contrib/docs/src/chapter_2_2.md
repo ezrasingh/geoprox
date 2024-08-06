@@ -8,18 +8,18 @@ Prefix search is a method for quickly finding all entries in a dataset that shar
 
 ![](assets/trie.png)
 
-We can store Geohashes in a Trie Tree data structure. Tries enable us to efficiently retrieve geohashes with a common prefix in O(L) time, where L is the length of the prefix being searched.
+We can store Geohashes in a [Trie Tree](https://en.wikipedia.org/wiki/Trie) data structure. Tries enable us to efficiently retrieve geohashes with a common prefix in `O(L)` time, where `L` is the length of the prefix being searched.
 
 ### Key Features of Trie Tree:
 
 - **Efficient Retrieval:** Quickly find geohashes sharing a common prefix.
 - **Time Complexity:** `O(L)`, where `L` is the prefix length.
 
-## Patricia Trie Tree
+## Patricia Trie
 
 ![](assets/patricia-trie.png)
 
-A Patricia Trie Tree, also known as a Radix Tree, is a type of Trie Tree that optimizes space by merging common prefixes into single nodes. This further enhances the efficiency of prefix searching by reducing the number of nodes.
+A [Patricia Trie](https://en.wikipedia.org/wiki/Radix_tree#Variants), also known as a [Radix Tree](https://en.wikipedia.org/wiki/Radix_tree), is a type of Trie Tree that optimizes space by merging common prefixes into single nodes. This further enhances the efficiency of prefix searching by reducing the number of nodes.
 
 ### Key Features of Patricia Trie Tree:
 

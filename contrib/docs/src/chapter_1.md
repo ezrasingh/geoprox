@@ -1,6 +1,6 @@
 # Introduction
 
-Geoprox is a geospatial indexing and querying API designed to simplify and optimize location-based operations. It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.
+[Geoprox](https://github.com/ezrasingh/geoprox/) is a geospatial indexing and querying API designed to simplify and optimize location-based operations. It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.
 
 ## Key Features:
 
@@ -14,8 +14,6 @@ Geoprox is a geospatial indexing and querying API designed to simplify and optim
 - **Efficient Spatial Data Handling**: Streamline operations by leveraging geohashes for compact and hierarchical representation of locations.
 - **Flexible Querying**: Use proximity-based queries to enhance real-time decision-making and operational efficiency.
 - **Easy Integration**: Seamlessly integrate Geoprox with applications for real-time tracking, delivery services, and more.
-
-Geoprox is particularly useful for scenarios that require real-time location tracking and efficient geospatial queries. It simplifies the process of managing and querying location-based data, making it ideal for applications like locating available e-bikes or finding nearby restaurants.
 
 ## Contributing
 

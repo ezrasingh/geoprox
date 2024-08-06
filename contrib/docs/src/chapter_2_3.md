@@ -6,9 +6,9 @@ The core approach involves encoding geographic coordinates into geohashes, utili
 
 ## Data Structures
 
-- **Approximate Rider Position Tracking:**
+- **Approximate Position Tracking:**
 
-  - Utilize a [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)[\* see v0.3.0 release notes](https://github.com/ezrasingh/geoprox/releases/tag/v0.3.0) to track approximate rider positions.
+  - Utilize a [`HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html) ([\* see v0.3.0 release notes](https://github.com/ezrasingh/geoprox/releases/tag/v0.3.0)) to track approximate positions.
   - Format: `object_key` => `geohash(lat, lng)`
 
 - **Key/Value Storage:**

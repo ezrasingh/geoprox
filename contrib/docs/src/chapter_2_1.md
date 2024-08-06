@@ -6,7 +6,7 @@ A geohash is a string representation of a geographic location, encoded as a seri
 
 ![](assets/geohash-levels.png)
 
-Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base32). The precision of the geohash can be adjusted by changing its length:
+Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base 32). The precision of the geohash can be adjusted by changing its length:
 
 - Short geohashes represent larger areas.
 - Long geohashes represent smaller, more precise areas.
@@ -39,3 +39,7 @@ However, these geohashes represent completely different regions:
 - **Compact Representation**: Efficiently stores geographic coordinates.
 - **Hierarchical Structure**: Allows for easy aggregation and precision adjustment.
 - **Proximity Queries**: Simplifies the process of finding nearby locations.
+
+> Check out the [Geohash Explorer](https://geohash.softeng.co/) for an interactive map to help visualize geohashing.
+
+<iframe src="https://geohash.softeng.co/" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" width="100%" height="500" style="border: none;"></iframe>
