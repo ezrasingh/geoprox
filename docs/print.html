@@ -204,7 +204,7 @@
 <li>Search should return a set of objects within a radius of the search location.</li>
 </ul>
 <h2 id="solution"><a class="header" href="#solution">Solution</a></h2>
-<p>We index the objects and hash their key and geographical position. Using a <a href="https://en.wikipedia.org/wiki/Geohash">geohash</a> to encode the approximate location, we can map geohash prefixes into the set of objects contained in the Geohash using a <a href="https://en.wikipedia.org/wiki/Trie">Prefix Tree</a> stored in-memory.</p>
+<p>Index the objects and hash their key and geographical position. Using a <a href="https://en.wikipedia.org/wiki/Geohash">geohash</a> to encode the approximate location, we can map geohash prefixes into the set of objects contained in the geohash using a <a href="https://en.wikipedia.org/wiki/Trie">Prefix Tree</a> stored in-memory.</p>
 <p>We can efficiently partition the search space and perform a <a href="https://en.wikipedia.org/wiki/Nearest_neighbour_algorithm">nearest neighbor search</a> on a merged set of objects in the search region and return the results.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-a-geohash"><a class="header" href="#what-is-a-geohash">What is a Geohash?</a></h1>
 <p>A geohash is a string representation of a geographic location, encoded as a series of characters. This encoding allows for efficient storage and querying of spatial data. Geohashes are hierarchical, meaning that as the string length increases, the represented area becomes more precise.</p>
