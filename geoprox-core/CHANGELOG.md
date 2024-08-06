@@ -7,16 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Added additional tests for insertion, query, removal and capacity on both
-- Handled edge case when `count` eqauls 0
-- Handled bug in [Kiddo](https://github.com/sdd/kiddo/) where `count` is ignored when `sorted` is disabled (see [Kiddo#168](https://github.com/sdd/kiddo/issues/168))
+## 0.3.1
+
+- Added additional tests for insertion, query and removal.
+- Handled edge case when `count` eqauls 0.
+- Handled bug in [Kiddo](https://github.com/sdd/kiddo/) where `count` is ignored when `sort` is disabled (see [Kiddo#168](https://github.com/sdd/kiddo/issues/168)).
 
 ## 0.3.0
 
-- Using [`ahash`](https://crates.io/crates/ahash) as the internal hasher, since it out performed previous benchmarks
-- Swapped `std::collections` for [`hashbrown`](https://crates.io/crates/hashbrown) implementations
+- Using [`ahash`](https://crates.io/crates/ahash) as the internal hasher, since it out performed previous benchmarks.
+- Swapped `std::collections` for [`hashbrown`](https://crates.io/crates/hashbrown) implementations.
 - Replaced `position_map` implementation from `HashMap` to [`HashTable`](https://docs.rs/hashbrown/0.14.5/hashbrown/struct.HashTable.html) improving key lookup speeds.
-- `search` and `range_query` support `count` and `sorted` arguments
+- `search` and `range_query` support `count` and `sorted` arguments.
 
 ## 0.2.0
 

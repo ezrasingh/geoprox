@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.3.1
+
+- Bumped `geoprox-core` to [v0.3.1](https://crates.io/crates/geoprox-core/0.3.1).
+- Bumped `geoprox-server` to [v0.3.1](https://crates.io/crates/geoprox-server/0.3.1).
+
 ## 0.3.0
 
-- Bumped `geoprox-core` to [v0.3.0](https://crates.io/crates/geoprox-core/0.3.0)
-- Bumped `geoprox-server` to [v0.3.0](https://crates.io/crates/geoprox-server/0.3.0)
+- Bumped `geoprox-core` to [v0.3.0](https://crates.io/crates/geoprox-core/0.3.0).
+- Bumped `geoprox-server` to [v0.3.0](https://crates.io/crates/geoprox-server/0.3.0).
 
 ## 0.2.0
 

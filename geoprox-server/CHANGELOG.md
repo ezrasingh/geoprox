@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.3.1
+
+- Bumped `geoprox-core` to [v0.3.1](https://crates.io/crates/geoprox-core/0.3.1).
+- Improved handling of edge cases involving the `count` parameter.
+
 ## 0.3.0
 
-- `GET /api/v1/shard/:index` now supports optional `count` and `sorted` query parameters
+- `GET /api/v1/shard/:index` now supports optional `count` and `sorted` query parameters.
 
 ## 0.2.0
 
@@ -25,6 +30,6 @@ This service provides an API wrapper over [geoprox-core](../geoprox-core/README.
 
 ### Notes
 
-- HTTP REST service built on [tokio-rs/axum](https://github.com/tokio-rs/axum)
-- OpenAPI documentation generation via [utoipa](https://github.com/juhaku/utoipa)
-- Server supports `cache-control` response headers with compatible clients
+- HTTP REST service built on [tokio-rs/axum](https://github.com/tokio-rs/axum).
+- OpenAPI documentation generation via [utoipa](https://github.com/juhaku/utoipa).
+- Server supports `cache-control` response headers with compatible clients.
