@@ -2,7 +2,9 @@
 
 Geoprox is an in-memory geospatial search engine designed for efficient real-time location-based pairing.
 
-It helps quickly identify users or entities near a specific location, making it ideal for applications that need to match contracts with nearby users. Whether it's for ride-sharing services like Uber and Lyft or delivery platforms like Grubhub, Geoprox provides the speed and accuracy needed to enhance geo-aware interactions.
+It helps quickly identify users or entities near a specific location, making it ideal for applications that need to match contracts with nearby users.
+
+Whether it's for ride-sharing services like Uber and Lyft or delivery platforms like Grubhub, Geoprox provides the speed and accuracy needed to enhance geo-aware interactions.
 
 [Discussed @ May 2024 Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024/-/blob/main/Geo-Proximity-Detection-With-Rust.pdf)
 
