@@ -1,6 +1,11 @@
 # Geoprox Core
 
-A Rust crate designed for geospatial indexing and sharding. It includes two primary modules: `cache` and `shard`. These modules provide efficient geospatial queries and indexing for applications such as food delivery services, real-time inventory tracking, and more.
+**Geoprox Core** is the foundational Rust crate for the [Geoprox](https://github.com/ezrasingh/geoprox/) project, providing robust geospatial indexing and sharding capabilities. It includes two primary modules:
+
+- **`cache`**: Manages in-memory storage and retrieval of geospatial data to ensure quick access and efficient querying.
+- **`shard`**: Handles the partitioning and indexing of geospatial information, optimizing data distribution and retrieval across large datasets.
+
+These modules are built to handle various use cases, such as food delivery services and real-time inventory tracking.
 
 > **Looking for an API implementation?** See, [`geoprox-server`](https://crates.io/crates/geoprox-server/) for the HTTP API version of this service and [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for HTTP client libraries.
 
@@ -28,8 +33,8 @@ extern crate geoprox_core;
 let mut geo_index = geoprox_core::SpatialIndex::default();
 
 // ? place object keys into index
-geo_index.insert("player1", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
-geo_index.insert("player2", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
+geo_index.insert("alice", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
+geo_index.insert("bob", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
 
 // ? search index for objects near New York
 let nearby: LatLngCoord = [40.7128, 74.006];

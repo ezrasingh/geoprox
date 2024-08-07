@@ -1,12 +1,15 @@
 # Geoprox Server
 
-Geoprox Server provides a geospatial indexing API with capabilities to encode/decode geohashes, query for neighboring geohashes, and perform geospatial searches within a specified range. This API allows you to efficiently manage and query geospatial data.
+Geoprox Server is an in-memory geospatial search engine built on top of [Geoprox Core](https://crates.io/crates/geoprox-core/).
+
+It provides an API for encoding and decoding geohashes, querying neighboring geohashes, and conducting efficient geospatial searches within specific ranges. This makes it a practical tool for managing and querying location-based data with speed and accuracy.
+
+This service is well-suited for real-time applications such as ride-sharing and food delivery services, where quick and accurate location tracking is crucial.
 
 > **Need an API Client?** See, [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for available HTTP client libraries or generate your own.
 
-> Swagger UI is available at the `/swagger-ui/` endpoint.
-
-> The OpenAPI specification is accessible at the `/api-spec/openapi.json` endpoint.
+- Swagger UI is available at the `/swagger-ui/` endpoint.
+- The OpenAPI specification is accessible at the `/api-spec/openapi.json` endpoint.
 
 ## Table of Contents
 
