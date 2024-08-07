@@ -33,7 +33,9 @@ This command will start the Geoprox container with the default settings, exposin
 
 The Geoprox image supports two variant tags: `alpine` and `debian`.
 
-By default, the `latest` tag uses the `alpine` variant. To pin your Geoprox instance to a specific version and variant, use the format `<version>-<variant>`, such as `v0.3.0-debian`.
+By default, the `latest` tag uses the `alpine` variant. Latest is built from the `main` branch.
+
+To pin your Geoprox instance to a specific version and variant, use the format `<version>-<variant>`, such as `v0.3.0-debian`.
 
 > If you specify only the version, like `v0.3.0`, it will default to the `alpine` variant, resulting in `v0.3.0-alpine`.
 
