@@ -1,6 +1,6 @@
 # Geoprox Core
 
-**Geoprox Core** is the foundational Rust crate for the [Geoprox](https://github.com/ezrasingh/geoprox/) project, providing robust geospatial indexing and sharding capabilities. It includes two primary modules:
+Geoprox Core is the foundational Rust crate for the [Geoprox](https://github.com/ezrasingh/geoprox/) project, providing robust geospatial indexing and sharding capabilities. It includes two primary modules:
 
 - **`cache`**: Manages in-memory storage and retrieval of geospatial data to ensure quick access and efficient querying.
 - **`shard`**: Handles the partitioning and indexing of geospatial information, optimizing data distribution and retrieval across large datasets.
