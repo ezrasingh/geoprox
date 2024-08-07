@@ -1,34 +1,10 @@
-use hashbrown::HashMap;
-
-use serde::Deserialize;
+use geohash::GeohashError;
+use hashbrown::{HashMap, HashSet};
+use itertools::Itertools;
+use rayon::prelude::*;
 
 use crate::cache::SpatialIndex;
-use crate::models::{LatLngCoord, Neighbor};
-
-#[derive(Debug)]
-pub enum GeoShardError {
-    IndexAlreadyExists(String),
-    IndexNotFound(String),
-    GeohashError(geohash::GeohashError),
-}
-
-/// Configures geoshard parameters
-#[derive(Clone, Debug, Deserialize)]
-pub struct GeoShardConfig {
-    // geohash length used during insert
-    insert_depth: usize,
-    // initial subregion geohash length used during range query
-    search_depth: Option<usize>,
-}
-
-impl Default for GeoShardConfig {
-    fn default() -> Self {
-        GeoShardConfig {
-            insert_depth: SpatialIndex::DEFAULT_DEPTH,
-            search_depth: None,
-        }
-    }
-}
+use crate::models::{BatchOutput, GeoShardConfig, GeoShardError, LatLngCoord, Neighbor};
 
 /// A collection of geospatial indexes stored in-memory
 #[derive(Default, Clone)]
@@ -50,7 +26,7 @@ impl GeoShard {
     /// Adds a new geospatial index to the shard
     pub fn create_index(&mut self, index: &str) -> Result<Option<()>, GeoShardError> {
         if self.cache.contains_key(index) {
-            return Err(GeoShardError::IndexAlreadyExists(index.to_string()));
+            return Err(GeoShardError::IndexAlreadyExists(index.to_owned()));
         }
         match self.cache.insert(index.into(), SpatialIndex::default()) {
             Some(_) => Ok(Some(())),
@@ -68,10 +44,10 @@ impl GeoShard {
         &mut self,
         index: &str,
         key: &str,
-        position: LatLngCoord,
+        [lat, lng]: LatLngCoord,
     ) -> Result<String, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
-            match geohash::encode([position[1], position[0]].into(), self.config.insert_depth) {
+            match geohash::encode([lng, lat].into(), self.config.insert_depth) {
                 Ok(ghash) => {
                     geo_index.insert(key, &ghash);
                     Ok(ghash)
@@ -79,7 +55,41 @@ impl GeoShard {
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
         } else {
-            Err(GeoShardError::IndexNotFound(index.into()))
+            Err(GeoShardError::IndexNotFound(index.to_owned()))
+        }
+    }
+
+    /// Adds multiple keys into the specified index at some geographical position
+    pub fn insert_many_keys(
+        &mut self,
+        index: &str,
+        objects: Vec<(String, LatLngCoord)>,
+        preserve_order: bool,
+    ) -> Result<BatchOutput<String, GeohashError>, GeoShardError> {
+        if let Some(geo_index) = self.cache.get_mut(index) {
+            let (bulk, errors): BatchOutput<String, GeohashError> = if !preserve_order {
+                // ? use parallel iterator
+                objects.into_par_iter().partition_map(|(key, [lat, lng])| {
+                    match geohash::encode([lng, lat].into(), self.config.insert_depth) {
+                        Ok(ghash) => rayon::iter::Either::Left((key, ghash)),
+                        Err(err) => rayon::iter::Either::Right((key, err)),
+                    }
+                })
+            } else {
+                // ? use sequential iterator
+                objects.into_iter().partition_map(|(key, [lat, lng])| {
+                    match geohash::encode([lng, lat].into(), self.config.insert_depth) {
+                        Ok(ghash) => itertools::Either::Left((key, ghash)),
+                        Err(err) => itertools::Either::Right((key, err)),
+                    }
+                })
+            };
+
+            geo_index.insert_many(bulk.clone());
+
+            Ok((bulk, errors))
+        } else {
+            Err(GeoShardError::IndexNotFound(index.to_owned()))
         }
     }
 
@@ -88,7 +98,20 @@ impl GeoShard {
         if let Some(geo_index) = self.cache.get_mut(index) {
             Ok(geo_index.remove(key))
         } else {
-            Err(GeoShardError::IndexNotFound(index.into()))
+            Err(GeoShardError::IndexNotFound(index.to_owned()))
+        }
+    }
+
+    /// Deletes multiple keys from the specified index
+    pub fn remove_many_keys(
+        &mut self,
+        index: &str,
+        keys: HashSet<String>,
+    ) -> Result<bool, GeoShardError> {
+        if let Some(geo_index) = self.cache.get_mut(index) {
+            Ok(geo_index.remove_many(keys))
+        } else {
+            Err(GeoShardError::IndexNotFound(index.to_owned()))
         }
     }
 
@@ -110,8 +133,25 @@ impl GeoShard {
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
         } else {
-            Err(GeoShardError::IndexNotFound(index.into()))
+            Err(GeoShardError::IndexNotFound(index.to_owned()))
         }
+    }
+
+    /// Search multiple indices for keys within some range
+    pub fn query_range_many(
+        &self,
+        indices: HashSet<String>,
+        origin: LatLngCoord,
+        range: f64,
+        count: usize,
+        sorted: bool,
+    ) -> BatchOutput<Vec<Neighbor>, GeoShardError> {
+        indices.into_par_iter().partition_map(|index| {
+            match self.query_range(&index, origin, range, count, sorted) {
+                Ok(found) => itertools::Either::Left((index, found)),
+                Err(err) => itertools::Either::Right((index, err)),
+            }
+        })
     }
 }
 
@@ -153,9 +193,17 @@ mod test {
         let sorted = false;
         shard.create_index(mock_index).unwrap();
 
-        shard.insert_key(mock_index, "a", [-0.25, 1.0]).unwrap();
-        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
-        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
+        shard
+            .insert_many_keys(
+                mock_index,
+                vec![
+                    ("a".to_string(), [-0.25, 1.0]),
+                    ("b".to_string(), [1.0, 0.5]),
+                    ("c".to_string(), [0.0, 0.0]),
+                ],
+                false,
+            )
+            .unwrap();
 
         let res = shard
             .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
@@ -171,12 +219,20 @@ mod test {
         let sorted = true;
         shard.create_index(mock_index).unwrap();
 
-        shard.insert_key(mock_index, "a", [0.0, 1.0]).unwrap();
-        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
-        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
-        shard.insert_key(mock_index, "d", [0.0, -1.0]).unwrap();
-        shard.insert_key(mock_index, "e", [-1.0, -0.5]).unwrap();
-        shard.insert_key(mock_index, "f", [0.0, 0.0]).unwrap();
+        shard
+            .insert_many_keys(
+                mock_index,
+                vec![
+                    ("a".to_string(), [0.0, 1.0]),
+                    ("b".to_string(), [1.0, 0.5]),
+                    ("c".to_string(), [0.0, 0.0]),
+                    ("d".to_string(), [0.0, -1.0]),
+                    ("e".to_string(), [-1.0, -0.5]),
+                    ("f".to_string(), [0.0, 0.0]),
+                ],
+                false,
+            )
+            .unwrap();
 
         let res = shard
             .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
@@ -196,12 +252,20 @@ mod test {
         let sorted = true;
         shard.create_index(mock_index).unwrap();
 
-        shard.insert_key(mock_index, "a", [0.0, 1.0]).unwrap();
-        shard.insert_key(mock_index, "b", [1.0, 0.5]).unwrap();
-        shard.insert_key(mock_index, "c", [0.0, 0.0]).unwrap();
-        shard.insert_key(mock_index, "d", [0.0, -1.0]).unwrap();
-        shard.insert_key(mock_index, "e", [-1.0, -0.5]).unwrap();
-        shard.insert_key(mock_index, "f", [0.0, 0.0]).unwrap();
+        shard
+            .insert_many_keys(
+                mock_index,
+                vec![
+                    ("a".to_string(), [0.0, 1.0]),
+                    ("b".to_string(), [1.0, 0.5]),
+                    ("c".to_string(), [0.0, 0.0]),
+                    ("d".to_string(), [0.0, -1.0]),
+                    ("e".to_string(), [-1.0, -0.5]),
+                    ("f".to_string(), [0.0, 0.0]),
+                ],
+                false,
+            )
+            .unwrap();
 
         {
             let count = 100;

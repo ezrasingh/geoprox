@@ -33,7 +33,7 @@ fn random_query(rng: &mut ThreadRng) -> (LatLngCoord, f64) {
     ([lat, lng], range)
 }
 
-fn seed_index(size: &i32, rng: &mut ThreadRng) -> SpatialIndex<String> {
+fn seed_index(size: &i32, rng: &mut ThreadRng) -> SpatialIndex {
     let mut geo_index = SpatialIndex::new(*size as usize);
     for n in 0..*size {
         geo_index.insert(&n.to_string(), &random_geohash(rng));
@@ -76,7 +76,7 @@ fn query_range_benchmark(c: &mut Criterion) {
 
     for capacity in CAPACITY_RANGE.iter() {
         let mut rng = rand::thread_rng();
-        let geo_index: SpatialIndex<String> = black_box(seed_index(capacity, &mut rng));
+        let geo_index: SpatialIndex = black_box(seed_index(capacity, &mut rng));
 
         group.throughput(Throughput::Elements(*capacity as u64));
         group.bench_with_input(BenchmarkId::from_parameter(capacity), capacity, |b, _| {

@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added missing OpenAPI `Path` parameter descriptions
+- Improved error handling and responses
+- Implemented Batch API for insertion, removal and query
+
 ## 0.3.1
 
-- Bumped `geoprox-core` to [v0.3.1](https://crates.io/crates/geoprox-core/0.3.1).
 - Improved handling of edge cases involving the `count` parameter.
+- Bumped `geoprox-core` to [v0.3.1](https://crates.io/crates/geoprox-core/0.3.1).
 
 ## 0.3.0
 
 - `GET /api/v1/shard/:index` now supports optional `count` and `sorted` query parameters.
+- Bumped `geoprox-core` to [v0.3.0](https://crates.io/crates/geoprox-core/0.3.0).
 
 ## 0.2.0
 

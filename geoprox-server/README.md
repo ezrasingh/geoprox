@@ -4,7 +4,9 @@ Geoprox Server provides a geospatial indexing API with capabilities to encode/de
 
 > **Need an API Client?** See, [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk) for available HTTP client libraries or generate your own.
 
-The OpenAPI specification is accessible at the `/api-spec/openapi.json` endpoint.
+> Swagger UI is available at the `/swagger-ui/` endpoint.
+
+> The OpenAPI specification is accessible at the `/api-spec/openapi.json` endpoint.
 
 ## Table of Contents
 

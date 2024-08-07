@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use config::{Config, ConfigError};
-use geoprox_core::shard::GeoShardConfig;
+use geoprox_core::models::GeoShardConfig;
 use geoprox_server::config::ServerConfig;
 use serde::Deserialize;
 use std::net::SocketAddr;

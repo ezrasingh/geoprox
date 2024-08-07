@@ -1,4 +1,6 @@
-use geoprox_core::models::Neighbor;
+use std::collections::HashMap;
+
+use geoprox_core::models::{LatLngCoord, Neighbor};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToResponse, ToSchema};
 
@@ -81,7 +83,7 @@ pub struct CreateIndexResponse {
 /// Arguments for inserting a key
 #[derive(Deserialize, ToSchema)]
 pub struct InsertKey {
-    /// Resource key
+    /// Object key
     pub key: String,
     /// Latitude
     pub lat: f64,
@@ -92,25 +94,66 @@ pub struct InsertKey {
 /// Returns key and geohash
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct InsertKeyResponse {
-    /// Resource key
+    /// Object key
     pub key: String,
     /// Geohash encoded latitude/longitude
     pub geohash: String,
 }
 
+/// Arguments for inserting multiple keys
+#[derive(Deserialize, ToSchema)]
+pub struct InsertKeyBatch {
+    /// Object key
+    pub keys: Vec<InsertKey>,
+    // Insert keys in the order they were received.
+    pub preserve_order: bool,
+}
+
+impl Into<Vec<(String, LatLngCoord)>> for InsertKeyBatch {
+    fn into(self) -> Vec<(String, LatLngCoord)> {
+        self.keys
+            .iter()
+            .map(|insert| (insert.key.to_owned(), [insert.lat, insert.lng]))
+            .collect()
+    }
+}
+
+/// Returns results and errors of batch key insert
+#[derive(Serialize, ToSchema, ToResponse)]
+pub struct InsertKeyBatchResponse {
+    /// Object keys that have been inserted in the index and their geohash.
+    pub results: HashMap<String, String>,
+    /// Contains information about which keys failed to be inserted and the associated error details.
+    pub errors: HashMap<String, String>,
+}
+
 /// Arguments for removing a key
 #[derive(Deserialize, ToSchema)]
 pub struct RemoveKey {
-    /// Resource key
+    /// Object key
     pub key: String,
 }
 
 /// Returns key and deletion status
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct RemoveKeyResponse {
-    /// Resource key
+    /// Object key
     pub key: String,
     /// If true key was removed
+    pub deleted: bool,
+}
+
+/// Arguments for removing multiple keys
+#[derive(Deserialize, ToSchema)]
+pub struct RemoveKeyBatch {
+    /// Object key
+    pub keys: Vec<String>,
+}
+
+/// Returns batch key deletion status
+#[derive(Serialize, ToSchema, ToResponse)]
+pub struct RemoveKeyBatchResponse {
+    /// If true all keys were removed
     pub deleted: bool,
 }
 
@@ -138,11 +181,39 @@ pub struct QueryRange {
     pub sorted: Option<bool>,
 }
 
-/// Returns resource keys found with their distance
+/// Returns object keys found with their distance
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct QueryRangeResponse {
-    /// Resource keys found within range
+    /// Object keys found within range
     pub found: Vec<Neighbor>,
+}
+
+/// Arguments for group range query
+#[derive(Deserialize, ToSchema, IntoParams)]
+pub struct QueryRangeMany {
+    /// List of indices to search
+    pub indices: Vec<String>,
+    /// Latitude
+    pub lat: f64,
+    /// Longitude
+    pub lng: f64,
+    /// Search radius in kilometers
+    #[schema(minimum = 0, maximum = 0xFFFF)]
+    pub range: u16,
+    /// Maximum number of neighbors that can be returned (default 100)
+    #[schema(minimum = 1, maximum = 0xFFFF)]
+    pub count: Option<usize>,
+    /// If enabled neighbors will be sorted by distance, nearest to furthest (default false)
+    pub sorted: Option<bool>,
+}
+
+/// Returns indices and object keys found with their distance
+#[derive(Serialize, ToSchema, ToResponse)]
+pub struct QueryRangeManyResponse {
+    /// Object keys found within range
+    pub results: HashMap<String, Vec<Neighbor>>,
+    /// Contains information about any errors occured during batch search.
+    pub errors: HashMap<String, String>,
 }
 
 /// Returns structured error message

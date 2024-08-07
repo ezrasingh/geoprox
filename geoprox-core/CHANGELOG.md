@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added suport for batch insertion, query and removal.
+- Improved error handling for `GeoShardError` by implementing `Display` and `Error`.
+- Corrected issue with `(lat, lng)` ordering in `HaversineDistance` metric.
+
 ## 0.3.1
 
 - Added additional tests for insertion, query and removal.

@@ -1,4 +1,4 @@
-use geoprox_core::shard::GeoShardConfig;
+use geoprox_core::models::GeoShardConfig;
 use geoprox_server::config::ServerConfig;
 
 mod cli;

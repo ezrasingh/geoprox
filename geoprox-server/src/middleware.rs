@@ -10,6 +10,7 @@ pub async fn set_cache_control(req: Request, next: Next) -> impl IntoResponse {
         // ? tell client to cache for 3600s (1hr)
         "max-age=3600, immutable".parse().unwrap(),
     );
+
     response
 }
 

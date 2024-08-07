@@ -2,7 +2,8 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use geoprox_core::shard::{GeoShard, GeoShardConfig};
+use geoprox_core::models::GeoShardConfig;
+use geoprox_core::shard::GeoShard;
 use std::sync::{Arc, RwLock};
 
 use crate::dto::AppErrorResponse;

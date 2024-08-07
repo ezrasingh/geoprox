@@ -2,10 +2,10 @@ use crate::app::{AppState, SharedState};
 use crate::handlers::{geohash_api, geoshard_api};
 use crate::middleware::{json_content, set_cache_control};
 use axum::{
-    routing::{get, post},
+    routing::{get, post, put},
     Router,
 };
-use geoprox_core::shard::GeoShardConfig;
+use geoprox_core::models::GeoShardConfig;
 use std::sync::Arc;
 
 /// Returns REST API router
@@ -29,7 +29,13 @@ pub fn routes(shard_config: GeoShardConfig) -> Router {
             post(geoshard_api::create_index)
                 .delete(geoshard_api::drop_index)
                 .put(geoshard_api::insert_key)
+                .patch(geoshard_api::remove_key)
                 .get(geoshard_api::query_range),
+        )
+        .route("/shard/", get(geoshard_api::query_range_many))
+        .route(
+            "/shard/:index/batch/",
+            put(geoshard_api::insert_key_batch).patch(geoshard_api::remove_key_batch),
         )
         .layer(axum::middleware::from_fn(json_content))
         .with_state(Arc::clone(&state))
@@ -52,23 +58,32 @@ pub mod docs {
         // Geoshard API
         geoshard_api::create_index,
         geoshard_api::insert_key,
+        geoshard_api::insert_key_batch,
         geoshard_api::remove_key,
+        geoshard_api::remove_key_batch,
         geoshard_api::drop_index,
         geoshard_api::query_range,
+        geoshard_api::query_range_many,
     ),
     components(schemas(
         dto::EncodeLatLng,
         dto::InsertKey,
+        dto::InsertKeyBatch,
         dto::RemoveKey,
+        dto::RemoveKeyBatch,
         dto::QueryRange,
+        dto::QueryRangeMany,
         dto::DecodeGeohashResponse,
         dto::EncodeLatLngResponse,
         dto::GeohashNeighborsResponse,
         dto::CreateIndexResponse,
         dto::InsertKeyResponse,
+        dto::InsertKeyBatchResponse,
         dto::RemoveKeyResponse,
+        dto::RemoveKeyBatchResponse,
         dto::DropIndexResponse,
         dto::QueryRangeResponse,
+        dto::QueryRangeManyResponse,
         geoprox_core::models::Neighbor,
     ), responses(
         dto::DecodeGeohashResponse,
@@ -76,9 +91,12 @@ pub mod docs {
         dto::GeohashNeighborsResponse,
         dto::CreateIndexResponse,
         dto::InsertKeyResponse,
+        dto::InsertKeyBatchResponse,
         dto::RemoveKeyResponse,
+        dto::RemoveKeyBatchResponse,
         dto::DropIndexResponse,
         dto::QueryRangeResponse,
+        dto::QueryRangeManyResponse,
     )),
     tags(
         (name = "Geoprox", description = "Geospatial index API")

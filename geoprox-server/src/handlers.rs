@@ -11,7 +11,7 @@ pub mod geohash_api {
     /// Decode geohash by path param, returns coordinates with precision estimates.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash/{ghash}",
+        path = "/api/v1/geohash/{ghash}/",
         params(
             ("ghash" = String, Path, description = "Geohash encoded region"),
         ),
@@ -34,7 +34,7 @@ pub mod geohash_api {
                 lat_error,
                 lng_error,
             })),
-            Err(err) => Err(anyhow!("could not decode geohash '{}': {:#?}", ghash, err).into()),
+            Err(err) => Err(anyhow!(err).into()),
         }
     }
 
@@ -43,7 +43,7 @@ pub mod geohash_api {
     /// Encode coordinates by query params, returns geohash.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash",
+        path = "/api/v1/geohash/",
         params(EncodeLatLng),
         responses(
             (
@@ -59,13 +59,7 @@ pub mod geohash_api {
     ) -> Result<Json<EncodeLatLngResponse>, AppError> {
         match geoprox_core::geohash::encode([payload.lng, payload.lat].into(), payload.depth) {
             Ok(geohash) => Ok(Json(EncodeLatLngResponse { geohash })),
-            Err(err) => Err(anyhow!(
-                "could not encode lat/lng ({}, {}): {:#?}",
-                payload.lat,
-                payload.lng,
-                err
-            )
-            .into()),
+            Err(err) => Err(anyhow!(err).into()),
         }
     }
 
@@ -74,7 +68,7 @@ pub mod geohash_api {
     /// Returns geohash neighbors in all cardinal directions.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash/{ghash}/neighbors",
+        path = "/api/v1/geohash/{ghash}/neighbors/",
         params(
             ("ghash" = String, Path, description = "Geohash encoded region"),
         ),
@@ -92,12 +86,7 @@ pub mod geohash_api {
     ) -> Result<Json<GeohashNeighborsResponse>, AppError> {
         match geoprox_core::geohash::neighbors(&ghash) {
             Ok(neighbors) => Ok(Json(Into::<GeohashNeighborsResponse>::into(neighbors))),
-            Err(err) => Err(anyhow!(
-                "could not compute geohash neighbors for '{}': {:#?}",
-                ghash,
-                err
-            )
-            .into()),
+            Err(err) => Err(anyhow!(err).into()),
         }
     }
 }
@@ -105,19 +94,23 @@ pub mod geohash_api {
 pub mod geoshard_api {
     use crate::app::{AppError, SharedState};
     use crate::dto::{
-        CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyResponse, QueryRange,
-        QueryRangeResponse, RemoveKey, RemoveKeyResponse,
+        CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyBatch, InsertKeyBatchResponse,
+        InsertKeyResponse, QueryRange, QueryRangeMany, QueryRangeManyResponse, QueryRangeResponse,
+        RemoveKey, RemoveKeyBatch, RemoveKeyBatchResponse, RemoveKeyResponse,
     };
     use anyhow::anyhow;
     use axum::{extract, Json};
-    use geoprox_core::shard::GeoShardError;
+    use geoprox_core::models::GeoShardError;
 
     /// Create geospatial index
     ///
     /// Creates an in-memory index within this geoshard
     #[utoipa::path(
         post,
-        path = "/api/v1/shard/{index}",
+        path = "/api/v1/shard/{index}/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
         responses(
             (
                 status = 201,
@@ -144,93 +137,21 @@ pub mod geoshard_api {
                         existed: true,
                     }))
                 } else {
-                    Err(anyhow!("could not create index '{}': {:#?}", index, err).into())
+                    Err(anyhow!(err).into())
                 }
             }
         }
     }
 
-    /// Insert key into index
+    /// Deletes geospatial index
     ///
-    /// Inserts key into geospatial index
-    #[utoipa::path(
-        put,
-        path = "/api/v1/shard/{index}",
-        responses(
-            (
-                status = 201,
-                description = "Inserted key into index",
-                body = InsertKeyResponse
-            )
-        )
-    )]
-    pub async fn insert_key(
-        extract::State(state): extract::State<SharedState>,
-        extract::Path(index): extract::Path<String>,
-        extract::Json(payload): extract::Json<InsertKey>,
-    ) -> Result<Json<InsertKeyResponse>, AppError> {
-        let mut state = state.write().unwrap();
-
-        match state
-            .geoshard
-            .insert_key(&index, &payload.key, [payload.lat, payload.lng])
-        {
-            Ok(geohash) => Ok(Json(InsertKeyResponse {
-                key: payload.key,
-                geohash,
-            })),
-            Err(err) => Err(anyhow!(
-                "could not insert key '{}' at index '{}': {:#?}",
-                payload.key,
-                index,
-                err
-            )
-            .into()),
-        }
-    }
-
-    /// Remove key from index
-    ///
-    /// Removed key from geospatial index
-    #[utoipa::path(
-        patch,
-        path = "/api/v1/shard/{index}",
-        responses(
-            (
-                status = 200,
-                description = "Key removed from index",
-                body = InsertKeyResponse
-            )
-        )
-    )]
-    pub async fn remove_key(
-        extract::State(state): extract::State<SharedState>,
-        extract::Path(index): extract::Path<String>,
-        extract::Json(payload): extract::Json<RemoveKey>,
-    ) -> Result<Json<RemoveKeyResponse>, AppError> {
-        let mut state = state.write().unwrap();
-
-        match state.geoshard.remove_key(&index, &payload.key) {
-            Ok(deleted) => Ok(Json(RemoveKeyResponse {
-                key: payload.key,
-                deleted,
-            })),
-            Err(err) => Err(anyhow!(
-                "could not remove key '{}' at index '{}': {:#?}",
-                payload.key,
-                index,
-                err
-            )
-            .into()),
-        }
-    }
-
-    /// Drop index
-    ///
-    /// Deletes geospatial index, all keys will be lost
+    /// Drop index. All keys will be lost
     #[utoipa::path(
         delete,
-        path = "/api/v1/shard/{index}",
+        path = "/api/v1/shard/{index}/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
         responses(
             (
                 status = 202,
@@ -250,17 +171,167 @@ pub mod geoshard_api {
         Json(DropIndexResponse { deleted: true })
     }
 
-    /// Search nearby
+    /// Insert key into index
+    ///
+    /// Inserts key into geospatial index
+    #[utoipa::path(
+        put,
+        path = "/api/v1/shard/{index}/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
+        responses(
+            (
+                status = 201,
+                description = "Inserted key into the index",
+                body = InsertKeyResponse
+            )
+        )
+    )]
+    pub async fn insert_key(
+        extract::State(state): extract::State<SharedState>,
+        extract::Path(index): extract::Path<String>,
+        extract::Json(payload): extract::Json<InsertKey>,
+    ) -> Result<Json<InsertKeyResponse>, AppError> {
+        let mut state = state.write().unwrap();
+
+        match state
+            .geoshard
+            .insert_key(&index, &payload.key, [payload.lat, payload.lng])
+        {
+            Ok(geohash) => Ok(Json(InsertKeyResponse {
+                key: payload.key,
+                geohash,
+            })),
+            Err(err) => Err(anyhow!("could not insert key '{}': {:#?}", payload.key, err).into()),
+        }
+    }
+
+    /// Insert multiple keys into index
+    ///
+    /// Inserts multiple keys into geospatial index
+    #[utoipa::path(
+        put,
+        path = "/api/v1/shard/{index}/batch/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
+        responses(
+            (
+                status = 201,
+                description = "Inserted key batch into the index",
+                body = InsertKeyBatchResponse
+            )
+        )
+    )]
+    pub async fn insert_key_batch(
+        extract::State(state): extract::State<SharedState>,
+        extract::Path(index): extract::Path<String>,
+        extract::Json(payload): extract::Json<InsertKeyBatch>,
+    ) -> Result<Json<InsertKeyBatchResponse>, AppError> {
+        let mut state = state.write().unwrap();
+        let preserve_order = payload.preserve_order;
+
+        match state
+            .geoshard
+            .insert_many_keys(&index, payload.into(), preserve_order)
+        {
+            Ok((res, errs)) => Ok(Json(InsertKeyBatchResponse {
+                results: res.into_iter().collect(),
+                errors: errs
+                    .into_iter()
+                    .map(|(key, err)| (key, err.to_string()))
+                    .collect(),
+            })),
+            Err(err) => Err(anyhow!("could not insert batch keys: {:#?}", err).into()),
+        }
+    }
+
+    /// Remove key from index
+    ///
+    /// Removes key from geospatial index
+    #[utoipa::path(
+        patch,
+        path = "/api/v1/shard/{index}/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
+        responses(
+            (
+                status = 200,
+                description = "Key removed from the index",
+                body = RemoveKeyResponse
+            )
+        )
+    )]
+    pub async fn remove_key(
+        extract::State(state): extract::State<SharedState>,
+        extract::Path(index): extract::Path<String>,
+        extract::Json(payload): extract::Json<RemoveKey>,
+    ) -> Result<Json<RemoveKeyResponse>, AppError> {
+        let mut state = state.write().unwrap();
+
+        match state.geoshard.remove_key(&index, &payload.key) {
+            Ok(deleted) => Ok(Json(RemoveKeyResponse {
+                key: payload.key,
+                deleted,
+            })),
+            Err(err) => Err(anyhow!(err).into()),
+        }
+    }
+
+    /// Remove multiple keys from index
+    ///
+    /// Removes multiple keys from geospatial index
+    #[utoipa::path(
+        patch,
+        path = "/api/v1/shard/{index}/batch/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+        ),
+        responses(
+            (
+                status = 200,
+                description = "All keys were removed from the index",
+                body = RemoveKeyBatchResponse
+            )
+        )
+    )]
+    pub async fn remove_key_batch(
+        extract::State(state): extract::State<SharedState>,
+        extract::Path(index): extract::Path<String>,
+        extract::Json(payload): extract::Json<RemoveKeyBatch>,
+    ) -> Result<Json<RemoveKeyBatchResponse>, AppError> {
+        let mut state = state.write().unwrap();
+
+        match state
+            .geoshard
+            .remove_many_keys(&index, payload.keys.into_iter().collect())
+        {
+            Ok(deleted) => Ok(Json(RemoveKeyBatchResponse { deleted })),
+            Err(err) => Err(anyhow!(
+                "could not remove batch of keys from index '{}': {:#?}",
+                index,
+                err
+            )
+            .into()),
+        }
+    }
+
+    /// Search index for objects nearby
     ///
     /// Search geospatial index for all keys within some distance
     #[utoipa::path(
         get,
-        path = "/api/v1/shard/{index}",
-        params(QueryRange),
+        path = "/api/v1/shard/{index}/",
+        params(
+            ("index" = String, Path, description = "Geospatial index name"),
+            QueryRange
+        ),
         responses(
             (
                 status = 200,
-                description = "Index deleted",
+                description = "Nearby objects found",
                 body = QueryRangeResponse
             )
         )
@@ -280,7 +351,45 @@ pub mod geoshard_api {
             query.sorted.unwrap_or(false),
         ) {
             Ok(found) => Ok(Json(QueryRangeResponse { found })),
-            Err(err) => Err(anyhow!("query range search failed: {:#?}", err).into()),
+            Err(err) => Err(anyhow!(err).into()),
         }
+    }
+
+    /// Search multiple indices for objects nearby
+    ///
+    /// Search geospatial many indices for all keys within some distance
+    #[utoipa::path(
+        get,
+        path = "/api/v1/shard/",
+        params(QueryRangeMany),
+        responses(
+            (
+                status = 200,
+                description = "Nearby objects found across indices",
+                body = QueryRangeManyResponse
+            )
+        )
+    )]
+    pub async fn query_range_many(
+        extract::State(state): extract::State<SharedState>,
+        extract::Query(query): extract::Query<QueryRangeMany>,
+    ) -> Result<Json<QueryRangeManyResponse>, AppError> {
+        let state = state.read().unwrap();
+
+        let (res, errs) = state.geoshard.query_range_many(
+            query.indices.into_iter().collect(),
+            [query.lat, query.lng],
+            query.range.into(),
+            query.count.unwrap_or(100),
+            query.sorted.unwrap_or(false),
+        );
+
+        Ok(Json(QueryRangeManyResponse {
+            results: res.into_iter().collect(),
+            errors: errs
+                .into_iter()
+                .map(|(key, err)| (key, err.to_string()))
+                .collect(),
+        }))
     }
 }

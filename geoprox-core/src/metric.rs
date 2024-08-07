@@ -8,12 +8,12 @@ impl DistanceMetric<f64, 2> for HaversineDistance {
     fn dist(a: &[f64; 2], b: &[f64; 2]) -> f64 {
         haversine::distance(
             haversine::Location {
-                latitude: a[1],
-                longitude: a[0],
+                latitude: a[0],
+                longitude: a[1],
             },
             haversine::Location {
-                latitude: b[1],
-                longitude: b[0],
+                latitude: b[0],
+                longitude: b[1],
             },
             Units::Kilometers,
         )

@@ -6,7 +6,7 @@ pub mod handlers;
 pub mod middleware;
 
 use config::ServerConfig;
-use geoprox_core::shard::GeoShardConfig;
+use geoprox_core::models::GeoShardConfig;
 
 use axum::routing::Router;
 use tower_http::trace::TraceLayer;

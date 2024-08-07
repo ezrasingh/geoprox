@@ -24,7 +24,8 @@ fn build_search_space(
         if let Ok((position, _, _)) = geohash::decode(&ghash) {
             members.iter().for_each(|id: &ObjectIdentifier| {
                 debug!("adding object to kd-tree: id={} geohash={}", id, ghash);
-                search_tree.add(&[position.x, position.y], *id);
+                // ? geohash position uses (lng, lat)
+                search_tree.add(&[position.y, position.x], *id);
             });
         }
     }
@@ -33,11 +34,11 @@ fn build_search_space(
 }
 
 #[derive(Clone, Default)]
-pub struct SpatialIndex<K = String> {
-    /// maps geohash to common resources
+pub struct SpatialIndex {
+    /// maps geohash to common objects
     prefix_tree: StringPatriciaMap<HashSet<ObjectIdentifier>>,
-    /// maps resource key, geohash to hash id (resource id)
-    position_map: HashTable<(K, String)>,
+    /// maps object key, geohash to hash id (object id)
+    position_map: HashTable<[String; 2]>,
     /// internal hasher
     hasher: BuildHasherDefault<AHasher>,
 }
@@ -68,12 +69,12 @@ impl SpatialIndex {
         // ? remove object from previous locations
         if let Entry::Occupied(entry) = self.position_map.entry(
             id,
-            |(key, _)| key.eq(key),
-            |(key, _)| self.hasher.hash_one(key),
+            |[key, _]| key.eq(key),
+            |[key, _]| self.hasher.hash_one(key),
         ) {
-            let ((_, old_ghash), _) = entry.remove();
+            let ([_, old_ghash], _) = entry.remove();
             debug!(
-                "removing resource from previous ghash: id={} geohash={}",
+                "removing object from previous ghash: id={} geohash={}",
                 id, &old_ghash
             );
             if let Some(prev_members) = self.prefix_tree.get_mut(&old_ghash) {
@@ -83,10 +84,10 @@ impl SpatialIndex {
             }
         }
         // ? update position_map & prefix_tree
-        debug!("storing resource: id={} key={}", id, key);
+        debug!("storing object: id={} key={}", id, key);
 
         self.position_map
-            .insert_unique(id, (key.to_owned(), ghash.into()), |(key, _)| {
+            .insert_unique(id, [key.to_owned(), ghash.into()], |[key, _]| {
                 self.hasher.hash_one(key)
             });
         // ? insert current region into prefix tree
@@ -97,15 +98,22 @@ impl SpatialIndex {
         };
     }
 
+    /// insert multiple objects at once
+    pub fn insert_many(&mut self, objects: impl IntoIterator<Item = (String, String)>) {
+        objects
+            .into_iter()
+            .for_each(|(key, ghash)| self.insert(&key, &ghash));
+    }
+
     /// Remove key from index
     pub fn remove(&mut self, key: &str) -> bool {
         let id: ObjectIdentifier = self.hasher.hash_one(key);
         if let Entry::Occupied(entry) = self.position_map.entry(
             id,
-            |(key, _)| key.eq(key),
-            |(key, _)| self.hasher.hash_one(key),
+            |[key, _]| key.eq(key),
+            |[key, _]| self.hasher.hash_one(key),
         ) {
-            let ((_, ghash), _) = entry.remove();
+            let ([_, ghash], _) = entry.remove();
             if let Some(members) = self.prefix_tree.get_mut(&ghash) {
                 members.remove(&id);
                 if members.is_empty() {
@@ -116,9 +124,15 @@ impl SpatialIndex {
         true
     }
 
+    /// remove multiple objects at once
+    pub fn remove_many(&mut self, keys: HashSet<String>) -> bool {
+        // returns false if any failed
+        keys.iter().fold(true, |_, key| self.remove(key))
+    }
+
     pub fn search(
         &self,
-        position: LatLngCoord,
+        origin: LatLngCoord,
         radius: f64,
         count: usize,
         sorted: bool,
@@ -129,13 +143,12 @@ impl SpatialIndex {
         }
         let search_region: String = {
             let depth = initial_depth.unwrap_or(Self::DEFAULT_DEPTH);
-            let mut ghash = geohash::encode(position.into(), depth)?;
-            // ? kiddo uses (lng,lat) for calculations so we flip the LatLngCoord
-            let origin = [position[1], position[0]];
-            // ? truncate subregion hash until it contains our radius
+            // ? geohash crate uses (lng, lat) convention
+            let mut ghash = geohash::encode([origin[1], origin[0]].into(), depth)?;
+            // ? truncate subregion hash until it contains the radius
             while ghash.len().gt(&1) {
                 let (point, _, _) = geohash::decode(&ghash)?;
-                if HaversineDistance::dist(&origin, &[point.x, point.y]).gt(&radius) {
+                if HaversineDistance::dist(&origin, &[point.y, point.x]).gt(&radius) {
                     break;
                 } else {
                     ghash.pop();
@@ -146,14 +159,14 @@ impl SpatialIndex {
 
         // ? compute nearest neighbors
         let mut neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
-            .nearest_n_within::<HaversineDistance>(&position, radius, count, sorted)
+            .nearest_n_within::<HaversineDistance>(&origin, radius, count, sorted)
             .par_iter()
             .filter_map(|node| {
                 self.position_map
-                    .find(node.item, |(key, _)| {
+                    .find(node.item, |[key, _]| {
                         self.hasher.hash_one(key).eq(&node.item)
                     })
-                    .map(|(key, _)| Neighbor {
+                    .map(|[key, _]| Neighbor {
                         distance: node.distance,
                         key: key.to_owned(),
                     })
@@ -173,31 +186,32 @@ mod test {
     use super::*;
     use rand::prelude::*;
 
+    fn encode_lat_lng([lat, lng]: LatLngCoord, depth: usize) -> String {
+        geohash::encode([lng, lat].into(), depth).unwrap()
+    }
+
     #[test]
     fn test_upsert() {
         let mut geo_index = SpatialIndex::default();
         let insert_depth = 6;
-        let range = 1.0; // km
+        let range = 1.0;
         let origin: LatLngCoord = [0.0, 0.0];
         let key = "test-key";
 
         // place key within the search area
-        geo_index.insert(key, &geohash::encode(origin.into(), insert_depth).unwrap());
+        geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
 
         let res = geo_index.search(origin, range, 100, false, None).unwrap();
         assert_eq!(res.len(), 1);
 
         // move key out of search area
-        geo_index.insert(
-            key,
-            &geohash::encode([-2.0, -2.0].into(), insert_depth).unwrap(),
-        );
+        geo_index.insert(key, &encode_lat_lng([-70.0, 100.0], insert_depth));
 
         let res = geo_index.search(origin, range, 100, false, None).unwrap();
         assert_eq!(res.len(), 0);
 
         // move key back into search area
-        geo_index.insert(key, &geohash::encode(origin.into(), insert_depth).unwrap());
+        geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
 
         let res = geo_index.search(origin, range, 100, false, None).unwrap();
         assert_eq!(res.len(), 1);
@@ -207,11 +221,11 @@ mod test {
     fn test_remove() {
         let mut geo_index = SpatialIndex::default();
         let depth = 6;
-        let range = 10.0; // km
+        let range = 10.0;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert(&"a", &geohash::encode(origin.into(), depth).unwrap());
-        geo_index.insert(&"b", &geohash::encode(origin.into(), depth).unwrap());
+        geo_index.insert(&"a", &encode_lat_lng(origin, depth));
+        geo_index.insert(&"b", &encode_lat_lng(origin, depth));
 
         let res = geo_index.search(origin, range, 100, false, None).unwrap();
         assert_eq!(res.len(), 2);
@@ -227,19 +241,21 @@ mod test {
     fn test_search() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
-        let range = 1.0; // km
+        let range = 1.0;
         let count = 100;
         let sorted = false;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert(&"a", &geohash::encode([1.0, 0.0].into(), depth).unwrap());
-        geo_index.insert(&"b", &geohash::encode([1.0, 1.0].into(), depth).unwrap());
-        geo_index.insert(&"c", &geohash::encode([0.0, 1.0].into(), depth).unwrap());
-        geo_index.insert(&"d", &geohash::encode([0.0, 0.0].into(), depth).unwrap());
-        geo_index.insert(&"e", &geohash::encode([-1., 0.0].into(), depth).unwrap());
-        geo_index.insert(&"f", &geohash::encode([-1.0, -1.0].into(), depth).unwrap());
-        geo_index.insert(&"g", &geohash::encode([0.0, -1.0].into(), depth).unwrap());
-        geo_index.insert(&"h", &geohash::encode([0.0, 0.0].into(), depth).unwrap());
+        geo_index.insert_many(vec![
+            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+        ]);
 
         let res = geo_index
             .search(origin, range, count, sorted, None)
@@ -248,10 +264,6 @@ mod test {
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
         });
-        println!(
-            "Objects found within {}km from {:?}: {:#?}",
-            range, origin, res
-        );
     }
 
     #[test]
@@ -265,15 +277,12 @@ mod test {
 
         for n in 0..capacity {
             let (lat, lng) = (rng.gen_range(-90f64..90f64), rng.gen_range(-180f64..180f64));
-            geo_index.insert(
-                &n.to_string(),
-                &geohash::encode([lng, lat].into(), depth).unwrap(),
-            );
+            geo_index.insert(&n.to_string(), &encode_lat_lng([lat, lng], depth));
         }
 
         let center = [0f64, 0f64];
         let range = 200f64;
-        println!("searching area...");
+
         let res = geo_index
             .search(center, range, count, sorted, None)
             .unwrap();
