@@ -109,9 +109,9 @@ pub struct InsertKeyBatch {
     pub preserve_order: bool,
 }
 
-impl Into<Vec<(String, LatLngCoord)>> for InsertKeyBatch {
-    fn into(self) -> Vec<(String, LatLngCoord)> {
-        self.keys
+impl From<InsertKeyBatch> for Vec<(String, LatLngCoord)> {
+    fn from(val: InsertKeyBatch) -> Self {
+        val.keys
             .iter()
             .map(|insert| (insert.key.to_owned(), [insert.lat, insert.lng]))
             .collect()
