@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > Initial Proof-of-Concept Release
 
-Presented at the [Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024). It lays the groundwork for future development and demonstrates core functionalities.
+Presented at the [May 2024 Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024). It lays the groundwork for future development and demonstrates core functionalities.
 
 ### Key Features
 
