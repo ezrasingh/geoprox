@@ -84,7 +84,7 @@ For more details check out the [Docker Guide](contrib/docker/README.md).
 
 ## Testing and Benchmarks
 
-Yu can run tests and benchmarks using the following commands:
+You can run tests and benchmarks using the following commands:
 
 - **Run Tests:**
 
