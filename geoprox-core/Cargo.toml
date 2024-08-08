@@ -2,7 +2,7 @@
 name = "geoprox-core"
 version = "0.4.0"
 edition = "2021"
-description = "Core library for Geoprox, provides geospatial indexing and search functionalities."
+description = "Core library for Geoprox, provides geospatial indexing and search functionalities"
 categories = ["science::geo", "data-structures", "algorithms", "caching"]
 keywords = ["geospatial", "search", "geohash", "nearest-neighbor", "proximity"]
 readme = "README.md"
