@@ -39,7 +39,7 @@ Whether it's for ride-sharing services like Uber and Lyft or delivery platforms 
 
 HTTP Client libraries are generated from an OpenAPI specification (made available from the `/api-spec/openapi.json` endpoint) using [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator/).
 
-Availble clients can be found at [`contrib/client-sdk`](contrib/client-sdk/README.md), along with steps for generating your own client if needed.
+Availble clients can be found at [`contrib/client-sdk`](contrib/client-sdk/), along with steps for generating your own client if needed.
 
 ## Getting Started
 
@@ -82,7 +82,7 @@ just geoprox help encode
 
 The Geoprox Docker image(`ezrasingh/geoprox`) is published to both [`docker.io`](https://hub.docker.com/repository/docker/ezrasingh/geoprox/) and [`ghcr.io`](https://github.com/ezrasingh/geoprox/pkgs/container/geoprox) registries.
 
-For more details check out the [Docker Guide](contrib/docker/README.md).
+For more details check out the [Docker Guide](contrib/docker/).
 
 ## Testing and Benchmarks
 
