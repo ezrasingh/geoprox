@@ -13,11 +13,12 @@ const CAPACITY_RANGE: [i32; 5] = [
     UNIT_CAPACITY * 10_000,
 ];
 const MAX_COUNT: usize = 100;
+const DEFAULT_DEPTH: usize = 6;
 
 fn random_geohash(rng: &mut ThreadRng) -> String {
     geohash::encode(
         [rng.gen_range(-180f64..180f64), rng.gen_range(-90f64..90f64)].into(),
-        SpatialIndex::DEFAULT_DEPTH,
+        DEFAULT_DEPTH,
     )
     .unwrap()
 }
@@ -49,6 +50,7 @@ fn insert_benchmark(c: &mut Criterion) {
         for n in 0..*capacity {
             data.push((n.to_string(), random_geohash(&mut rng)));
         }
+
         group.throughput(Throughput::Elements(*capacity as u64));
         group.bench_with_input(
             BenchmarkId::from_parameter(capacity),
@@ -79,17 +81,23 @@ fn query_range_benchmark(c: &mut Criterion) {
         let geo_index: SpatialIndex = black_box(seed_index(capacity, &mut rng));
 
         group.throughput(Throughput::Elements(*capacity as u64));
+
         group.bench_with_input(BenchmarkId::from_parameter(capacity), capacity, |b, _| {
             b.iter_batched(
                 || random_query(&mut rng),
-                |([lat, lng], range)| geo_index.search([lat, lng], range, MAX_COUNT, false, None),
+                |([lat, lng], range)| {
+                    geo_index.search([lat, lng], range, MAX_COUNT, false, DEFAULT_DEPTH)
+                },
                 BatchSize::SmallInput,
             );
         });
+
         group.bench_with_input(BenchmarkId::new("sorted", capacity), capacity, |b, _| {
             b.iter_batched(
                 || random_query(&mut rng),
-                |([lat, lng], range)| geo_index.search([lat, lng], range, MAX_COUNT, true, None),
+                |([lat, lng], range)| {
+                    geo_index.search([lat, lng], range, MAX_COUNT, true, DEFAULT_DEPTH)
+                },
                 BatchSize::SmallInput,
             );
         });
