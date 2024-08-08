@@ -33,6 +33,7 @@ extern crate geoprox_core;
 let mut geo_index = geoprox_core::SpatialIndex::default();
 
 // ? place object keys into index
+let insert_depth = 6; // insert precision (higher means objects get grouped into bigger regions)
 geo_index.insert("alice", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
 geo_index.insert("bob", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
 
@@ -41,8 +42,8 @@ let nearby: LatLngCoord = [40.7128, 74.006];
 let within: f64 = 200.0; // 200km radius
 let count = 100; // return up to 100 results
 let sorted = true; // sort results by distance
-let depth = 6; // ? determines geohash length (i.e precision)
-let res = geo_index.search(nearby, within, count, sorted, Some(depth)).unwrap();
+let search_depth = 6; // search precision (higher means more precise)
+let res = geo_index.search(nearby, within, count, sorted, depth).unwrap();
 
 println!("found: {:#?}", res);
 
@@ -63,6 +64,7 @@ Key features include:
 - **Inserting Keys**: Insert keys into the geospatial index with their corresponding locations.
 - **Querying Ranges**: Query the index to find keys within a specified range from a given location.
 - **Drop Index**: Deletes the index and its associated keys.
+- **Batch Commands**: Insert, Remove or Query objects in bulk.
 
 #### Example Usage
 
@@ -82,9 +84,9 @@ let nearby: LatLngCoord = [36.2048, 138.2529];
 let within: f64 = 50.0; // 50km radius
 let count = 100; // return up to 100 results
 let sorted = true; // sort results by distance
-let res = shard.query_range("drivers", nearby, within, count, sorted).unwrap();
+let res = shard.query_range("drivers", nearby, within, Some(count), Some(sorted));
 
-println!("found: {:#?}", res);
+println!("found: {:#?}", res.unwrap());
 ```
 
 ## Contributing
