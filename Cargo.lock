@@ -1359,8 +1359,7 @@ dependencies = [
 [[package]]
 name = "kiddo"
 version = "4.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d2f8d9e1bc7c6919ad2cdc83472a9a4b5ed2ea2c5392c9514fdf958a7920f9a"
+source = "git+https://github.com/sdd/kiddo.git?rev=cc62c6d76accdeba75c0f55db80c28eab8a21ae7#cc62c6d76accdeba75c0f55db80c28eab8a21ae7"
 dependencies = [
  "az",
  "divrem",
