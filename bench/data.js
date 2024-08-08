@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1723147083666,
+  "lastUpdate": 1723156573894,
   "repoUrl": "https://github.com/ezrasingh/geoprox",
   "entries": {
     "Geoprox Benchmark": [
@@ -6029,6 +6029,120 @@ window.BENCHMARK_DATA = {
             "name": "spatial_index/range_query/sorted/100000",
             "value": 641821,
             "range": "± 96797",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "singhezra@gmail.com",
+            "name": "Ezra Singh",
+            "username": "ezrasingh"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "caaedbfce930887359b65936f6265258a9826c5e",
+          "message": "#2 Define Default Search Arguments In Config (#9)\n\n* Updated README\r\n\r\n* Fixed redundant suffix in Api docs\r\n\r\n* Updated README\r\n\r\n* Added default_count and default_sorted to ServerConfig\r\n\r\n* Moved defaults to GeoShard\r\n\r\n* Added server_config and shard_config to AppState\r\n\r\n* Updated config documentation\r\n\r\n* Updated CHANGELOG\r\n\r\n* Updated Docker quickstart config example\r\n\r\n* Updated CHANGELOG\r\n\r\n* Updated README",
+          "timestamp": "2024-08-08T18:31:35-04:00",
+          "tree_id": "1c609ead4c874cbfa0167234298a3d4a98c9ebd4",
+          "url": "https://github.com/ezrasingh/geoprox/commit/caaedbfce930887359b65936f6265258a9826c5e"
+        },
+        "date": 1723156573191,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "spatial_index/insert/10",
+            "value": 2475,
+            "range": "± 89",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100",
+            "value": 62073,
+            "range": "± 711",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/1000",
+            "value": 946295,
+            "range": "± 39750",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/10000",
+            "value": 13196139,
+            "range": "± 107040",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100000",
+            "value": 231828554,
+            "range": "± 7493222",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10",
+            "value": 634,
+            "range": "± 3",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/10",
+            "value": 668,
+            "range": "± 6",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100",
+            "value": 1293,
+            "range": "± 23",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/100",
+            "value": 1318,
+            "range": "± 19",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/1000",
+            "value": 8775,
+            "range": "± 594",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/1000",
+            "value": 8767,
+            "range": "± 155",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10000",
+            "value": 63051,
+            "range": "± 3395",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/10000",
+            "value": 63323,
+            "range": "± 4080",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100000",
+            "value": 674160,
+            "range": "± 82439",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/100000",
+            "value": 723640,
+            "range": "± 96773",
             "unit": "ns/iter"
           }
         ]
