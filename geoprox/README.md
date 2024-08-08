@@ -112,7 +112,7 @@ For example, a **depth of 6 corresponds to a geohash precision of approximately 
 
 The `insert_depth` and `search_depth` settings control the precision of geohashing and impact the performance of distance calculations and search queries.
 
-### `insert_depth`
+### Optimizing `insert_depth`
 
 **Higher Insert Depth:**
 
@@ -126,7 +126,7 @@ The `insert_depth` and `search_depth` settings control the precision of geohashi
 - **Impact:** Search performance improves, but distance calculations become less accurate.
 - **Use Case:** Best for cases where fast general distance estimates are acceptable.
 
-### `search_depth`
+### Optimizing `search_depth`
 
 **Higher Search Depth:**
 
