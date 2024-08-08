@@ -16,23 +16,26 @@ Once these tools are installed, you can run `yarn install` to install the requir
 
 ## Getting Started
 
-To get started run `just setup` and start a `geoprox-server` instance from the project root.
-If you are using a port other than the default, update the `API_SPEC` variable in your `.env` file.
-
 ## Using Just
 
 The `just` command runner is included to help manage and run tasks easily. Here are the available tasks:
 
 ```shell
 Available recipes:
-    build               # build all client libraries
-    codegen TARGET_LANG # generate sdk client
-    default             # default recipe to display help information
-    manifest            # build generator configurations
-    setup               # setup dotenv file
+    build               # Build all client libraries
+    codegen TARGET_LANG # Generate sdk client
+    default             # Default recipe to display help information
+    manifest            # Build generator configurations
+    spec                # Generate OpenAPI spec
 ```
 
-Here is an example usage building only the Rust client `just codegen rust`
+Here’s how to build only the Rust client using the OpenAPI specification:
+
+```shell
+just spec codegen rust
+```
+
+This command generates the Rust client library from the OpenAPI specification. It will compile the spec and produce the client code without additional components.
 
 ## Configuring Generators
 

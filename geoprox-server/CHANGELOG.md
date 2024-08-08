@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added missing OpenAPI `Path` parameter descriptions
 - Improved error handling and responses
 - Implemented Batch API for insertion, removal and query
+- Added `api::doc::openapi_spec_json()` for accesing the OpenAPI spec programmatically
 
 ## 0.3.1
 

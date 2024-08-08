@@ -51,7 +51,7 @@ The [`just` command runner](https://github.com/casey/just) is included to help m
 
 ```shell
 Available recipes:
-    default                # default recipe to display help information
+    default                # Default recipe to display help information
     fmt +ARGS=''           # Run cargo formatter
     geoprox +ARGS='--help' # Geoprox CLI
 ```

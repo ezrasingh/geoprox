@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added supoort for generating OpenAPI spec from CLI ([#3](https://github.com/ezrasingh/geoprox/issues/3))
+
 ## 0.3.1
 
 - Bumped `geoprox-core` to [v0.3.1](https://crates.io/crates/geoprox-core/0.3.1).
