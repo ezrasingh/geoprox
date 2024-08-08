@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added `server_config` and `shard_config` to `AppState` ([#2](https://github.com/ezrasingh/geoprox/issues/2))
+- `api::routes` now takes in a single `AppState` as argument for building routes.
+- Crate `README` now points to OpenAPI generated markdown docs
+
 ## 0.4.0
 
 - Added missing OpenAPI `Path` parameter descriptions.

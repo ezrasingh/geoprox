@@ -44,8 +44,6 @@ pub struct SpatialIndex {
 }
 
 impl SpatialIndex {
-    /// depth 6 corresponds to ~1kmx1km region
-    pub const DEFAULT_DEPTH: usize = 6;
     /// determines the maximum number of elements the spatial index can hold before it needs to reallocate.
     pub const MAX_CAPACITY: usize = u16::MAX as usize;
 
@@ -136,15 +134,14 @@ impl SpatialIndex {
         radius: f64,
         count: usize,
         sorted: bool,
-        initial_depth: Option<usize>,
+        search_depth: usize,
     ) -> Result<Vec<Neighbor>, GeohashError> {
         if self.position_map.is_empty() {
             return Ok(vec![]);
         }
         let search_region: String = {
-            let depth = initial_depth.unwrap_or(Self::DEFAULT_DEPTH);
             // ? geohash crate uses (lng, lat) convention
-            let mut ghash = geohash::encode([origin[1], origin[0]].into(), depth)?;
+            let mut ghash = geohash::encode([origin[1], origin[0]].into(), search_depth)?;
             // ? truncate subregion hash until it contains the radius
             while ghash.len().gt(&1) {
                 let (point, _, _) = geohash::decode(&ghash)?;
@@ -186,6 +183,8 @@ mod test {
     use super::*;
     use rand::prelude::*;
 
+    const DEFAULT_DEPTH: usize = 6;
+
     fn encode_lat_lng([lat, lng]: LatLngCoord, depth: usize) -> String {
         geohash::encode([lng, lat].into(), depth).unwrap()
     }
@@ -201,19 +200,25 @@ mod test {
         // place key within the search area
         geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
 
-        let res = geo_index.search(origin, range, 100, false, None).unwrap();
+        let res = geo_index
+            .search(origin, range, 100, false, DEFAULT_DEPTH)
+            .unwrap();
         assert_eq!(res.len(), 1);
 
         // move key out of search area
         geo_index.insert(key, &encode_lat_lng([-70.0, 100.0], insert_depth));
 
-        let res = geo_index.search(origin, range, 100, false, None).unwrap();
+        let res = geo_index
+            .search(origin, range, 100, false, DEFAULT_DEPTH)
+            .unwrap();
         assert_eq!(res.len(), 0);
 
         // move key back into search area
         geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
 
-        let res = geo_index.search(origin, range, 100, false, None).unwrap();
+        let res = geo_index
+            .search(origin, range, 100, false, DEFAULT_DEPTH)
+            .unwrap();
         assert_eq!(res.len(), 1);
     }
 
@@ -227,13 +232,17 @@ mod test {
         geo_index.insert(&"a", &encode_lat_lng(origin, depth));
         geo_index.insert(&"b", &encode_lat_lng(origin, depth));
 
-        let res = geo_index.search(origin, range, 100, false, None).unwrap();
+        let res = geo_index
+            .search(origin, range, 100, false, DEFAULT_DEPTH)
+            .unwrap();
         assert_eq!(res.len(), 2);
 
         geo_index.remove(&"a");
         geo_index.remove(&"b");
 
-        let res = geo_index.search(origin, range, 100, false, None).unwrap();
+        let res = geo_index
+            .search(origin, range, 100, false, DEFAULT_DEPTH)
+            .unwrap();
         assert_eq!(res.len(), 0);
     }
 
@@ -258,7 +267,7 @@ mod test {
         ]);
 
         let res = geo_index
-            .search(origin, range, count, sorted, None)
+            .search(origin, range, count, sorted, DEFAULT_DEPTH)
             .unwrap();
         assert!(res.len() <= count);
         res.iter().for_each(|neighbor| {
@@ -284,7 +293,7 @@ mod test {
         let range = 200f64;
 
         let res = geo_index
-            .search(center, range, count, sorted, None)
+            .search(center, range, count, sorted, DEFAULT_DEPTH)
             .unwrap();
         assert!(res.len() <= count);
         res.iter().for_each(|neighbor| {

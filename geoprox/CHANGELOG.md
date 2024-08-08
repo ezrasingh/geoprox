@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for `default_count` and `default_sorted` in config ([#2](https://github.com/ezrasingh/geoprox/issues/2)).
+
 ## 0.4.0
 
 - Added supoort for generating OpenAPI spec from CLI ([#3](https://github.com/ezrasingh/geoprox/issues/3)).

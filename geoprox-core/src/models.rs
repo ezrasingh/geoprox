@@ -1,4 +1,4 @@
-use crate::cache::SpatialIndex;
+use crate::shard::GeoShard;
 use serde::{Deserialize, Serialize};
 
 /// Object indentifier
@@ -38,20 +38,26 @@ impl std::fmt::Display for GeoShardError {
 
 impl std::error::Error for GeoShardError {}
 
-/// Configures geoshard parameters
+/// Configuration settings for geoshard parameters
 #[derive(Clone, Debug, Deserialize)]
 pub struct GeoShardConfig {
-    // geohash length used during insert
-    pub insert_depth: usize,
-    // initial subregion geohash length used during range query
+    /// Determines the default geohash length for inserts
+    pub insert_depth: Option<usize>,
+    /// Determines the default geohash length for searches
     pub search_depth: Option<usize>,
+    /// Specifies the default number of results returned in range queries
+    pub default_count: Option<usize>,
+    /// Toggles the default sorting behavior for query results
+    pub default_sorted: Option<bool>,
 }
 
 impl Default for GeoShardConfig {
     fn default() -> Self {
         GeoShardConfig {
-            insert_depth: SpatialIndex::DEFAULT_DEPTH,
-            search_depth: None,
+            insert_depth: Some(GeoShard::DEFAULT_DEPTH),
+            search_depth: Some(GeoShard::DEFAULT_DEPTH),
+            default_count: Some(GeoShard::DEFAULT_COUNT),
+            default_sorted: Some(GeoShard::DEFAULT_SORTED),
         }
     }
 }

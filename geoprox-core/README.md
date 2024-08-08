@@ -93,4 +93,4 @@ Contributions are welcome! Please see the [contributing guidelines](https://gith
 
 ## License
 
-This project is licensed under the [Apache 2.0](LICENSE-APACHE) or [MIT License](LICENSE-MIT) (your choice).
+This project is licensed under the [Apache 2.0](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-APACHE) or [MIT License](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-MIT) (your choice).

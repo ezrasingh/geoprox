@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Moved configuration defaults into `GeoShard` ([#2](https://github.com/ezrasingh/geoprox/issues/2)).
+
 ## 0.4.0
 
 - Added suport for batch insertion, query and removal ([#1](https://github.com/ezrasingh/geoprox/issues/1)).

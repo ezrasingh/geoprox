@@ -23,6 +23,11 @@ impl From<GeoShardConfig> for GeoShard {
 }
 
 impl GeoShard {
+    /// depth 6 corresponds to ~1kmx1km region
+    pub const DEFAULT_DEPTH: usize = 6;
+    pub const DEFAULT_COUNT: usize = 100;
+    pub const DEFAULT_SORTED: bool = false;
+
     /// Adds a new geospatial index to the shard
     pub fn create_index(&mut self, index: &str) -> Result<Option<()>, GeoShardError> {
         if self.cache.contains_key(index) {
@@ -47,7 +52,10 @@ impl GeoShard {
         [lat, lng]: LatLngCoord,
     ) -> Result<String, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
-            match geohash::encode([lng, lat].into(), self.config.insert_depth) {
+            match geohash::encode(
+                [lng, lat].into(),
+                self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH),
+            ) {
                 Ok(ghash) => {
                     geo_index.insert(key, &ghash);
                     Ok(ghash)
@@ -67,10 +75,11 @@ impl GeoShard {
         preserve_order: bool,
     ) -> Result<BatchOutput<String, GeohashError>, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
+            let insert_depth = self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH);
             let (bulk, errors): BatchOutput<String, GeohashError> = if !preserve_order {
                 // ? use parallel iterator
                 objects.into_par_iter().partition_map(|(key, [lat, lng])| {
-                    match geohash::encode([lng, lat].into(), self.config.insert_depth) {
+                    match geohash::encode([lng, lat].into(), insert_depth) {
                         Ok(ghash) => rayon::iter::Either::Left((key, ghash)),
                         Err(err) => rayon::iter::Either::Right((key, err)),
                     }
@@ -78,7 +87,7 @@ impl GeoShard {
             } else {
                 // ? use sequential iterator
                 objects.into_iter().partition_map(|(key, [lat, lng])| {
-                    match geohash::encode([lng, lat].into(), self.config.insert_depth) {
+                    match geohash::encode([lng, lat].into(), insert_depth) {
                         Ok(ghash) => itertools::Either::Left((key, ghash)),
                         Err(err) => itertools::Either::Right((key, err)),
                     }
@@ -121,14 +130,21 @@ impl GeoShard {
         index: &str,
         origin: LatLngCoord,
         range: f64,
-        count: usize,
-        sorted: bool,
+        count: Option<usize>,
+        sorted: Option<bool>,
     ) -> Result<Vec<Neighbor>, GeoShardError> {
+        let count = count.unwrap_or(Self::DEFAULT_COUNT);
         if count.eq(&0) {
             return Ok(vec![]);
         }
         if let Some(geo_index) = self.cache.get(index) {
-            match geo_index.search(origin, range, count, sorted, self.config.search_depth) {
+            match geo_index.search(
+                origin,
+                range,
+                count,
+                sorted.unwrap_or(Self::DEFAULT_SORTED),
+                self.config.search_depth.unwrap_or(Self::DEFAULT_DEPTH),
+            ) {
                 Ok(found) => Ok(found),
                 Err(err) => Err(GeoShardError::GeohashError(err)),
             }
@@ -143,8 +159,8 @@ impl GeoShard {
         indices: HashSet<String>,
         origin: LatLngCoord,
         range: f64,
-        count: usize,
-        sorted: bool,
+        count: Option<usize>,
+        sorted: Option<bool>,
     ) -> BatchOutput<Vec<Neighbor>, GeoShardError> {
         indices.into_par_iter().partition_map(|index| {
             match self.query_range(&index, origin, range, count, sorted) {
@@ -189,8 +205,8 @@ mod test {
     fn test_query_range() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
-        let count = 100;
-        let sorted = false;
+        let count = Some(100);
+        let sorted = None;
         shard.create_index(mock_index).unwrap();
 
         shard
@@ -215,8 +231,8 @@ mod test {
     fn test_query_range_sorted() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
-        let count = 100;
-        let sorted = true;
+        let count = Some(100);
+        let sorted = None;
         shard.create_index(mock_index).unwrap();
 
         shard
@@ -249,7 +265,7 @@ mod test {
     fn test_query_range_count() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
-        let sorted = true;
+        let sorted = None;
         shard.create_index(mock_index).unwrap();
 
         shard
@@ -268,22 +284,22 @@ mod test {
             .unwrap();
 
         {
-            let count = 100;
+            let count = Some(100);
             let res = shard
                 .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
                 .unwrap();
 
-            assert!(res.len() <= count);
+            assert!(res.len() <= count.unwrap());
         }
 
         {
-            let count = 0;
+            let count = Some(0);
 
             let res = shard
                 .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
                 .unwrap();
 
-            assert!(res.len() <= count);
+            assert!(res.len() <= count.unwrap());
         }
     }
 }

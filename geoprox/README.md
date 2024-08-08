@@ -72,27 +72,73 @@ Geoprox allows specifying a configuration file using the `-c` or `--config` opti
 Here's an example configuration file in `TOML` format:
 
 ```toml
+# All settings are optional; these are the default values.
 [server]
+# The address the server will bind to
 http_addr = '0.0.0.0'
+# The port the server will listen on
 http_port = 5000
 
 [shard]
+# Determines the default geohash length for inserts
 insert_depth = 6
+# Determines the default geohash length for searches
 search_depth = 6
+# Specifies the default number of results returned in range queries
+default_count = 100
+# Toggles the default sorting behavior for query results
+default_sorted = false
 ```
 
-### Configuration Details
+## Fine Tuning
 
-| Setting              | Description                                         |
-| -------------------- | --------------------------------------------------- |
-| `server.http_addr`   | The address the server will bind to.                |
-| `server.http_port`   | The port the server will listen on.                 |
-| `shard.insert_depth` | Determines the default geohash length for inserts.  |
-| `shard.search_depth` | Determines the default geohash length for searches. |
+Geohashes divide the world into a grid of cells, each with a unique identifier (encoded in base 32). The precision of the geohash can be adjusted by changing its length:
 
-The `insert_depth` and `search_depth` settings control the precision of the geohash. A longer geohash means more granular precision.
+- Short geohashes represent larger areas.
+- Long geohashes represent smaller, more precise areas.
+
+| Geohash Length | Lat Bits | Lng Bits | Lat Error | Lng Error | Km Error                   |
+| -------------- | -------- | -------- | --------- | --------- | -------------------------- |
+| 1              | 2        | 3        | ±23       | ±23       | ±2,500 km (1,600 mi)       |
+| 2              | 5        | 5        | ±2.8      | ±5.6      | ±630 km (390 mi)           |
+| 3              | 7        | 8        | ±0.70     | ±0.70     | ±78 km (48 mi)             |
+| 4              | 10       | 10       | ±0.087    | ±0.18     | ±20 km (12 mi)             |
+| 5              | 12       | 13       | ±0.022    | ±0.022    | ±2.4 km (1.5 mi; 2,400 m)  |
+| 6              | 15       | 15       | ±0.0027   | ±0.0055   | ±0.61 km (0.38 mi; 610 m)  |
+| 7              | 17       | 18       | ±0.00068  | ±0.00068  | ±0.076 km (0.047 mi; 76 m) |
+| 8              | 20       | 20       | ±0.000085 | ±0.00017  | ±0.019 km (0.012 mi; 19 m) |
 
 For example, a **depth of 6 corresponds to a geohash precision of approximately 1km x 1km**. This is the default depth and generally recommended, as greater precision (smaller depths) may not be necessary for most use cases.
+
+The `insert_depth` and `search_depth` settings control the precision of geohashing and impact the performance of distance calculations and search queries.
+
+### Optimizing `insert_depth`
+
+**Higher Insert Depth:**
+
+- **Description:** Objects are grouped into smaller, more precise regions.
+- **Impact:** Searching takes slightly longer, but distance calculations are more accurate.
+- **Use Case:** Ideal for scenarios where precise distance measurements are crucial.
+
+**Lower Insert Depth:**
+
+- **Description:** Objects are grouped into larger regions.
+- **Impact:** Search performance improves, but distance calculations become less accurate.
+- **Use Case:** Best for cases where fast general distance estimates are acceptable.
+
+### Optimizing `search_depth`
+
+**Higher Search Depth:**
+
+- **Description:** The initial search region is smaller and more precise.
+- **Impact:** Search queries take slightly longer, but results are more accurate.
+- **Use Case:** Suitable for narrow range queries where high accuracy is needed.
+
+**Lower Search Depth:**
+
+- **Description:** The initial search region is larger, leading to faster searches.
+- **Impact:** Search speed improves, but accuracy may be reduced.
+- **Use Case:** Ideal for wide range queries where speed is prioritized over precision.
 
 ## Contributing
 
@@ -100,4 +146,4 @@ Contributions are welcome! Please see the [contributing guidelines](https://gith
 
 ## License
 
-This project is licensed under the [Apache 2.0](LICENSE-APACHE) or [MIT License](LICENSE-MIT) (your choice).
+This project is licensed under the [Apache 2.0](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-APACHE) or [MIT License](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-MIT) (your choice).

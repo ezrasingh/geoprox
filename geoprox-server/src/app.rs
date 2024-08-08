@@ -6,17 +6,21 @@ use geoprox_core::models::GeoShardConfig;
 use geoprox_core::shard::GeoShard;
 use std::sync::{Arc, RwLock};
 
-use crate::dto::AppErrorResponse;
+use crate::{config::ServerConfig, dto::AppErrorResponse};
 
 #[derive(Clone, Default)]
 pub struct AppState {
     pub geoshard: GeoShard,
+    pub server_config: ServerConfig,
+    pub shard_config: GeoShardConfig,
 }
 
-impl From<GeoShardConfig> for AppState {
-    fn from(shard_config: GeoShardConfig) -> Self {
-        AppState {
-            geoshard: GeoShard::from(shard_config),
+impl AppState {
+    pub fn new(server_config: ServerConfig, shard_config: GeoShardConfig) -> Self {
+        Self {
+            geoshard: GeoShard::from(shard_config.clone()),
+            server_config,
+            shard_config,
         }
     }
 }

@@ -30,7 +30,7 @@ fn main() {
         Some(cli::Commands::Encode { lat, lng, depth }) => {
             let ghash = geoprox_core::geohash::encode(
                 [*lng, *lat].into(),
-                depth.unwrap_or(geoprox_core::cache::SpatialIndex::DEFAULT_DEPTH),
+                depth.unwrap_or(geoprox_core::shard::GeoShard::DEFAULT_DEPTH),
             )
             .unwrap();
             println!("{}", ghash);
@@ -38,8 +38,8 @@ fn main() {
 
         Some(cli::Commands::Decode { ghash }) => {
             let (position, lng_err, lat_err) = geoprox_core::geohash::decode(ghash).unwrap();
-            println!("latitude: {} +/- {}", position.y, lat_err);
-            println!("longitude:{} +/- {}", position.x, lng_err);
+            println!("Latitude:{} +/- {}", position.y, lat_err);
+            println!("Longitude: {} +/- {}", position.x, lng_err);
         }
         Some(cli::Commands::Spec {
             destination,

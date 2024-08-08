@@ -1,17 +1,10 @@
-# Geoprox Server
+# Documentation for geoprox-server
 
-Geoprox Server is an in-memory geospatial search engine built on top of [Geoprox Core](https://crates.io/crates/geoprox-core/).
+<a name="documentation-for-api-endpoints"></a>
 
-It provides an API for encoding and decoding geohashes, querying neighboring geohashes, and conducting efficient geospatial searches within specific ranges. This makes it a practical tool for managing and querying location-based data with speed and accuracy.
+## Documentation for API Endpoints
 
-This service is well-suited for real-time applications such as ride-sharing and food delivery services, where quick and accurate location tracking is crucial.
-
-> **Need an API Client?** See, [`contrib/client-sdk`](https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/) for available HTTP client libraries or generate your own.
-
-- Swagger UI is available at the `/swagger-ui/` endpoint.
-- The OpenAPI specification is accessible at the `/api-spec/openapi.json` endpoint.
-
-## API Endpoints
+All URIs are relative to _http://localhost_
 
 | Api           | Method                                                   | HTTP request                               | Description                                |
 | ------------- | -------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
@@ -27,12 +20,32 @@ This service is well-suited for real-time applications such as ride-sharing and 
 | `GeoshardApi` | [**removeKey**](Apis/GeoshardApi.md#removekey)           | **PATCH** /api/v1/shard/{index}/           | Remove key from index                      |
 | `GeoshardApi` | [**removeKeyBatch**](Apis/GeoshardApi.md#removekeybatch) | **PATCH** /api/v1/shard/{index}/batch/     | Remove multiple keys from index            |
 
-Check out the [API documentation](https://github.com/ezrasingh/geoprox/tree/main/geoprox-server/docs/) for detailed descriptions of all the endpoints.
+<a name="documentation-for-models"></a>
 
-## Contributing
+## Documentation for Models
 
-Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/ezrasingh/geoprox/tree/main/CONTRIBUTING.md) for guidelines.
+- [CreateIndexResponse](./Models/CreateIndexResponse.md)
+- [DecodeGeohashResponse](./Models/DecodeGeohashResponse.md)
+- [DropIndexResponse](./Models/DropIndexResponse.md)
+- [EncodeLatLng](./Models/EncodeLatLng.md)
+- [EncodeLatLngResponse](./Models/EncodeLatLngResponse.md)
+- [GeohashNeighborsResponse](./Models/GeohashNeighborsResponse.md)
+- [InsertKey](./Models/InsertKey.md)
+- [InsertKeyBatch](./Models/InsertKeyBatch.md)
+- [InsertKeyBatchResponse](./Models/InsertKeyBatchResponse.md)
+- [InsertKeyResponse](./Models/InsertKeyResponse.md)
+- [Neighbor](./Models/Neighbor.md)
+- [QueryRange](./Models/QueryRange.md)
+- [QueryRangeMany](./Models/QueryRangeMany.md)
+- [QueryRangeManyResponse](./Models/QueryRangeManyResponse.md)
+- [QueryRangeResponse](./Models/QueryRangeResponse.md)
+- [RemoveKey](./Models/RemoveKey.md)
+- [RemoveKeyBatch](./Models/RemoveKeyBatch.md)
+- [RemoveKeyBatchResponse](./Models/RemoveKeyBatchResponse.md)
+- [RemoveKeyResponse](./Models/RemoveKeyResponse.md)
 
-## License
+<a name="documentation-for-authorization"></a>
 
-This project is licensed under the [Apache 2.0](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-APACHE) or [MIT License](https://github.com/ezrasingh/geoprox/tree/main/LICENSE-MIT) (your choice).
+## Documentation for Authorization
+
+All endpoints do not require authorization.
