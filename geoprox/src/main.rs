@@ -47,7 +47,7 @@ fn main() {
             stdout,
             pretty,
         }) => {
-            let spec_json = geoprox_server::api::docs::openapi_spec(*pretty).unwrap();
+            let spec_json = geoprox_server::api::docs::openapi_spec_json(*pretty).unwrap();
             if *stdout {
                 // ? print the spec JSON to stdout, if `stdout` is `true` or `Some(true)`,
                 println!("{}", spec_json);

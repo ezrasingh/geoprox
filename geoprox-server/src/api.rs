@@ -110,7 +110,7 @@ pub mod docs {
             .merge(SwaggerUi::new("/swagger-ui").url("/api-spec/openapi.json", ApiDoc::openapi()))
     }
 
-    pub fn openapi_spec(pretty_print: bool) -> Result<String, serde_json::Error> {
+    pub fn openapi_spec_json(pretty_print: bool) -> Result<String, serde_json::Error> {
         if pretty_print {
             ApiDoc::openapi().to_pretty_json()
         } else {
