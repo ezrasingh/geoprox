@@ -7,7 +7,7 @@ Returns key and geohash
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **geohash** | **str** | Geohash encoded latitude/longitude | 
-**key** | **str** | Resource key | 
+**key** | **str** | Object key | 
 
 ## Example
 

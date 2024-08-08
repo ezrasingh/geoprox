@@ -1,0 +1,1044 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: singhezra@gmail.com
+    name: Ezra Singh
+  description: Geoprox server implementation providing a HTTP API for geospatial queries
+    and position tracking
+  license:
+    name: MIT OR Apache-2.0
+  title: geoprox-server
+  version: 0.4.0
+servers:
+- url: /
+tags:
+- description: Geospatial index API
+  name: Geoprox
+paths:
+  /api/v1/geohash/:
+    get:
+      description: "Encode coordinates by query params, returns geohash."
+      operationId: encode_latlng
+      parameters:
+      - description: Latitude
+        explode: true
+        in: query
+        name: lat
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Longitude
+        explode: true
+        in: query
+        name: lng
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Determines geohash length
+        explode: true
+        in: query
+        name: depth
+        required: true
+        schema:
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EncodeLatLngResponse'
+          description: Object with geohash encoded latitude/longitude
+      summary: Encode coordinates into geohash
+      tags:
+      - geohash_api
+  /api/v1/geohash/{ghash}/:
+    get:
+      description: "Decode geohash by path param, returns coordinates with precision\
+        \ estimates."
+      operationId: decode_geohash
+      parameters:
+      - description: Geohash encoded region
+        explode: false
+        in: path
+        name: ghash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecodeGeohashResponse'
+          description: Object with latitude/longitude pair and precision errors
+      summary: Decode geohash into coordinates.
+      tags:
+      - geohash_api
+  /api/v1/geohash/{ghash}/neighbors/:
+    get:
+      description: Returns geohash neighbors in all cardinal directions.
+      operationId: get_neighbors
+      parameters:
+      - description: Geohash encoded region
+        explode: false
+        in: path
+        name: ghash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeohashNeighborsResponse'
+          description: Object with geohash neighbors
+      summary: Neighboring regions
+      tags:
+      - geohash_api
+  /api/v1/shard/:
+    get:
+      description: Search geospatial many indices for all keys within some distance
+      operationId: query_range_many
+      parameters:
+      - description: List of indices to search
+        explode: true
+        in: query
+        name: indices
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Latitude
+        explode: true
+        in: query
+        name: lat
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Longitude
+        explode: true
+        in: query
+        name: lng
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Search radius in kilometers
+        explode: true
+        in: query
+        name: range
+        required: true
+        schema:
+          format: int32
+          minimum: 0
+          type: integer
+        style: form
+      - description: Maximum number of neighbors that can be returned (default 100)
+        explode: true
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 0
+          nullable: true
+          type: integer
+        style: form
+      - description: "If enabled neighbors will be sorted by distance, nearest to\
+          \ furthest (default false)"
+        explode: true
+        in: query
+        name: sorted
+        required: false
+        schema:
+          nullable: true
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRangeManyResponse'
+          description: Nearby objects found across indices
+      summary: Search multiple indices for objects nearby
+      tags:
+      - geoshard_api
+  /api/v1/shard/{index}/:
+    delete:
+      description: Drop index. All keys will be lost
+      operationId: drop_index
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DropIndexResponse'
+          description: Index deleted
+      summary: Deletes geospatial index
+      tags:
+      - geoshard_api
+    get:
+      description: Search geospatial index for all keys within some distance
+      operationId: query_range
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Latitude
+        explode: true
+        in: query
+        name: lat
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Longitude
+        explode: true
+        in: query
+        name: lng
+        required: true
+        schema:
+          format: double
+          type: number
+        style: form
+      - description: Search radius in kilometers
+        explode: true
+        in: query
+        name: range
+        required: true
+        schema:
+          format: int32
+          minimum: 0
+          type: integer
+        style: form
+      - description: Maximum number of neighbors that can be returned (default 100)
+        explode: true
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 0
+          nullable: true
+          type: integer
+        style: form
+      - description: "If enabled neighbors will be sorted by distance, nearest to\
+          \ furthest (default false)"
+        explode: true
+        in: query
+        name: sorted
+        required: false
+        schema:
+          nullable: true
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRangeResponse'
+          description: Nearby objects found
+      summary: Search index for objects nearby
+      tags:
+      - geoshard_api
+    patch:
+      description: Removes key from geospatial index
+      operationId: remove_key
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveKey'
+        description: ""
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveKeyResponse'
+          description: Key removed from the index
+      summary: Remove key from index
+      tags:
+      - geoshard_api
+    post:
+      description: Creates an in-memory index within this geoshard
+      operationId: create_index
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateIndexResponse'
+          description: Created an index
+      summary: Create geospatial index
+      tags:
+      - geoshard_api
+    put:
+      description: Inserts key into geospatial index
+      operationId: insert_key
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertKey'
+        description: ""
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsertKeyResponse'
+          description: Inserted key into the index
+      summary: Insert key into index
+      tags:
+      - geoshard_api
+  /api/v1/shard/{index}/batch/:
+    patch:
+      description: Removes multiple keys from geospatial index
+      operationId: remove_key_batch
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveKeyBatch'
+        description: ""
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoveKeyBatchResponse'
+          description: All keys were removed from the index
+      summary: Remove multiple keys from index
+      tags:
+      - geoshard_api
+    put:
+      description: Inserts multiple keys into geospatial index
+      operationId: insert_key_batch
+      parameters:
+      - description: Geospatial index name
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertKeyBatch'
+        description: ""
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsertKeyBatchResponse'
+          description: Inserted key batch into the index
+      summary: Insert multiple keys into index
+      tags:
+      - geoshard_api
+components:
+  responses:
+    CreateIndexResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns index creation status
+            properties:
+              created:
+                description: If true index was created
+                type: boolean
+              existed:
+                description: If true index alredy exist
+                type: boolean
+            required:
+            - created
+            - existed
+            type: object
+      description: Returns index creation status
+    DecodeGeohashResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns geohash decoded as latitude/longitude with precision
+              errors
+            properties:
+              lat:
+                description: Latitude
+                format: double
+                type: number
+              lat_error:
+                description: Latitude error
+                format: double
+                type: number
+              lng:
+                description: Longitude
+                format: double
+                type: number
+              lng_error:
+                description: Longitude error
+                format: double
+                type: number
+            required:
+            - lat
+            - lat_error
+            - lng
+            - lng_error
+            type: object
+      description: Returns geohash decoded as latitude/longitude with precision errors
+    DropIndexResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns index deletion status
+            properties:
+              deleted:
+                description: If true index was deleted
+                type: boolean
+            required:
+            - deleted
+            type: object
+      description: Returns index deletion status
+    EncodeLatLngResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns geohash encoded latitude/longitude
+            properties:
+              geohash:
+                type: string
+            required:
+            - geohash
+            type: object
+      description: Returns geohash encoded latitude/longitude
+    GeohashNeighborsResponse:
+      content:
+        application/json:
+          schema:
+            description: Neighboring geohash regions
+            properties:
+              e:
+                description: East
+                type: string
+              "n":
+                description: North
+                type: string
+              ne:
+                description: North East
+                type: string
+              nw:
+                description: North West
+                type: string
+              s:
+                description: South
+                type: string
+              se:
+                description: South East
+                type: string
+              sw:
+                description: South West
+                type: string
+              w:
+                description: West
+                type: string
+            required:
+            - e
+            - "n"
+            - ne
+            - nw
+            - s
+            - se
+            - sw
+            - w
+            type: object
+      description: Neighboring geohash regions
+    InsertKeyBatchResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns results and errors of batch key insert
+            properties:
+              errors:
+                additionalProperties:
+                  type: string
+                description: Contains information about which keys failed to be inserted
+                  and the associated error details.
+                type: object
+              results:
+                additionalProperties:
+                  type: string
+                description: Object keys that have been inserted in the index and
+                  their geohash.
+                type: object
+            required:
+            - errors
+            - results
+            type: object
+      description: Returns results and errors of batch key insert
+    InsertKeyResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns key and geohash
+            properties:
+              geohash:
+                description: Geohash encoded latitude/longitude
+                type: string
+              key:
+                description: Object key
+                type: string
+            required:
+            - geohash
+            - key
+            type: object
+      description: Returns key and geohash
+    QueryRangeManyResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns indices and object keys found with their distance
+            properties:
+              errors:
+                additionalProperties:
+                  type: string
+                description: Contains information about any errors occured during
+                  batch search.
+                type: object
+              results:
+                additionalProperties:
+                  items:
+                    $ref: '#/components/schemas/Neighbor'
+                  type: array
+                description: Object keys found within range
+                type: object
+            required:
+            - errors
+            - results
+            type: object
+      description: Returns indices and object keys found with their distance
+    QueryRangeResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns object keys found with their distance
+            properties:
+              found:
+                description: Object keys found within range
+                items:
+                  $ref: '#/components/schemas/Neighbor'
+                type: array
+            required:
+            - found
+            type: object
+      description: Returns object keys found with their distance
+    RemoveKeyBatchResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns batch key deletion status
+            properties:
+              deleted:
+                description: If true all keys were removed
+                type: boolean
+            required:
+            - deleted
+            type: object
+      description: Returns batch key deletion status
+    RemoveKeyResponse:
+      content:
+        application/json:
+          schema:
+            description: Returns key and deletion status
+            properties:
+              deleted:
+                description: If true key was removed
+                type: boolean
+              key:
+                description: Object key
+                type: string
+            required:
+            - deleted
+            - key
+            type: object
+      description: Returns key and deletion status
+  schemas:
+    CreateIndexResponse:
+      description: Returns index creation status
+      example:
+        created: true
+        existed: true
+      properties:
+        created:
+          description: If true index was created
+          type: boolean
+        existed:
+          description: If true index alredy exist
+          type: boolean
+      required:
+      - created
+      - existed
+      type: object
+    DecodeGeohashResponse:
+      description: Returns geohash decoded as latitude/longitude with precision errors
+      example:
+        lng: 1.4658129805029452
+        lat_error: 6.027456183070403
+        lng_error: 5.962133916683182
+        lat: 0.8008281904610115
+      properties:
+        lat:
+          description: Latitude
+          format: double
+          type: number
+        lat_error:
+          description: Latitude error
+          format: double
+          type: number
+        lng:
+          description: Longitude
+          format: double
+          type: number
+        lng_error:
+          description: Longitude error
+          format: double
+          type: number
+      required:
+      - lat
+      - lat_error
+      - lng
+      - lng_error
+      type: object
+    DropIndexResponse:
+      description: Returns index deletion status
+      example:
+        deleted: true
+      properties:
+        deleted:
+          description: If true index was deleted
+          type: boolean
+      required:
+      - deleted
+      type: object
+    EncodeLatLng:
+      description: Arguments for encoding latitude/longitude as geohash
+      properties:
+        depth:
+          description: Determines geohash length
+          maximum: 10
+          minimum: 1
+          type: integer
+        lat:
+          description: Latitude
+          format: double
+          type: number
+        lng:
+          description: Longitude
+          format: double
+          type: number
+      required:
+      - depth
+      - lat
+      - lng
+      type: object
+    EncodeLatLngResponse:
+      description: Returns geohash encoded latitude/longitude
+      example:
+        geohash: geohash
+      properties:
+        geohash:
+          type: string
+      required:
+      - geohash
+      type: object
+    GeohashNeighborsResponse:
+      description: Neighboring geohash regions
+      example:
+        se: se
+        s: s
+        sw: sw
+        e: e
+        ne: ne
+        w: w
+        nw: nw
+        "n": "n"
+      properties:
+        e:
+          description: East
+          type: string
+        "n":
+          description: North
+          type: string
+        ne:
+          description: North East
+          type: string
+        nw:
+          description: North West
+          type: string
+        s:
+          description: South
+          type: string
+        se:
+          description: South East
+          type: string
+        sw:
+          description: South West
+          type: string
+        w:
+          description: West
+          type: string
+      required:
+      - e
+      - "n"
+      - ne
+      - nw
+      - s
+      - se
+      - sw
+      - w
+      type: object
+    InsertKey:
+      description: Arguments for inserting a key
+      example:
+        lng: 6.027456183070403
+        key: key
+        lat: 0.8008281904610115
+      properties:
+        key:
+          description: Object key
+          type: string
+        lat:
+          description: Latitude
+          format: double
+          type: number
+        lng:
+          description: Longitude
+          format: double
+          type: number
+      required:
+      - key
+      - lat
+      - lng
+      type: object
+    InsertKeyBatch:
+      description: Arguments for inserting multiple keys
+      example:
+        keys:
+        - lng: 6.027456183070403
+          key: key
+          lat: 0.8008281904610115
+        - lng: 6.027456183070403
+          key: key
+          lat: 0.8008281904610115
+        preserve_order: true
+      properties:
+        keys:
+          description: Object key
+          items:
+            $ref: '#/components/schemas/InsertKey'
+          type: array
+        preserve_order:
+          type: boolean
+      required:
+      - keys
+      - preserve_order
+      type: object
+    InsertKeyBatchResponse:
+      description: Returns results and errors of batch key insert
+      example:
+        results:
+          key: results
+        errors:
+          key: errors
+      properties:
+        errors:
+          additionalProperties:
+            type: string
+          description: Contains information about which keys failed to be inserted
+            and the associated error details.
+          type: object
+        results:
+          additionalProperties:
+            type: string
+          description: Object keys that have been inserted in the index and their
+            geohash.
+          type: object
+      required:
+      - errors
+      - results
+      type: object
+    InsertKeyResponse:
+      description: Returns key and geohash
+      example:
+        geohash: geohash
+        key: key
+      properties:
+        geohash:
+          description: Geohash encoded latitude/longitude
+          type: string
+        key:
+          description: Object key
+          type: string
+      required:
+      - geohash
+      - key
+      type: object
+    Neighbor:
+      description: Nearby object
+      example:
+        distance: 0.8008281904610115
+        key: key
+      properties:
+        distance:
+          description: Distance in kilometers
+          format: double
+          type: number
+        key:
+          description: Object key
+          type: string
+      required:
+      - distance
+      - key
+      type: object
+    QueryRange:
+      description: Arguments for range query
+      properties:
+        count:
+          description: Maximum number of neighbors that can be returned (default 100)
+          maximum: 65535
+          minimum: 1
+          nullable: true
+          type: integer
+        lat:
+          description: Latitude
+          format: double
+          type: number
+        lng:
+          description: Longitude
+          format: double
+          type: number
+        range:
+          description: Search radius in kilometers
+          format: int32
+          maximum: 65535
+          minimum: 0
+          type: integer
+        sorted:
+          description: "If enabled neighbors will be sorted by distance, nearest to\
+            \ furthest (default false)"
+          nullable: true
+          type: boolean
+      required:
+      - lat
+      - lng
+      - range
+      type: object
+    QueryRangeMany:
+      description: Arguments for group range query
+      properties:
+        count:
+          description: Maximum number of neighbors that can be returned (default 100)
+          maximum: 65535
+          minimum: 1
+          nullable: true
+          type: integer
+        indices:
+          description: List of indices to search
+          items:
+            type: string
+          type: array
+        lat:
+          description: Latitude
+          format: double
+          type: number
+        lng:
+          description: Longitude
+          format: double
+          type: number
+        range:
+          description: Search radius in kilometers
+          format: int32
+          maximum: 65535
+          minimum: 0
+          type: integer
+        sorted:
+          description: "If enabled neighbors will be sorted by distance, nearest to\
+            \ furthest (default false)"
+          nullable: true
+          type: boolean
+      required:
+      - indices
+      - lat
+      - lng
+      - range
+      type: object
+    QueryRangeManyResponse:
+      description: Returns indices and object keys found with their distance
+      example:
+        results:
+          key:
+          - distance: 0.8008281904610115
+            key: key
+          - distance: 0.8008281904610115
+            key: key
+        errors:
+          key: errors
+      properties:
+        errors:
+          additionalProperties:
+            type: string
+          description: Contains information about any errors occured during batch
+            search.
+          type: object
+        results:
+          additionalProperties:
+            items:
+              $ref: '#/components/schemas/Neighbor'
+            type: array
+          description: Object keys found within range
+          type: object
+      required:
+      - errors
+      - results
+      type: object
+    QueryRangeResponse:
+      description: Returns object keys found with their distance
+      example:
+        found:
+        - distance: 0.8008281904610115
+          key: key
+        - distance: 0.8008281904610115
+          key: key
+      properties:
+        found:
+          description: Object keys found within range
+          items:
+            $ref: '#/components/schemas/Neighbor'
+          type: array
+      required:
+      - found
+      type: object
+    RemoveKey:
+      description: Arguments for removing a key
+      example:
+        key: key
+      properties:
+        key:
+          description: Object key
+          type: string
+      required:
+      - key
+      type: object
+    RemoveKeyBatch:
+      description: Arguments for removing multiple keys
+      example:
+        keys:
+        - keys
+        - keys
+      properties:
+        keys:
+          description: Object key
+          items:
+            type: string
+          type: array
+      required:
+      - keys
+      type: object
+    RemoveKeyBatchResponse:
+      description: Returns batch key deletion status
+      example:
+        deleted: true
+      properties:
+        deleted:
+          description: If true all keys were removed
+          type: boolean
+      required:
+      - deleted
+      type: object
+    RemoveKeyResponse:
+      description: Returns key and deletion status
+      example:
+        deleted: true
+        key: key
+      properties:
+        deleted:
+          description: If true key was removed
+          type: boolean
+        key:
+          description: Object key
+          type: string
+      required:
+      - deleted
+      - key
+      type: object

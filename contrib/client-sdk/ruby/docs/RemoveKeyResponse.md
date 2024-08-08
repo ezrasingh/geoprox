@@ -5,7 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **deleted** | **Boolean** | If true key was removed |  |
-| **key** | **String** | Resource key |  |
+| **key** | **String** | Object key |  |
 
 ## Example
 

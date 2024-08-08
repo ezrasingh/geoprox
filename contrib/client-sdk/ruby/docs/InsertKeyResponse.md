@@ -5,7 +5,7 @@
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
 | **geohash** | **String** | Geohash encoded latitude/longitude |  |
-| **key** | **String** | Resource key |  |
+| **key** | **String** | Object key |  |
 
 ## Example
 

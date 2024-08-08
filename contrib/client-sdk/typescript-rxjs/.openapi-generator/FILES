@@ -11,11 +11,17 @@ models/EncodeLatLng.ts
 models/EncodeLatLngResponse.ts
 models/GeohashNeighborsResponse.ts
 models/InsertKey.ts
+models/InsertKeyBatch.ts
+models/InsertKeyBatchResponse.ts
 models/InsertKeyResponse.ts
 models/Neighbor.ts
 models/QueryRange.ts
+models/QueryRangeMany.ts
+models/QueryRangeManyResponse.ts
 models/QueryRangeResponse.ts
 models/RemoveKey.ts
+models/RemoveKeyBatch.ts
+models/RemoveKeyBatchResponse.ts
 models/RemoveKeyResponse.ts
 models/index.ts
 package.json

@@ -7,7 +7,7 @@ Returns key and deletion status
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **deleted** | **bool** | If true key was removed | 
-**key** | **str** | Resource key | 
+**key** | **str** | Object key | 
 
 ## Example
 

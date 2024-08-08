@@ -13,11 +13,17 @@ src/models/EncodeLatLng.ts
 src/models/EncodeLatLngResponse.ts
 src/models/GeohashNeighborsResponse.ts
 src/models/InsertKey.ts
+src/models/InsertKeyBatch.ts
+src/models/InsertKeyBatchResponse.ts
 src/models/InsertKeyResponse.ts
 src/models/Neighbor.ts
 src/models/QueryRange.ts
+src/models/QueryRangeMany.ts
+src/models/QueryRangeManyResponse.ts
 src/models/QueryRangeResponse.ts
 src/models/RemoveKey.ts
+src/models/RemoveKeyBatch.ts
+src/models/RemoveKeyBatchResponse.ts
 src/models/RemoveKeyResponse.ts
 src/models/index.ts
 src/runtime.ts

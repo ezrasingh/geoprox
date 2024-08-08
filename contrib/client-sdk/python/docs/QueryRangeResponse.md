@@ -1,12 +1,12 @@
 # QueryRangeResponse
 
-Returns resource keys found with their distance
+Returns object keys found with their distance
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**found** | [**List[Neighbor]**](Neighbor.md) | Resource keys found within range | 
+**found** | [**List[Neighbor]**](Neighbor.md) | Object keys found within range | 
 
 ## Example
 

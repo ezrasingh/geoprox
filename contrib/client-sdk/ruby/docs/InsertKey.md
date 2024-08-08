@@ -4,7 +4,7 @@
 
 | Name | Type | Description | Notes |
 | ---- | ---- | ----------- | ----- |
-| **key** | **String** | Resource key |  |
+| **key** | **String** | Object key |  |
 | **lat** | **Float** | Latitude |  |
 | **lng** | **Float** | Longitude |  |
 

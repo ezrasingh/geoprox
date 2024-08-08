@@ -7,11 +7,17 @@ export * from './encodeLatLng';
 export * from './encodeLatLngResponse';
 export * from './geohashNeighborsResponse';
 export * from './insertKey';
+export * from './insertKeyBatch';
+export * from './insertKeyBatchResponse';
 export * from './insertKeyResponse';
 export * from './neighbor';
 export * from './queryRange';
+export * from './queryRangeMany';
+export * from './queryRangeManyResponse';
 export * from './queryRangeResponse';
 export * from './removeKey';
+export * from './removeKeyBatch';
+export * from './removeKeyBatchResponse';
 export * from './removeKeyResponse';
 
 import * as fs from 'fs';
@@ -34,11 +40,17 @@ import { EncodeLatLng } from './encodeLatLng';
 import { EncodeLatLngResponse } from './encodeLatLngResponse';
 import { GeohashNeighborsResponse } from './geohashNeighborsResponse';
 import { InsertKey } from './insertKey';
+import { InsertKeyBatch } from './insertKeyBatch';
+import { InsertKeyBatchResponse } from './insertKeyBatchResponse';
 import { InsertKeyResponse } from './insertKeyResponse';
 import { Neighbor } from './neighbor';
 import { QueryRange } from './queryRange';
+import { QueryRangeMany } from './queryRangeMany';
+import { QueryRangeManyResponse } from './queryRangeManyResponse';
 import { QueryRangeResponse } from './queryRangeResponse';
 import { RemoveKey } from './removeKey';
+import { RemoveKeyBatch } from './removeKeyBatch';
+import { RemoveKeyBatchResponse } from './removeKeyBatchResponse';
 import { RemoveKeyResponse } from './removeKeyResponse';
 
 /* tslint:disable:no-unused-variable */
@@ -64,11 +76,17 @@ let typeMap: {[index: string]: any} = {
     "EncodeLatLngResponse": EncodeLatLngResponse,
     "GeohashNeighborsResponse": GeohashNeighborsResponse,
     "InsertKey": InsertKey,
+    "InsertKeyBatch": InsertKeyBatch,
+    "InsertKeyBatchResponse": InsertKeyBatchResponse,
     "InsertKeyResponse": InsertKeyResponse,
     "Neighbor": Neighbor,
     "QueryRange": QueryRange,
+    "QueryRangeMany": QueryRangeMany,
+    "QueryRangeManyResponse": QueryRangeManyResponse,
     "QueryRangeResponse": QueryRangeResponse,
     "RemoveKey": RemoveKey,
+    "RemoveKeyBatch": RemoveKeyBatch,
+    "RemoveKeyBatchResponse": RemoveKeyBatchResponse,
     "RemoveKeyResponse": RemoveKeyResponse,
 }
 

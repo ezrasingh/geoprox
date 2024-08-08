@@ -6,7 +6,7 @@ Arguments for removing a key
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**key** | **str** | Resource key | 
+**key** | **str** | Object key | 
 
 ## Example
 

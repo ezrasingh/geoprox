@@ -1,14 +1,18 @@
 [package]
 name = "geoprox-client"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["singhezra@gmail.com"]
-description = "Geoprox server implementation providing a HTTP API for geospatial queries and position tracking"
+description = "An HTTP client library for interacting with the Geoprox search engine"
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [dependencies]
 serde = { version = "^1.0", features = ["derive"] }
-serde_with = { version = "^3.8", default-features = false, features = ["base64", "std", "macros"] }
+serde_with = { version = "^3.8", default-features = false, features = [
+    "base64",
+    "std",
+    "macros",
+] }
 serde_json = "^1.0"
 url = "^2.5"
 uuid = { version = "^1.8", features = ["serde", "v4"] }

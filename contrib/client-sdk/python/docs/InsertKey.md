@@ -6,7 +6,7 @@ Arguments for inserting a key
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**key** | **str** | Resource key | 
+**key** | **str** | Object key | 
 **lat** | **float** | Latitude | 
 **lng** | **float** | Longitude | 
 
