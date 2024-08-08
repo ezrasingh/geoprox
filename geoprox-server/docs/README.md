@@ -6,7 +6,7 @@
 
 All URIs are relative to _http://localhost_
 
-| Class         | Method                                                   | HTTP request                               | Description                                |
+| Api           | Method                                                   | HTTP request                               | Description                                |
 | ------------- | -------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
 | `GeohashApi`  | [**decodeGeohash**](Apis/GeohashApi.md#decodegeohash)    | **GET** /api/v1/geohash/{ghash}/           | Decode geohash into coordinates.           |
 | `GeohashApi`  | [**encodeLatlng**](Apis/GeohashApi.md#encodelatlng)      | **GET** /api/v1/geohash/                   | Encode coordinates into geohash            |
