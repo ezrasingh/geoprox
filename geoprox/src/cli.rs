@@ -9,7 +9,7 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
-    /// specify a config file
+    /// Specify a config file
     #[arg(short, long, value_name = "CONFIG")]
     config: Option<PathBuf>,
 

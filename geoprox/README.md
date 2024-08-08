@@ -30,6 +30,7 @@ Commands:
   run     Start Geoprox server
   encode  Hash latitude/longitude into geohash
   decode  Decode geohash into approximate longitude/latitude
+  spec    Generate an OpenAPI specification file
   help    Print this message or the help of the given subcommand(s)
 
 Options:
