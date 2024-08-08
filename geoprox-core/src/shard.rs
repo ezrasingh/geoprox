@@ -228,40 +228,6 @@ mod test {
     }
 
     #[test]
-    fn test_query_range_sorted() {
-        let mut shard = GeoShard::default();
-        let mock_index = "mock-index";
-        let count = Some(100);
-        let sorted = None;
-        shard.create_index(mock_index).unwrap();
-
-        shard
-            .insert_many_keys(
-                mock_index,
-                vec![
-                    ("a".to_string(), [0.0, 1.0]),
-                    ("b".to_string(), [1.0, 0.5]),
-                    ("c".to_string(), [0.0, 0.0]),
-                    ("d".to_string(), [0.0, -1.0]),
-                    ("e".to_string(), [-1.0, -0.5]),
-                    ("f".to_string(), [0.0, 0.0]),
-                ],
-                false,
-            )
-            .unwrap();
-
-        let res = shard
-            .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
-            .unwrap();
-
-        let mut sorted_neighbors = res.to_vec();
-
-        sorted_neighbors.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
-
-        assert_eq!(res, sorted_neighbors);
-    }
-
-    #[test]
     fn test_query_range_count() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
@@ -286,7 +252,7 @@ mod test {
         {
             let count = Some(100);
             let res = shard
-                .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
+                .query_range(mock_index, [0.0, 0.0], 1000.0, count, sorted)
                 .unwrap();
 
             assert!(res.len() <= count.unwrap());
@@ -296,10 +262,44 @@ mod test {
             let count = Some(0);
 
             let res = shard
-                .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
+                .query_range(mock_index, [0.0, 0.0], 1000.0, count, sorted)
                 .unwrap();
 
             assert!(res.len() <= count.unwrap());
         }
+    }
+
+    #[test]
+    fn test_query_range_sorted() {
+        let mut shard = GeoShard::default();
+        let mock_index = "mock-index";
+        let count = Some(100);
+        let sorted = Some(true);
+        shard.create_index(mock_index).unwrap();
+
+        shard
+            .insert_many_keys(
+                mock_index,
+                vec![
+                    ("a".to_string(), [0.0, 1.0]),
+                    ("b".to_string(), [1.0, 0.5]),
+                    ("c".to_string(), [0.0, 0.0]),
+                    ("d".to_string(), [0.0, -1.0]),
+                    ("e".to_string(), [-1.0, -0.5]),
+                    ("f".to_string(), [0.0, 0.0]),
+                ],
+                false,
+            )
+            .unwrap();
+
+        let res = shard
+            .query_range(mock_index, [0.0, 0.0], 1000.0, count, sorted)
+            .unwrap();
+
+        let mut sorted_neighbors = res.to_vec();
+
+        sorted_neighbors.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
+
+        assert_eq!(res, sorted_neighbors);
     }
 }
