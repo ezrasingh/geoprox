@@ -155,7 +155,7 @@ impl SpatialIndex {
         };
 
         // ? compute nearest neighbors
-        let mut neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
+        let neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
             .nearest_n_within::<HaversineDistance>(&origin, radius, count, sorted)
             .par_iter()
             .filter_map(|node| {
@@ -169,11 +169,6 @@ impl SpatialIndex {
                     })
             })
             .collect();
-        if !sorted {
-            // ! kiddo does not properly handle count argument when sort is disabled
-            // ! see sdd/kiddo#168 - https://github.com/sdd/kiddo/issues/168
-            neighbors.truncate(count);
-        }
         Ok(neighbors)
     }
 }
@@ -183,7 +178,7 @@ mod test {
     use super::*;
     use rand::prelude::*;
 
-    const DEFAULT_DEPTH: usize = 6;
+    const DEFAULT_DEPTH: usize = 10;
 
     fn encode_lat_lng([lat, lng]: LatLngCoord, depth: usize) -> String {
         geohash::encode([lng, lat].into(), depth).unwrap()
@@ -250,7 +245,7 @@ mod test {
     fn test_search() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
-        let range = 1.0;
+        let range = 1000.0;
         let count = 100;
         let sorted = false;
         let origin: LatLngCoord = [0.0, 0.0];
@@ -269,10 +264,93 @@ mod test {
         let res = geo_index
             .search(origin, range, count, sorted, DEFAULT_DEPTH)
             .unwrap();
-        assert!(res.len() <= count);
+
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
         });
+    }
+
+    #[test]
+    fn test_search_count() {
+        let mut geo_index = SpatialIndex::default();
+        let depth: usize = 6;
+        let range = 1000.0;
+        let count = 5;
+        let sorted = false;
+        let origin: LatLngCoord = [0.0, 0.0];
+
+        geo_index.insert_many(vec![
+            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+        ]);
+
+        let res = geo_index
+            .search(origin, range, count, sorted, DEFAULT_DEPTH)
+            .unwrap();
+        assert!(res.len() <= count);
+    }
+
+    #[test]
+    fn test_search_count_unsorted() {
+        // ? see, https://github.com/sdd/kiddo/issues/168
+        let mut geo_index = SpatialIndex::default();
+        let depth: usize = 6;
+        let range = 1000.0;
+        let count = 0;
+        let sorted = false;
+        let origin: LatLngCoord = [0.0, 0.0];
+
+        geo_index.insert_many(vec![
+            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+        ]);
+
+        let res = geo_index
+            .search(origin, range, count, sorted, DEFAULT_DEPTH)
+            .unwrap();
+        assert_eq!(res.len(), 0);
+    }
+
+    #[test]
+    fn test_search_sorted() {
+        let mut geo_index = SpatialIndex::default();
+        let depth: usize = 10;
+        let range = 1000.0;
+        let count = 100;
+        let sorted = true;
+        let origin: LatLngCoord = [0.0, 0.0];
+
+        geo_index.insert_many(vec![
+            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+        ]);
+
+        let res = geo_index
+            .search(origin, range, count, sorted, DEFAULT_DEPTH)
+            .unwrap();
+
+        let mut sorted_neighbors = res.to_vec();
+        sorted_neighbors.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
+
+        assert_eq!(res, sorted_neighbors);
     }
 
     #[test]
