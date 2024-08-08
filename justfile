@@ -1,4 +1,4 @@
-# default recipe to display help information
+# Default recipe to display help information
 default:
   @just --list
 

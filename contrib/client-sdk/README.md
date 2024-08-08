@@ -16,23 +16,26 @@ Once these tools are installed, you can run `yarn install` to install the requir
 
 ## Getting Started
 
-To get started run `just setup` and start a `geoprox-server` instance from the project root.
-If you are using a port other than the default, update the `API_SPEC` variable in your `.env` file.
-
 ## Using Just
 
 The `just` command runner is included to help manage and run tasks easily. Here are the available tasks:
 
-```shell
+```bash
 Available recipes:
-    build               # build all client libraries
-    codegen TARGET_LANG # generate sdk client
-    default             # default recipe to display help information
-    manifest            # build generator configurations
-    setup               # setup dotenv file
+    build               # Build all client libraries
+    codegen TARGET_LANG # Generate sdk client
+    default             # Default recipe to display help information
+    manifest            # Build generator configurations
+    spec                # Generate OpenAPI spec
 ```
 
-Here is an example usage building only the Rust client `just codegen rust`
+Here’s how to build only the Rust client using the OpenAPI specification:
+
+```bash
+just spec codegen rust
+```
+
+This command generates the Rust client library from the OpenAPI specification. It will compile the spec and produce the client code without additional components.
 
 ## Configuring Generators
 
@@ -44,7 +47,7 @@ For information on available generators and configuration options, refer to the 
 
 If you prefer to use [Nix](https://nixos.org/) for managing dependencies, you can enter a development shell with the required environment by running:
 
-```shell
+```bash
 nix-shell
 ```
 
@@ -56,7 +59,7 @@ This command will set up the environment with all the necessary dependencies con
 
 If you encounter the following error while building `geoprox-client`:
 
-```shell
+```bash
 Failed to find OpenSSL development headers.
 
   You can try fixing this setting the `OPENSSL_DIR` environment variable
