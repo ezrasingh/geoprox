@@ -93,6 +93,7 @@ pub mod geohash_api {
 
 pub mod geoshard_api {
     use crate::app::{AppError, SharedState};
+    use crate::config::{DEFAULT_COUNT, DEFAULT_SORTED};
     use crate::dto::{
         CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyBatch, InsertKeyBatchResponse,
         InsertKeyResponse, QueryRange, QueryRangeMany, QueryRangeManyResponse, QueryRangeResponse,
@@ -347,8 +348,12 @@ pub mod geoshard_api {
             &index,
             [query.lat, query.lng],
             query.range.into(),
-            query.count.unwrap_or(100),
-            query.sorted.unwrap_or(false),
+            query
+                .count
+                .unwrap_or_else(|| state.config.default_count.unwrap_or(DEFAULT_COUNT)),
+            query
+                .sorted
+                .unwrap_or_else(|| state.config.default_sorted.unwrap_or(DEFAULT_SORTED)),
         ) {
             Ok(found) => Ok(Json(QueryRangeResponse { found })),
             Err(err) => Err(anyhow!(err).into()),
@@ -380,8 +385,12 @@ pub mod geoshard_api {
             query.indices.into_iter().collect(),
             [query.lat, query.lng],
             query.range.into(),
-            query.count.unwrap_or(100),
-            query.sorted.unwrap_or(false),
+            query
+                .count
+                .unwrap_or_else(|| state.config.default_count.unwrap_or(DEFAULT_COUNT)),
+            query
+                .sorted
+                .unwrap_or_else(|| state.config.default_sorted.unwrap_or(DEFAULT_SORTED)),
         );
 
         Ok(Json(QueryRangeManyResponse {

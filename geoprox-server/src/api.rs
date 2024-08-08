@@ -5,15 +5,11 @@ use axum::{
     routing::{get, post, put},
     Router,
 };
-use geoprox_core::models::GeoShardConfig;
 use std::sync::Arc;
 
 /// Returns REST API router
-pub fn routes(shard_config: GeoShardConfig) -> Router {
-    let state: SharedState = {
-        let app = AppState::from(shard_config);
-        SharedState::from(app)
-    };
+pub fn routes(app_state: AppState) -> Router {
+    let state = SharedState::from(app_state);
 
     Router::new()
         .nest(
@@ -127,7 +123,7 @@ mod test {
     use serde_json::json;
 
     fn setup() -> TestServer {
-        let app = Router::new().nest("/api/v1/", routes(GeoShardConfig::default()));
+        let app = Router::new().nest("/api/v1/", routes(AppState::default()));
         let config = TestServerConfig::builder().build();
         TestServer::new_with_config(app, config).unwrap()
     }

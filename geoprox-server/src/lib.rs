@@ -5,6 +5,7 @@ pub mod dto;
 pub mod handlers;
 pub mod middleware;
 
+use app::AppState;
 use config::ServerConfig;
 use geoprox_core::models::GeoShardConfig;
 
@@ -23,13 +24,14 @@ pub async fn run(server_config: ServerConfig, shard_config: GeoShardConfig) {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let socket: std::net::SocketAddr = server_config.into();
+    let socket: std::net::SocketAddr = server_config.clone().into();
     let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
 
+    let app = AppState::new(server_config, shard_config);
     let router = Router::new()
         .nest(
             "/api/v1/",
-            api::routes(shard_config).layer(TraceLayer::new_for_http()),
+            api::routes(app).layer(TraceLayer::new_for_http()),
         )
         .merge(api::docs::router());
 
