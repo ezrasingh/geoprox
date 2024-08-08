@@ -1,19 +1,19 @@
 [package]
 name = "geoprox"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2021"
 authors = ["Ezra Singh <singhezra@gmail.com>"]
-description = "A Geo-Proximity detection service for efficient real-time geo-aware contract pairing. Ideal for rideshare pairing services"
-categories = ["command-line-interface", "science::geo"]
-keywords = ["geo", "proximity", "geohash", "pairing", "nearest-neighbor"]
+description = "Standalone CLI for running the Geoprox service"
+categories = ["science::geo", "command-line-interface"]
+keywords = ["geospatial", "search", "location-based", "pairing", "geohash"]
 readme = "README.md"
 repository = "https://github.com/ezrasingh/geoprox"
 documentation = "https://docs.rs/geoprox"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-geoprox-core = { path = "../geoprox-core", version = "0.3.1" }
-geoprox-server = { path = "../geoprox-server", version = "0.3.1" }
+geoprox-core = { path = "../geoprox-core", version = "0.4.0" }
+geoprox-server = { path = "../geoprox-server", version = "0.4.0" }
 clap = { version = "4.5.4", features = ["derive"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
 serde_json = "1.0.116"

@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Added missing OpenAPI `Path` parameter descriptions
-- Improved error handling and responses
-- Implemented Batch API for insertion, removal and query
-- Added `api::doc::openapi_spec_json()` for accesing the OpenAPI spec programmatically
+## 0.4.0
+
+- Added missing OpenAPI `Path` parameter descriptions.
+- Improved error handling and responses.
+- Added `api::doc::openapi_spec_json()` for accesing the OpenAPI spec programmatically ([#3](https://github.com/ezrasingh/geoprox/issues/3)).
+- Implemented Batch API for insertion, removal and query ([#1](https://github.com/ezrasingh/geoprox/issues/1)).
+- Bumped `geoprox-core` to [v0.4.0](https://crates.io/crates/geoprox-core/0.4.0).
 
 ## 0.3.1
 

@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Added suport for batch insertion, query and removal.
+## 0.4.0
+
+- Added suport for batch insertion, query and removal ([#1](https://github.com/ezrasingh/geoprox/issues/1)).
 - Improved error handling for `GeoShardError` by implementing `Display` and `Error`.
 - Corrected issue with `(lat, lng)` ordering in `HaversineDistance` metric.
 
