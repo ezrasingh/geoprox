@@ -20,7 +20,7 @@ Once these tools are installed, you can run `yarn install` to install the requir
 
 The `just` command runner is included to help manage and run tasks easily. Here are the available tasks:
 
-```bash
+```shell
 Available recipes:
     build               # Build all client libraries
     codegen TARGET_LANG # Generate sdk client
@@ -31,7 +31,7 @@ Available recipes:
 
 Here’s how to build only the Rust client using the OpenAPI specification:
 
-```bash
+```shell
 just spec codegen rust
 ```
 
@@ -47,7 +47,7 @@ For information on available generators and configuration options, refer to the 
 
 If you prefer to use [Nix](https://nixos.org/) for managing dependencies, you can enter a development shell with the required environment by running:
 
-```bash
+```shell
 nix-shell
 ```
 
@@ -59,7 +59,7 @@ This command will set up the environment with all the necessary dependencies con
 
 If you encounter the following error while building `geoprox-client`:
 
-```bash
+```shell
 Failed to find OpenSSL development headers.
 
   You can try fixing this setting the `OPENSSL_DIR` environment variable
