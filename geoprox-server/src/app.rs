@@ -11,14 +11,16 @@ use crate::{config::ServerConfig, dto::AppErrorResponse};
 #[derive(Clone, Default)]
 pub struct AppState {
     pub geoshard: GeoShard,
-    pub config: ServerConfig,
+    pub server_config: ServerConfig,
+    pub shard_config: GeoShardConfig,
 }
 
 impl AppState {
     pub fn new(server_config: ServerConfig, shard_config: GeoShardConfig) -> Self {
         Self {
-            geoshard: GeoShard::from(shard_config),
-            config: server_config,
+            geoshard: GeoShard::from(shard_config.clone()),
+            server_config,
+            shard_config,
         }
     }
 }
