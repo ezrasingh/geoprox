@@ -224,7 +224,7 @@ mod test {
         let res = shard
             .query_range(mock_index, [0.0, 0.0], 150.0, count, sorted)
             .unwrap();
-        assert_eq!(res.len(), 2);
+        assert_eq!(res.len(), count.unwrap());
     }
 
     #[test]
