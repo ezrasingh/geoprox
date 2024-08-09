@@ -1,2 +1,5 @@
 # ignore language stats for codegen directory
-contrib/client-sdk/* linguist-vendored
+contrib/client-sdk/** linguist-vendored=true
+
+# let linguist know about docs folder
+contrib/docs/** linguist-documentation
