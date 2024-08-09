@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1723211344884,
+  "lastUpdate": 1723217721424,
   "repoUrl": "https://github.com/ezrasingh/geoprox",
   "entries": {
     "Geoprox Benchmark": [
@@ -6713,6 +6713,120 @@ window.BENCHMARK_DATA = {
             "name": "spatial_index/range_query/sorted/100000",
             "value": 562507,
             "range": "± 67612",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "singhezra@gmail.com",
+            "name": "Ezra Singh",
+            "username": "ezrasingh"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "25eb13ca27078aa997c406396a11a26854ce1f79",
+          "message": "7 remove manual truncation due to fixed kiddo bug (#10)\n\n* Updated README\r\n\r\n* Added unit test to capture this edge case\r\n\r\n* Using Kiddo from git revision\r\n\r\n* Added test for edge cases withsearch  sorted count behavior\r\n\r\n* Updated CHANGELOG\r\n\r\n* Added missing unwrap in unit test\r\n\r\n* Fixed bad assertion",
+          "timestamp": "2024-08-09T11:30:53-04:00",
+          "tree_id": "c9841d3eb0330e0e451f5603af15616b34c4c52b",
+          "url": "https://github.com/ezrasingh/geoprox/commit/25eb13ca27078aa997c406396a11a26854ce1f79"
+        },
+        "date": 1723217720319,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "spatial_index/insert/10",
+            "value": 2536,
+            "range": "± 60",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100",
+            "value": 68862,
+            "range": "± 1730",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/1000",
+            "value": 978441,
+            "range": "± 38075",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/10000",
+            "value": 13659360,
+            "range": "± 40537",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/insert/100000",
+            "value": 206771378,
+            "range": "± 5638481",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10",
+            "value": 693,
+            "range": "± 6",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/10",
+            "value": 697,
+            "range": "± 5",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100",
+            "value": 1350,
+            "range": "± 27",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/100",
+            "value": 1344,
+            "range": "± 36",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/1000",
+            "value": 9106,
+            "range": "± 735",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/1000",
+            "value": 8923,
+            "range": "± 306",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/10000",
+            "value": 62428,
+            "range": "± 3630",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/10000",
+            "value": 62075,
+            "range": "± 2571",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/100000",
+            "value": 587147,
+            "range": "± 88792",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "spatial_index/range_query/sorted/100000",
+            "value": 588485,
+            "range": "± 77705",
             "unit": "ns/iter"
           }
         ]
