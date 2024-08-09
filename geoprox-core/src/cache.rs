@@ -185,7 +185,7 @@ mod test {
     }
 
     #[test]
-    fn test_upsert() {
+    fn can_upsert() {
         let mut geo_index = SpatialIndex::default();
         let insert_depth = 6;
         let range = 1.0;
@@ -218,7 +218,7 @@ mod test {
     }
 
     #[test]
-    fn test_remove() {
+    fn can_remove() {
         let mut geo_index = SpatialIndex::default();
         let depth = 6;
         let range = 10.0;
@@ -242,7 +242,7 @@ mod test {
     }
 
     #[test]
-    fn test_search() {
+    fn can_search() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
         let range = 1000.0;
@@ -271,7 +271,7 @@ mod test {
     }
 
     #[test]
-    fn test_search_count() {
+    fn can_search_count() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
         let range = 1000.0;
@@ -297,7 +297,7 @@ mod test {
     }
 
     #[test]
-    fn test_search_sorted_count() {
+    fn can_search_sorted_count() {
         // ? see, https://github.com/sdd/kiddo/issues/168
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
@@ -341,7 +341,7 @@ mod test {
     }
 
     #[test]
-    fn test_search_sorted() {
+    fn can_search_sorted() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 10;
         let range = 1000.0;
@@ -371,7 +371,7 @@ mod test {
     }
 
     #[test]
-    fn test_capacity() {
+    fn can_capacity() {
         let capacity = i16::MAX;
         let mut geo_index = SpatialIndex::new(capacity as usize);
         let mut rng = rand::thread_rng();

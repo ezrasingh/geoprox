@@ -129,7 +129,7 @@ mod test {
     }
 
     #[tokio::test]
-    async fn test_geohash_api() {
+    async fn can_geohash_api() {
         let server = setup();
         let req = server
             .get("/api/v1/geohash/")
@@ -149,7 +149,7 @@ mod test {
     }
 
     #[tokio::test]
-    async fn test_range_query_api() {
+    async fn can_range_query_api() {
         let server = setup();
         server.post("/api/v1/shard/drivers/").await;
         server

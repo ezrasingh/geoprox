@@ -176,7 +176,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_create_index() {
+    fn can_create_index() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
 
@@ -188,7 +188,7 @@ mod test {
     }
 
     #[test]
-    fn test_drop_index() {
+    fn can_drop_index() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
 
@@ -202,7 +202,7 @@ mod test {
     }
 
     #[test]
-    fn test_query_range() {
+    fn can_query_range() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
         let count = Some(100);
@@ -228,7 +228,7 @@ mod test {
     }
 
     #[test]
-    fn test_query_range_count() {
+    fn can_query_range_count() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
         let sorted = None;
@@ -270,7 +270,7 @@ mod test {
     }
 
     #[test]
-    fn test_query_range_sorted() {
+    fn can_query_range_sorted() {
         let mut shard = GeoShard::default();
         let mock_index = "mock-index";
         let count = Some(100);
