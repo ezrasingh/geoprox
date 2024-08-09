@@ -1,6 +1,6 @@
 [package]
 name = "geoprox-core"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 description = "Core library for Geoprox, provides geospatial indexing and search functionalities"
 categories = ["science::geo", "data-structures", "algorithms", "caching"]
@@ -16,7 +16,7 @@ geohash = "0.13.1"
 hashbrown = { version = "0.14.5", features = ["serde", "rayon"] }
 haversine = "0.2.1"
 itertools = "0.13.0"
-kiddo = { git = "https://github.com/sdd/kiddo.git", rev = "cc62c6d76accdeba75c0f55db80c28eab8a21ae7", features = [
+kiddo = { git = "https://github.com/sdd/kiddo.git", version = "4.2.0", rev = "cc62c6d76accdeba75c0f55db80c28eab8a21ae7", features = [
     "serialize",
 ] }
 log = "0.4.22"

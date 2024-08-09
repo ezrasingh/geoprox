@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.4.1
+
 - Moved configuration defaults into `GeoShard` ([#2](https://github.com/ezrasingh/geoprox/issues/2)).
 - Remove [manual truncation in unsorted search](https://github.com/ezrasingh/geoprox/blob/f2074652e7b0e5eb8a4f0ae9bd4cb9f3c0c621df/geoprox-core/src/cache.rs#L175) by pinning Kiddo to latest commit ([#7](https://github.com/ezrasingh/geoprox/issues/7)) and handling edge case with `count` = 0.
 
