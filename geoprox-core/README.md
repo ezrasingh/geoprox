@@ -84,6 +84,7 @@ let nearby: LatLngCoord = [36.2048, 138.2529];
 let within: f64 = 50.0; // 50km radius
 let count = 100; // return up to 100 results
 let sorted = true; // sort results by distance
+
 let res = shard.query_range("drivers", nearby, within, Some(count), Some(sorted));
 
 println!("found: {:#?}", res.unwrap());
