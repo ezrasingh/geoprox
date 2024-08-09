@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -51,6 +50,4 @@ model_remove_key_batch.go
 model_remove_key_batch_response.go
 model_remove_key_response.go
 response.go
-test/api_geohash_api_test.go
-test/api_geoshard_api_test.go
 utils.go

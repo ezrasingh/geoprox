@@ -1,8 +1,10 @@
 [package]
 name = "geoprox-client"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["singhezra@gmail.com"]
 description = "An HTTP client library for interacting with the Geoprox search engine"
+categories = ["science::geo", "web-programming::http-server", "api-bindings"]
+keywords = ["geospatial", "search", "location-based", "pairing", "api"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 

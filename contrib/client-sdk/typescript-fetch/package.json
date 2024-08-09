@@ -1,6 +1,6 @@
 {
   "name": "geoprox-client-ts-fetch",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "OpenAPI client for geoprox-client-ts-fetch",
   "author": "OpenAPI-Generator",
   "repository": {

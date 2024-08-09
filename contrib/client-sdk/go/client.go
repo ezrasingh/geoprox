@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.0
+API version: 0.4.1
 Contact: singhezra@gmail.com
 */
 
@@ -42,7 +42,7 @@ var (
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
-// APIClient manages communication with the geoprox-server API v0.4.0
+// APIClient manages communication with the geoprox-server API v0.4.1
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration

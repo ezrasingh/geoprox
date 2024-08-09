@@ -2,3 +2,4 @@
 node_modules/
 generators/
 openapi.json
+markdown/

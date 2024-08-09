@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.0
+API version: 0.4.1
 Contact: singhezra@gmail.com
 */
 
@@ -87,7 +87,7 @@ type Configuration struct {
 func NewConfiguration() *Configuration {
 	cfg := &Configuration{
 		DefaultHeader:    make(map[string]string),
-		UserAgent:        "OpenAPI-Generator/0.4.0/go",
+		UserAgent:        "OpenAPI-Generator/0.4.1/go",
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{

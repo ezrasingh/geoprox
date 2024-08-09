@@ -4,7 +4,7 @@ defmodule GeoproxServer.Mixfile do
   def project do
     [
       app: :geoprox_client,
-      version: "0.4.0",
+      version: "0.4.1",
       elixir: "~> 1.10",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,

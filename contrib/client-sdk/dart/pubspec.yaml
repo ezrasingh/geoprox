@@ -3,7 +3,7 @@
 #
 
 name: 'geoprox_client'
-version: '0.4.0'
+version: '0.4.1'
 description: 'An HTTP client library for interacting with the Geoprox search engine'
 homepage: 'https://github.com/ezrasingh/geoprox/'
 repository: https://github.com/ezrasingh/geoprox/contrib/client-sdk/dart/

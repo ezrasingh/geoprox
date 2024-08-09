@@ -55,10 +55,4 @@ lib/geoprox_client/models/remove_key_batch.rb
 lib/geoprox_client/models/remove_key_batch_response.rb
 lib/geoprox_client/models/remove_key_response.rb
 lib/geoprox_client/version.rb
-spec/models/insert_key_batch_response_spec.rb
-spec/models/insert_key_batch_spec.rb
-spec/models/query_range_many_response_spec.rb
-spec/models/query_range_many_spec.rb
-spec/models/remove_key_batch_response_spec.rb
-spec/models/remove_key_batch_spec.rb
 spec/spec_helper.rb

@@ -61,10 +61,4 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_insert_key_batch.py
-test/test_insert_key_batch_response.py
-test/test_query_range_many.py
-test/test_query_range_many_response.py
-test/test_remove_key_batch.py
-test/test_remove_key_batch_response.py
 tox.ini
