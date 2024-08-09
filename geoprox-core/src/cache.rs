@@ -155,7 +155,7 @@ impl SpatialIndex {
         };
 
         // ? compute nearest neighbors
-        let neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
+        let mut neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
             .nearest_n_within::<HaversineDistance>(&origin, radius, count, sorted)
             .par_iter()
             .filter_map(|node| {
@@ -169,6 +169,12 @@ impl SpatialIndex {
                     })
             })
             .collect();
+        if !sorted {
+            // ! kiddo does not properly handle count argument when sort is disabled
+            // ! see sdd/kiddo#168 - https://github.com/sdd/kiddo/issues/168
+            neighbors.truncate(count);
+        }
+
         Ok(neighbors)
     }
 }
