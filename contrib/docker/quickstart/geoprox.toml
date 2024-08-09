@@ -10,7 +10,3 @@ http_port = 5000
 insert_depth = 6
 # Determines the default geohash length for searches
 search_depth = 6
-# Specifies the default number of results returned in range queries
-default_count = 100
-# Toggles the default sorting behavior for query results
-default_sorted = false

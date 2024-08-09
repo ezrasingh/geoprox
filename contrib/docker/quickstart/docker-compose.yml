@@ -3,14 +3,22 @@ services:
     # I recommend pinning the tag to a specific version.
     # Available tags can be found at https://hub.docker.com/repository/docker/ezrasingh/geoprox/tags
     image: ezrasingh/geoprox:latest
+    restart: on-failure:3
 
     # This is optional, demonstrating how to specify your config path.
     # The default path is /etc/geoprox/
-    # Feel free to remove this command if you are fine with the default config path
-    command: -c /etc/geoprox/geoprox.toml
+    environment:
+      GEOPROX_CONFIG: /etc/geoprox/geoprox.toml
 
     ports:
       - 5000:5000
-
     volumes:
       - ./geoprox.toml:/etc/geoprox/geoprox.toml:ro
+
+  # Here is an example to generate just the OpenAPI spec
+  geoprox-spec:
+    image: ezrasingh/geoprox:latest
+    entrypoint: ['geoprox', 'spec' ]
+    command: --destination /tmp --filename openapi.json --pretty
+    volumes:
+      - ./:/tmp:z
