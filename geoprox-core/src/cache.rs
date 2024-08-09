@@ -136,7 +136,7 @@ impl SpatialIndex {
         sorted: bool,
         search_depth: usize,
     ) -> Result<Vec<Neighbor>, GeohashError> {
-        if self.position_map.is_empty() {
+        if self.position_map.is_empty() || count.eq(&0) {
             return Ok(vec![]);
         }
         let search_region: String = {
@@ -297,13 +297,11 @@ mod test {
     }
 
     #[test]
-    fn test_search_count_unsorted() {
+    fn test_search_sorted_count() {
         // ? see, https://github.com/sdd/kiddo/issues/168
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
         let range = 1000.0;
-        let count = 0;
-        let sorted = false;
         let origin: LatLngCoord = [0.0, 0.0];
 
         geo_index.insert_many(vec![
@@ -317,10 +315,29 @@ mod test {
             ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
         ]);
 
-        let res = geo_index
-            .search(origin, range, count, sorted, DEFAULT_DEPTH)
+        let count = 1;
+
+        let res_sorted = geo_index
+            .search(origin, range, count, true, DEFAULT_DEPTH)
             .unwrap();
-        assert_eq!(res.len(), 0);
+        let res_unsorted = geo_index
+            .search(origin, range, count, false, DEFAULT_DEPTH)
+            .unwrap();
+
+        assert_eq!(res_sorted.len(), count);
+        assert_eq!(res_unsorted.len(), count);
+
+        let count = 0;
+
+        let res_sorted = geo_index
+            .search(origin, range, count, true, DEFAULT_DEPTH)
+            .unwrap();
+        let res_unsorted = geo_index
+            .search(origin, range, count, false, DEFAULT_DEPTH)
+            .unwrap();
+
+        assert_eq!(res_sorted.len(), count);
+        assert_eq!(res_unsorted.len(), count);
     }
 
     #[test]
