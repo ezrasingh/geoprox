@@ -23,7 +23,7 @@ fn build_search_space(
 
     for (ghash, members) in prefix_tree.iter_prefix(subregion_hash) {
         if let Ok((position, _, _)) = geohash::decode(&ghash) {
-            members.iter().for_each(|id: &ObjectIdentifier| {
+            members.into_iter().for_each(|id: &ObjectIdentifier| {
                 debug!("adding object to kd-tree: id={} geohash={}", id, ghash);
                 // ? geohash position uses (lng, lat)
                 search_tree.add(&[position.y, position.x], *id);

@@ -946,7 +946,7 @@ dependencies = [
  "criterion",
  "geohash",
  "hashbrown 0.14.5",
- "haversine",
+ "haversine-rs",
  "itertools 0.13.0",
  "kiddo",
  "log",
@@ -1046,10 +1046,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "haversine"
-version = "0.2.1"
+name = "haversine-rs"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef9482608b217d89a3caeb5fe2336a0491d1dc0be5d89c67125ea514b1f6a660"
+checksum = "a938f96298bab2f2315301ac84f6574c1f29a84d95956944cb4d380e6c0ff71e"
 
 [[package]]
 name = "heck"
