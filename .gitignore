@@ -1,2 +1,4 @@
 /target
 .env*
+perf.data
+flamegraph.svg
