@@ -1,5 +1,4 @@
 <div align="center">
-  <br>
   <h1>Geoprox 🌎</h1>
 </div>
 <br>
