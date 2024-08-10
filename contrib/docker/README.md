@@ -39,7 +39,7 @@ To pin your Geoprox instance to a specific version and variant, use the format `
 
 > If you specify only the version, like `v0.3.0`, it will default to the `alpine` variant, resulting in `v0.3.0-alpine`.
 
-Check the repesctive registry for available tags.
+Check the respective registry for available tags.
 
 ### Customizing the Configuration
 
