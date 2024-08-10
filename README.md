@@ -7,9 +7,6 @@
   <a href="https://crates.io/search?q=geoprox">
     <img src="https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Crates">
   </a>
-  <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk">
-    <img src="https://img.shields.io/badge/openapiinitiative-%23000000.svg?style=for-the-badge&logo=openapiinitiative&logoColor=white" alt="OpenAPI Spec">
-  </a>
   <a href="https://hub.docker.com/repository/docker/ezrasingh/geoprox/">
     <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Hub">
   </a>
