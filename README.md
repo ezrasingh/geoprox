@@ -49,7 +49,7 @@ Use `cargo run` to access the Geoprox CLI. For additional information try `cargo
 
 The [`just` command runner](https://github.com/casey/just) is included to help manage and run tasks easily. Here are the available tasks:
 
-```shell
+```sh
 Available recipes:
     default                # Default recipe to display help information
     fmt +ARGS=''           # Run cargo formatter
@@ -58,13 +58,13 @@ Available recipes:
 
 To start using Geoprox, you can run the following command to start the server:
 
-```shell
+```sh
 just geoprox run
 ```
 
 You can also encode and decode geohashes directly from the CLI:
 
-```shell
+```sh
 # Encode latitude and longitude into geohash
 just geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
 
@@ -74,7 +74,7 @@ just geoprox decode 9q8yy
 
 For detailed help on any command, use the `help` command:
 
-```shell
+```sh
 just geoprox help encode
 ```
 
@@ -90,12 +90,12 @@ You can run tests and benchmarks using the following commands:
 
 - **Run Tests:**
 
-  ```shell
+  ```sh
   cargo test
   ```
 
 - **Run Benchmarks:**
-  ```shell
+  ```sh
   cargo bench
   ```
 
@@ -103,7 +103,7 @@ The project uses [Criterion.rs](https://github.com/bheisler/criterion.rs) for be
 
 ## Contributing
 
-Contributions are welcome! Please see the [contributing guidelines](https://github.com/ezrasingh/geoprox/blob/main/CONTRIBUTING.md) for more information.
+Contributions are welcome! Please see the [contributing guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 

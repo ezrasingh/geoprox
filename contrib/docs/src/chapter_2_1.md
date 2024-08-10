@@ -42,4 +42,11 @@ However, these geohashes represent completely different regions:
 
 > Check out the [Geohash Explorer](https://geohash.softeng.co/) for an interactive map to help visualize geohashing.
 
-<iframe src="https://geohash.softeng.co/" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" width="100%" height="500" style="border: none;"></iframe>
+<iframe
+    src="https://geohash.softeng.co/"
+    sandbox="allow-scripts"
+    referrerpolicy="no-referrer"
+    width="100%" height="500"
+    style="border: none; display:none;"
+    onload="this.style.display='inline';"
+></iframe>

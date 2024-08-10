@@ -83,6 +83,6 @@ Use the following command to start the Geoprox service:
 docker-compose -f quickstart/docker-compose.yml up
 ```
 
-This command will start the Geoprox service using the configuration specified in [`quickstart/docker-compose.yml`](quickstart/docker-compose.yml). The [configuration file](quickstart/geoprox.toml) in this setup is a basic example, allowing you to easily evaluate Geoprox with default settings.
+This command will start the Geoprox service using the configuration specified in [`quickstart/docker-compose.yml`](https://github.com/ezrasingh/geoprox/tree/main/contrib/docker/quickstart/docker-compose.yml). The [configuration file](https://github.com/ezrasingh/geoprox/tree/main/contrib/docker/quickstart/geoprox.toml) in this setup is a basic example, allowing you to easily evaluate Geoprox with default settings.
 
 For custom configurations, you can modify the Docker Compose file or replace it with your own configuration as needed.

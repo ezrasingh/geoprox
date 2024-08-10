@@ -8,7 +8,7 @@ Ride pairing depends on being able to track and pair a set of drivers within the
 
 Since then, the problem has generalized to how can we efficiently track and retrieve resources geographically near some location.
 
-## Requirements
+## Objectives
 
 - Keep track of the _approximate_ location of objects.
 - Search should return a set of objects within a radius of the search location.

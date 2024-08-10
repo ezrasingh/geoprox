@@ -14,7 +14,7 @@ This crate offers a command-line tool for launching and managing the Geoprox ser
 
 To install `geoprox`, use the following command:
 
-```shell
+```sh
 cargo install geoprox
 ```
 
@@ -22,7 +22,7 @@ cargo install geoprox
 
 Geoprox provides several commands to start the server and work with geohashes:
 
-```shell
+```sh
 geoprox help
 Usage: geoprox [OPTIONS] [COMMAND]
 
@@ -43,13 +43,13 @@ Options:
 
 To start using Geoprox, you can run the following command to start the server:
 
-```shell
+```sh
 geoprox run
 ```
 
 You can also encode and decode geohashes directly from the CLI:
 
-```shell
+```sh
 # Encode latitude and longitude into geohash
 geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
 
@@ -59,7 +59,7 @@ geoprox decode 9q8yy
 
 For detailed help on any command, use the help command:
 
-```shell
+```sh
 geoprox help encode
 ```
 

@@ -1,6 +1,8 @@
 # Introduction
 
-[Geoprox](https://github.com/ezrasingh/geoprox/) is a geospatial indexing and querying API designed to simplify and optimize location-based operations. It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.
+[Geoprox](https://github.com/ezrasingh/geoprox/) is a geospatial indexing and querying API designed to simplify and optimize location-based operations.
+
+It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.
 
 ## Key Features:
 
