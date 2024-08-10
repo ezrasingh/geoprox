@@ -1,4 +1,30 @@
-# Geoprox
+<div align="center">
+  <br>
+  <h1>Geoprox 🌎</h1>
+</div>
+<br>
+<p align="center">
+  <a href="https://crates.io/search?q=geoprox">
+    <img src="https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Crates">
+  </a>
+  <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk">
+    <img src="https://img.shields.io/badge/openapiinitiative-%23000000.svg?style=for-the-badge&logo=openapiinitiative&logoColor=white" alt="OpenAPI Spec">
+  </a>
+  <a href="https://hub.docker.com/repository/docker/ezrasingh/geoprox/">
+    <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Hub">
+  </a>
+  <a href="https://github.com/ezrasingh/geoprox/actions/">
+    <img src="https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions">
+  </a>
+  <a href="https://github.com/ezrasingh/geoprox/actions/workflows/ci.yml">
+    <img src="https://github.com/ezrasingh/geoprox/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+  </a>
+  <a href="https://github.com/ezrasingh/geoprox/actions/workflows/audit.yml">
+    <img src="https://github.com/ezrasingh/geoprox/actions/workflows/audit.yml/badge.svg" alt="Audit Status">
+  </a>
+</p>
+
+## What is Geoprox
 
 Geoprox is an in-memory geospatial search engine designed for efficient real-time location-based pairing.
 
