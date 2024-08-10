@@ -43,31 +43,31 @@ Whether it's for ride-sharing services like Uber and Lyft or delivery platforms 
   - [Contributing](#contributing)
   - [License](#license)
 
-## High Level Features
+## High Level Features ✨
 
 - **Geohash Encoding and Decoding**: Convert latitude and longitude coordinates to geohashes and vice versa.
 - **Geohash Neighborhood**: Retrieve neighboring geohashes for a given geohash.
 - **Geospatial Index Management**: Create, update, and delete geospatial indexes to manage geospatial data.
 - **Proximity Searches**: Perform searches within a specified range to find nearby resources based on geohashes.
 
-### Crates
+### Crates 📦
 
 - [geoprox](geoprox/) - Standalone CLI for running the Geoprox service
 - [geoprox-core](geoprox-core/) - Core data structure implementations
 - [geoprox-server](geoprox-server/) - HTTP API wrapper around `geoprox-core`
 - [geoprox-client](contrib/client-sdk/rust/) - HTTP client library for `geoprox-server`
 
-### API Client Libraries
+### API Client Libraries 🔌
 
 HTTP Client libraries are generated from an OpenAPI specification (made available from the `/api-spec/openapi.json` endpoint) using [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator/).
 
 Availble clients can be found at [`contrib/client-sdk`](contrib/client-sdk/), along with steps for generating your own client if needed.
 
-## Getting Started
+## Getting Started 🚀
 
 Use `cargo run` to access the Geoprox CLI. For additional information try `cargo run -- --help`.
 
-### Using Just
+### Using Just 🦾
 
 The [`just` command runner](https://github.com/casey/just) is included to help manage and run tasks easily. Here are the available tasks:
 
@@ -100,13 +100,13 @@ For detailed help on any command, use the `help` command:
 just geoprox help encode
 ```
 
-### Using Docker
+### Using Docker 🐋
 
 The Geoprox Docker image(`ezrasingh/geoprox`) is published to both [`docker.io`](https://hub.docker.com/repository/docker/ezrasingh/geoprox/) and [`ghcr.io`](https://github.com/ezrasingh/geoprox/pkgs/container/geoprox) registries.
 
 For more details check out the [Docker Guide](contrib/docker/).
 
-## Testing and Benchmarks
+## Testing and Benchmarks 🧪
 
 You can run tests and benchmarks using the following commands:
 
