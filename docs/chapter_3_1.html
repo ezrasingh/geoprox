@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Getting Started - Geoprox Manual</title>
+        <title>Configuration - Geoprox Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html" class="active"><strong aria-hidden="true">3.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_3_1.html"><strong aria-hidden="true">3.1.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="chapter_3_2.html"><strong aria-hidden="true">3.2.</strong> Docker Guide</a></li><li class="chapter-item expanded "><a href="chapter_3_3.html"><strong aria-hidden="true">3.3.</strong> Client SDK</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_3_1.html" class="active"><strong aria-hidden="true">3.1.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="chapter_3_2.html"><strong aria-hidden="true">3.2.</strong> Docker Guide</a></li><li class="chapter-item expanded "><a href="chapter_3_3.html"><strong aria-hidden="true">3.3.</strong> Client SDK</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,60 +173,65 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
-<p>Geoprox comes in different flavors depending on what you're cooking up. If you're looking to dive deep and use core features directly in your Rust projects, the <code>geoprox-core</code> crate is your go-to. It's packed with all the fundamental data structures that make Geoprox tick.</p>
-<p>But if you're aiming for a more out-of-the-box experience, the main <code>geoprox</code> package is where the magic happens. It's the CLI runtime designed to sidecar with your other application services, making it super easy to integrate Geoprox into your existing setup.</p>
-<h2 id="crates"><a class="header" href="#crates">Crates</a></h2>
+                        <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
+<p>Geoprox allows specifying a configuration file using the <code>-c</code> or <code>--config</code> option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code>.</p>
+<h3 id="example-configuration"><a class="header" href="#example-configuration">Example Configuration</a></h3>
+<p>Here's an example configuration file in <code>TOML</code> format:</p>
+<pre><code class="language-toml"># All settings are optional; these are the default values.
+[server]
+# The address the server will bind to
+http_addr = '0.0.0.0'
+# The port the server will listen on
+http_port = 5000
+
+[shard]
+# Determines the default geohash length for inserts
+insert_depth = 6
+# Determines the default geohash length for searches
+search_depth = 6
+# Specifies the default number of results returned in range queries
+default_count = 100
+# Toggles the default sorting behavior for query results
+default_sorted = false
+</code></pre>
+<h2 id="fine-tuning"><a class="header" href="#fine-tuning">Fine Tuning</a></h2>
+<p>The <code>insert_depth</code> and <code>search_depth</code> settings control the precision of geohashing and impact the performance of distance calculations and search queries.</p>
+<h3 id="optimizing-insert_depth"><a class="header" href="#optimizing-insert_depth">Optimizing <code>insert_depth</code></a></h3>
+<p><strong>Higher Insert Depth:</strong></p>
 <ul>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox/">geoprox</a> - Standalone CLI for running the Geoprox service</li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-core/">geoprox-core</a> - Core data structure implementations</li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-server/">geoprox-server</a> - HTTP API wrapper around <code>geoprox-core</code></li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/rust/">geoprox-client</a> - HTTP client library for <code>geoprox-server</code></li>
+<li><strong>Description:</strong> Objects are grouped into smaller, more precise regions.</li>
+<li><strong>Impact:</strong> Searching takes slightly longer, but distance calculations are more accurate.</li>
+<li><strong>Use Case:</strong> Ideal for scenarios where precise distance measurements are crucial.</li>
 </ul>
-<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
-<p>To install <code>geoprox</code>, use the following command:</p>
-<pre><code class="language-sh">cargo install geoprox
-</code></pre>
-<h3 id="usage"><a class="header" href="#usage">Usage</a></h3>
-<p>Geoprox provides several commands to start the server and work with geohashes:</p>
-<pre><code class="language-sh">geoprox help
-Usage: geoprox [OPTIONS] [COMMAND]
-
-Commands:
-  run     Start Geoprox server
-  encode  Hash latitude/longitude into geohash
-  decode  Decode geohash into approximate longitude/latitude
-  spec    Generate an OpenAPI specification file
-  help    Print this message or the help of the given subcommand(s)
-
-Options:
-  -c, --config &lt;CONFIG&gt;  Specify a config file
-  -h, --help             Print help
-  -V, --version          Print version
-</code></pre>
-<p>To start using Geoprox, you can run the following command to start the server:</p>
-<pre><code class="language-sh">geoprox run
-</code></pre>
-<p>You can also encode and decode geohashes directly from the CLI:</p>
-<pre><code class="language-sh"># Encode latitude and longitude into geohash
-geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
-
-# Decode geohash into latitude and longitude
-geoprox decode 9q8yy
-</code></pre>
-<p>For detailed help on any command, use the help command:</p>
-<pre><code class="language-sh">geoprox help encode
-</code></pre>
+<p><strong>Lower Insert Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> Objects are grouped into larger regions.</li>
+<li><strong>Impact:</strong> Search performance improves, but distance calculations become less accurate.</li>
+<li><strong>Use Case:</strong> Best for cases where fast general distance estimates are acceptable.</li>
+</ul>
+<h3 id="optimizing-search_depth"><a class="header" href="#optimizing-search_depth">Optimizing <code>search_depth</code></a></h3>
+<p><strong>Higher Search Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> The initial search region is smaller and more precise.</li>
+<li><strong>Impact:</strong> Search queries take slightly longer, but results are more accurate.</li>
+<li><strong>Use Case:</strong> Suitable for narrow range queries where high accuracy is needed.</li>
+</ul>
+<p><strong>Lower Search Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> The initial search region is larger, leading to faster searches.</li>
+<li><strong>Impact:</strong> Search speed improves, but accuracy may be reduced.</li>
+<li><strong>Use Case:</strong> Ideal for wide range queries where speed is prioritized over precision.</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_2_3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="chapter_3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_3_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="chapter_3_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -236,11 +241,11 @@ geoprox decode 9q8yy
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_2_3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="chapter_3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_3_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="chapter_3_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

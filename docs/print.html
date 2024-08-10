@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>geoprox-docs</title>
+        <title>Geoprox Manual</title>
         <meta name="robots" content="noindex">
 
 
@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_3_1.html"><strong aria-hidden="true">3.1.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="chapter_3_2.html"><strong aria-hidden="true">3.2.</strong> Docker Guide</a></li><li class="chapter-item expanded "><a href="chapter_3_3.html"><strong aria-hidden="true">3.3.</strong> Client SDK</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -142,7 +142,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">geoprox-docs</h1>
+                    <h1 class="menu-title">Geoprox Manual</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -175,7 +175,8 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p><a href="https://github.com/ezrasingh/geoprox/">Geoprox</a> is a geospatial indexing and querying API designed to simplify and optimize location-based operations. It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.</p>
+<p><a href="https://github.com/ezrasingh/geoprox/">Geoprox</a> is a geospatial indexing and querying API designed to simplify and optimize location-based operations.</p>
+<p>It provides efficient methods for encoding and decoding geohashes, finding neighboring regions, and managing geospatial indexes for a variety of applications such as food delivery services and real-time inventory tracking.</p>
 <h2 id="key-features"><a class="header" href="#key-features">Key Features:</a></h2>
 <ul>
 <li><strong>Geohash Encoding and Decoding</strong>: Convert geographic coordinates into geohashes and retrieve coordinates from geohashes for easy location-based operations.</li>
@@ -198,7 +199,7 @@
 <p>Initially, for the <a href="https://gitlab.com/indyrs/may2024/-/blob/main/Geo-Proximity-Detection-With-Rust.pdf">May 2024 Rust Indy.rs meetup</a>, the proof of concept problem began with ride-share pairing like Uber or Lyft.</p>
 <p>Ride pairing depends on being able to track and pair a set of drivers within the vicinity of some location (i.e., the pickup location of an order).</p>
 <p>Since then, the problem has generalized to how can we efficiently track and retrieve resources geographically near some location.</p>
-<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+<h2 id="objectives"><a class="header" href="#objectives">Objectives</a></h2>
 <ul>
 <li>Keep track of the <em>approximate</em> location of objects.</li>
 <li>Search should return a set of objects within a radius of the search location.</li>
@@ -247,7 +248,14 @@
 <blockquote>
 <p>Check out the <a href="https://geohash.softeng.co/">Geohash Explorer</a> for an interactive map to help visualize geohashing.</p>
 </blockquote>
-<iframe src="https://geohash.softeng.co/" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" width="100%" height="500" style="border: none;"></iframe>
+<iframe
+    src="https://geohash.softeng.co/"
+    sandbox="allow-scripts"
+    referrerpolicy="no-referrer"
+    width="100%" height="500"
+    style="border: none; display:none;"
+    onload="this.style.display='inline';"
+></iframe>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="prefix-searching"><a class="header" href="#prefix-searching">Prefix Searching</a></h1>
 <h2 id="what-is-prefix-search"><a class="header" href="#what-is-prefix-search">What is Prefix Search?</a></h2>
 <p>Prefix search is a method for quickly finding all entries in a dataset that share a common prefix. In the context of geohashes, it allows us to retrieve all geohashes that start with the same characters, which is useful for geographical proximity searches.</p>
@@ -385,7 +393,184 @@
 </li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<p>Geoprox comes in different flavors depending on what you're cooking up. If you're looking to dive deep and use core features directly in your Rust projects, the <code>geoprox-core</code> crate is your go-to. It's packed with all the fundamental data structures that make Geoprox tick.</p>
+<p>But if you're aiming for a more out-of-the-box experience, the main <code>geoprox</code> package is where the magic happens. It's the CLI runtime designed to sidecar with your other application services, making it super easy to integrate Geoprox into your existing setup.</p>
+<h2 id="crates"><a class="header" href="#crates">Crates</a></h2>
+<ul>
+<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox/">geoprox</a> - Standalone CLI for running the Geoprox service</li>
+<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-core/">geoprox-core</a> - Core data structure implementations</li>
+<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-server/">geoprox-server</a> - HTTP API wrapper around <code>geoprox-core</code></li>
+<li><a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/rust/">geoprox-client</a> - HTTP client library for <code>geoprox-server</code></li>
+</ul>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>To install <code>geoprox</code>, use the following command:</p>
+<pre><code class="language-sh">cargo install geoprox
+</code></pre>
+<h3 id="usage"><a class="header" href="#usage">Usage</a></h3>
+<p>Geoprox provides several commands to start the server and work with geohashes:</p>
+<pre><code class="language-sh">geoprox help
+Usage: geoprox [OPTIONS] [COMMAND]
 
+Commands:
+  run     Start Geoprox server
+  encode  Hash latitude/longitude into geohash
+  decode  Decode geohash into approximate longitude/latitude
+  spec    Generate an OpenAPI specification file
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -c, --config &lt;CONFIG&gt;  Specify a config file
+  -h, --help             Print help
+  -V, --version          Print version
+</code></pre>
+<p>To start using Geoprox, you can run the following command to start the server:</p>
+<pre><code class="language-sh">geoprox run
+</code></pre>
+<p>You can also encode and decode geohashes directly from the CLI:</p>
+<pre><code class="language-sh"># Encode latitude and longitude into geohash
+geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
+
+# Decode geohash into latitude and longitude
+geoprox decode 9q8yy
+</code></pre>
+<p>For detailed help on any command, use the help command:</p>
+<pre><code class="language-sh">geoprox help encode
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
+<p>Geoprox allows specifying a configuration file using the <code>-c</code> or <code>--config</code> option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code>.</p>
+<h3 id="example-configuration"><a class="header" href="#example-configuration">Example Configuration</a></h3>
+<p>Here's an example configuration file in <code>TOML</code> format:</p>
+<pre><code class="language-toml"># All settings are optional; these are the default values.
+[server]
+# The address the server will bind to
+http_addr = '0.0.0.0'
+# The port the server will listen on
+http_port = 5000
+
+[shard]
+# Determines the default geohash length for inserts
+insert_depth = 6
+# Determines the default geohash length for searches
+search_depth = 6
+# Specifies the default number of results returned in range queries
+default_count = 100
+# Toggles the default sorting behavior for query results
+default_sorted = false
+</code></pre>
+<h2 id="fine-tuning"><a class="header" href="#fine-tuning">Fine Tuning</a></h2>
+<p>The <code>insert_depth</code> and <code>search_depth</code> settings control the precision of geohashing and impact the performance of distance calculations and search queries.</p>
+<h3 id="optimizing-insert_depth"><a class="header" href="#optimizing-insert_depth">Optimizing <code>insert_depth</code></a></h3>
+<p><strong>Higher Insert Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> Objects are grouped into smaller, more precise regions.</li>
+<li><strong>Impact:</strong> Searching takes slightly longer, but distance calculations are more accurate.</li>
+<li><strong>Use Case:</strong> Ideal for scenarios where precise distance measurements are crucial.</li>
+</ul>
+<p><strong>Lower Insert Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> Objects are grouped into larger regions.</li>
+<li><strong>Impact:</strong> Search performance improves, but distance calculations become less accurate.</li>
+<li><strong>Use Case:</strong> Best for cases where fast general distance estimates are acceptable.</li>
+</ul>
+<h3 id="optimizing-search_depth"><a class="header" href="#optimizing-search_depth">Optimizing <code>search_depth</code></a></h3>
+<p><strong>Higher Search Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> The initial search region is smaller and more precise.</li>
+<li><strong>Impact:</strong> Search queries take slightly longer, but results are more accurate.</li>
+<li><strong>Use Case:</strong> Suitable for narrow range queries where high accuracy is needed.</li>
+</ul>
+<p><strong>Lower Search Depth:</strong></p>
+<ul>
+<li><strong>Description:</strong> The initial search region is larger, leading to faster searches.</li>
+<li><strong>Impact:</strong> Search speed improves, but accuracy may be reduced.</li>
+<li><strong>Use Case:</strong> Ideal for wide range queries where speed is prioritized over precision.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="docker-guide"><a class="header" href="#docker-guide">Docker Guide</a></h1>
+<p>The Geoprox Docker image (<code>ezrasingh/geoprox</code>) is available on two registries:</p>
+<ul>
+<li><a href="https://hub.docker.com/repository/docker/ezrasingh/geoprox/">Docker Hub</a></li>
+<li><a href="https://github.com/ezrasingh/geoprox/pkgs/container/geoprox">GitHub Container Registry</a></li>
+</ul>
+<h2 id="getting-started-1"><a class="header" href="#getting-started-1">Getting Started</a></h2>
+<blockquote>
+<p>To quickly get started with Docker Compose, skip to the <a href="chapter_3_2.html#quick-start">Quick Start Guide</a>.</p>
+</blockquote>
+<p>Pull the Geoprox container from one of the available repositories.</p>
+<pre><code class="language-sh"># from Docker Hub
+docker pull ezrasingh/geoprox:latest
+
+# or from GitHub Container Registry
+docker pull ghcr.io/ezrasingh/geoprox:latest
+</code></pre>
+<p>To run the container with default configurations, use:</p>
+<pre><code class="language-sh">docker run -t -p 5000:5000 ezrasingh/geoprox:latest
+</code></pre>
+<p>This command will start the Geoprox container with the default settings, exposing port 5000 for access.</p>
+<blockquote>
+<p>To use another port on your machine try <code>-p &lt;my-port&gt;:5000</code></p>
+</blockquote>
+<h3 id="variants--tagging"><a class="header" href="#variants--tagging">Variants &amp; Tagging</a></h3>
+<p>The Geoprox image supports two variant tags: <code>alpine</code> and <code>debian</code>.</p>
+<p>By default, the <code>latest</code> tag uses the <code>alpine</code> variant. Latest is built from the <code>main</code> branch.</p>
+<p>To pin your Geoprox instance to a specific version and variant, use the format <code>&lt;version&gt;-&lt;variant&gt;</code>, such as <code>v0.3.0-debian</code>.</p>
+<blockquote>
+<p>If you specify only the version, like <code>v0.3.0</code>, it will default to the <code>alpine</code> variant, resulting in <code>v0.3.0-alpine</code>.</p>
+</blockquote>
+<p>Check the repesctive registry for available tags.</p>
+<h3 id="customizing-the-configuration"><a class="header" href="#customizing-the-configuration">Customizing the Configuration</a></h3>
+<blockquote>
+<p>For complete settings and configuration details, refer to the <a href="../../geoprox/README.html#configuration">Geoprox CLI README</a>.</p>
+</blockquote>
+<p>To use a custom configuration file, simply mount your configuration file into the container at <code>/etc/geoprox</code>. Geoprox will automatically detect and parse configuration files in formats like <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code> if they are named <code>geoprox.yaml</code>, <code>geoprox.toml</code>, <code>geoprox.json</code>, or <code>geoprox.ini</code>, respectively.</p>
+<p>For example, if you have a configuration file named <code>geoprox.yaml</code> in your current directory, you can run the container with the following command:</p>
+<pre><code class="language-sh">docker run -t -p 5000:5000 \
+    -v $(pwd)/geoprox.yaml:/etc/geoprox/geoprox.yaml:ro \
+    ezrasingh/geoprox:latest
+</code></pre>
+<p>If you need to specify a different path or file name for your configuration, use the <code>-c</code> or <code>--config</code> option:</p>
+<pre><code class="language-sh">docker run -t -p 5000:5000 \
+    -v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro \
+    ezrasingh/geoprox:latest \
+    -c /some/path/custom-config.toml
+</code></pre>
+<p>In this command:</p>
+<ul>
+<li><code>-v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro</code> mounts the local configuration file into the container.</li>
+<li><code>-c /some/path/custom-config.toml</code> specifies the configuration file to be used by the Geoprox server.</li>
+</ul>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<p>To quickly get started with Geoprox using Docker, follow these steps to configure and run the server with Docker Compose.</p>
+<blockquote>
+<p>The provided Docker Compose configuration serves as a boilerplate to showcase how Geoprox can be configured and allows you to get an instance up and running fast for evaluation purposes.</p>
+</blockquote>
+<h3 id="docker-compose"><a class="header" href="#docker-compose">Docker Compose</a></h3>
+<p>Use the following command to start the Geoprox service:</p>
+<pre><code class="language-sh">docker-compose -f quickstart/docker-compose.yml up
+</code></pre>
+<p>This command will start the Geoprox service using the configuration specified in <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/docker/quickstart/docker-compose.yml"><code>quickstart/docker-compose.yml</code></a>. The <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/docker/quickstart/geoprox.toml">configuration file</a> in this setup is a basic example, allowing you to easily evaluate Geoprox with default settings.</p>
+<p>For custom configurations, you can modify the Docker Compose file or replace it with your own configuration as needed.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="client-sdk"><a class="header" href="#client-sdk">Client SDK</a></h1>
+<p>HTTP Client libraries are generated from an OpenAPI specification using <a href="https://github.com/OpenAPITools/openapi-generator/">OpenAPI Generator</a>.</p>
+<h3 id="http-client-libraries"><a class="header" href="#http-client-libraries">HTTP Client Libraries</a></h3>
+<p>Availble clients can be found at <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/"><code>contrib/client-sdk</code></a>, along with steps for generating your own client if needed.</p>
+<div class="table-wrapper"><table><thead><tr><th>Language</th><th>Package Name</th><th>Repository Link</th></tr></thead><tbody>
+<tr><td>C#</td><td><code>GeoproxClient</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/csharp/">GeoproxClient</a></td></tr>
+<tr><td>Dart</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/dart/">geoprox_client</a></td></tr>
+<tr><td>Dart (Dio)</td><td><code>geoprox_client_dio</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/dart-dio/">geoprox_client_dio</a></td></tr>
+<tr><td>Elixir</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/elixir/">geoprox_client</a></td></tr>
+<tr><td>Go</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/go/">geoprox_client</a></td></tr>
+<tr><td>Groovy</td><td><code>geoprox-client-groovy</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/groovy/">geoprox-client-groovy</a></td></tr>
+<tr><td>Kotlin</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/kotlin/">geoprox_client</a></td></tr>
+<tr><td>PHP</td><td><code>GeoproxClient</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/php/">GeoproxClient</a></td></tr>
+<tr><td>Python</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/python/">geoprox_client</a></td></tr>
+<tr><td>Ruby</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/ruby/">geoprox_client</a></td></tr>
+<tr><td>Rust</td><td><code>geoprox-client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/rust/">geoprox-client</a></td></tr>
+<tr><td>TypeScript (Axios)</td><td><code>geoprox-client-ts-axios</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-axios/">geoprox-client-ts-axios</a></td></tr>
+<tr><td>TypeScript (Fetch)</td><td><code>geoprox-client-ts-fetch</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-fetch/">geoprox-client-ts-fetch</a></td></tr>
+<tr><td>TypeScript (Node)</td><td><code>geoprox-client-ts-node</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-node/">geoprox-client-ts-node</a></td></tr>
+<tr><td>TypeScript (RxJS)</td><td><code>geoprox-client-ts-rxjs</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-rxjs/">geoprox-client-ts-rxjs</a></td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

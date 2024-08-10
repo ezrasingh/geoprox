@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Getting Started - Geoprox Manual</title>
+        <title>Client SDK - Geoprox Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html" class="active"><strong aria-hidden="true">3.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_3_1.html"><strong aria-hidden="true">3.1.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="chapter_3_2.html"><strong aria-hidden="true">3.2.</strong> Docker Guide</a></li><li class="chapter-item expanded "><a href="chapter_3_3.html"><strong aria-hidden="true">3.3.</strong> Client SDK</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> How Geoprox Works</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_2_1.html"><strong aria-hidden="true">2.1.</strong> What is a Geohash?</a></li><li class="chapter-item expanded "><a href="chapter_2_2.html"><strong aria-hidden="true">2.2.</strong> Prefix Searching</a></li><li class="chapter-item expanded "><a href="chapter_2_3.html"><strong aria-hidden="true">2.3.</strong> Insertion and Query</a></li></ol></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chapter_3_1.html"><strong aria-hidden="true">3.1.</strong> Configuration</a></li><li class="chapter-item expanded "><a href="chapter_3_2.html"><strong aria-hidden="true">3.2.</strong> Docker Guide</a></li><li class="chapter-item expanded "><a href="chapter_3_3.html" class="active"><strong aria-hidden="true">3.3.</strong> Client SDK</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -173,62 +173,36 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
-<p>Geoprox comes in different flavors depending on what you're cooking up. If you're looking to dive deep and use core features directly in your Rust projects, the <code>geoprox-core</code> crate is your go-to. It's packed with all the fundamental data structures that make Geoprox tick.</p>
-<p>But if you're aiming for a more out-of-the-box experience, the main <code>geoprox</code> package is where the magic happens. It's the CLI runtime designed to sidecar with your other application services, making it super easy to integrate Geoprox into your existing setup.</p>
-<h2 id="crates"><a class="header" href="#crates">Crates</a></h2>
-<ul>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox/">geoprox</a> - Standalone CLI for running the Geoprox service</li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-core/">geoprox-core</a> - Core data structure implementations</li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/geoprox-server/">geoprox-server</a> - HTTP API wrapper around <code>geoprox-core</code></li>
-<li><a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/rust/">geoprox-client</a> - HTTP client library for <code>geoprox-server</code></li>
-</ul>
-<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
-<p>To install <code>geoprox</code>, use the following command:</p>
-<pre><code class="language-sh">cargo install geoprox
-</code></pre>
-<h3 id="usage"><a class="header" href="#usage">Usage</a></h3>
-<p>Geoprox provides several commands to start the server and work with geohashes:</p>
-<pre><code class="language-sh">geoprox help
-Usage: geoprox [OPTIONS] [COMMAND]
-
-Commands:
-  run     Start Geoprox server
-  encode  Hash latitude/longitude into geohash
-  decode  Decode geohash into approximate longitude/latitude
-  spec    Generate an OpenAPI specification file
-  help    Print this message or the help of the given subcommand(s)
-
-Options:
-  -c, --config &lt;CONFIG&gt;  Specify a config file
-  -h, --help             Print help
-  -V, --version          Print version
-</code></pre>
-<p>To start using Geoprox, you can run the following command to start the server:</p>
-<pre><code class="language-sh">geoprox run
-</code></pre>
-<p>You can also encode and decode geohashes directly from the CLI:</p>
-<pre><code class="language-sh"># Encode latitude and longitude into geohash
-geoprox encode --lat=37.7749 --lng=-122.4194 --depth=5
-
-# Decode geohash into latitude and longitude
-geoprox decode 9q8yy
-</code></pre>
-<p>For detailed help on any command, use the help command:</p>
-<pre><code class="language-sh">geoprox help encode
-</code></pre>
-
+                        <h1 id="client-sdk"><a class="header" href="#client-sdk">Client SDK</a></h1>
+<p>HTTP Client libraries are generated from an OpenAPI specification using <a href="https://github.com/OpenAPITools/openapi-generator/">OpenAPI Generator</a>.</p>
+<h3 id="http-client-libraries"><a class="header" href="#http-client-libraries">HTTP Client Libraries</a></h3>
+<p>Availble clients can be found at <a href="https://github.com/ezrasingh/geoprox/tree/main/contrib/client-sdk/"><code>contrib/client-sdk</code></a>, along with steps for generating your own client if needed.</p>
+<div class="table-wrapper"><table><thead><tr><th>Language</th><th>Package Name</th><th>Repository Link</th></tr></thead><tbody>
+<tr><td>C#</td><td><code>GeoproxClient</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/csharp/">GeoproxClient</a></td></tr>
+<tr><td>Dart</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/dart/">geoprox_client</a></td></tr>
+<tr><td>Dart (Dio)</td><td><code>geoprox_client_dio</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/dart-dio/">geoprox_client_dio</a></td></tr>
+<tr><td>Elixir</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/elixir/">geoprox_client</a></td></tr>
+<tr><td>Go</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/go/">geoprox_client</a></td></tr>
+<tr><td>Groovy</td><td><code>geoprox-client-groovy</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/groovy/">geoprox-client-groovy</a></td></tr>
+<tr><td>Kotlin</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/kotlin/">geoprox_client</a></td></tr>
+<tr><td>PHP</td><td><code>GeoproxClient</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/php/">GeoproxClient</a></td></tr>
+<tr><td>Python</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/python/">geoprox_client</a></td></tr>
+<tr><td>Ruby</td><td><code>geoprox_client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/ruby/">geoprox_client</a></td></tr>
+<tr><td>Rust</td><td><code>geoprox-client</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/rust/">geoprox-client</a></td></tr>
+<tr><td>TypeScript (Axios)</td><td><code>geoprox-client-ts-axios</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-axios/">geoprox-client-ts-axios</a></td></tr>
+<tr><td>TypeScript (Fetch)</td><td><code>geoprox-client-ts-fetch</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-fetch/">geoprox-client-ts-fetch</a></td></tr>
+<tr><td>TypeScript (Node)</td><td><code>geoprox-client-ts-node</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-node/">geoprox-client-ts-node</a></td></tr>
+<tr><td>TypeScript (RxJS)</td><td><code>geoprox-client-ts-rxjs</code></td><td><a href="https://github.com/ezrasingh/geoprox/contrib/client-sdk/typescript-rxjs/">geoprox-client-ts-rxjs</a></td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_2_3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="chapter_3_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_3_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -236,13 +210,10 @@ geoprox decode 9q8yy
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_2_3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="chapter_3_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_3_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
