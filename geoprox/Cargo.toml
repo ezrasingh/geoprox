@@ -8,7 +8,7 @@ categories = ["science::geo", "command-line-interface"]
 keywords = ["geospatial", "search", "location-based", "pairing", "geohash"]
 readme = "README.md"
 repository = "https://github.com/ezrasingh/geoprox"
-documentation = "https://docs.rs/geoprox"
+documentation = "https://ezrasingh.github.io/geoprox/docs"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
