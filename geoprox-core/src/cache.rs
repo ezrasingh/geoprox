@@ -11,6 +11,7 @@ use patricia_tree::StringPatriciaMap;
 use rayon::prelude::*;
 use std::hash::{BuildHasher, BuildHasherDefault};
 
+#[inline]
 fn build_search_space(
     prefix_tree: &StringPatriciaMap<HashSet<ObjectIdentifier>>,
     subregion_hash: &str,
@@ -128,6 +129,7 @@ impl SpatialIndex {
         keys.iter().fold(true, |_, key| self.remove(key))
     }
 
+    /// search for objects within the area of some location
     pub fn search(
         &self,
         origin: LatLngCoord,
