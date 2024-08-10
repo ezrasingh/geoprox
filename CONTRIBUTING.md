@@ -18,7 +18,7 @@ new release.
 
 Pull requests are welcome, though please raise an issue for discussion first if none exists. We're happy to assist new contributors.
 
-If you're not sure what to work on, try checking the [Beginner label](https://github.com/ezrasingh/geoprox/issues?q=is%3Aissue+is%3Aopen+label%3ABeginner)
+If you're not sure what to work on, try checking the [Good First Issue label](https://github.com/ezrasingh/geoprox/contribute).
 
 To make changes to the code, fork the repo and clone it:
 
@@ -45,38 +45,37 @@ rustup component add rustfmt-preview
 cargo fmt --all
 ```
 
-Don't forget to update the CHANGELOG.md file and any appropriate documentation. Once you're finished, push to your fork and submit a pull request. We try to respond to new issues and pull requests quickly, so if there hasn't been any response for more than a few days feel free to ping [@ezrasingh](https://github.com/ezrasingh).
+Don't forget to update the `CHANGELOG.md` file and any appropriate documentation. Once you're finished, push to your fork and submit a pull request. We try to respond to new issues and pull requests quickly, so if there hasn't been any response for more than a few days feel free to ping [@ezrasingh](https://github.com/ezrasingh).
 
 Some things that will increase the chance that your pull request is accepted:
 
-* Write tests
-* Clearly document public methods
-* Write a good commit message
+- Write tests
+- Clearly document public methods
+- Write a good commit message
 
 ## Branches
 
-*   PRs with breaking changes are made against the unreleased branch. e.g. branch version-0.4
-*   PRs without breaking changes are made against the master branch.
+- PRs with breaking changes are made against the unreleased branch. e.g. branch version-0.4
+- PRs without breaking changes are made against the `main` branch.
 
-If you're not sure which branch to use just start with master, as this can be changed during review.
+If you're not sure which branch to use just start with `main`, as this can be changed during review.
 
-When it is time to release the unreleased branch, a PR is made from the unreleased branch to master. e.g. https://github.com/ezrasingh/geoprox/pull/496
+When it is time to release the unreleased branch, a PR is made from the unreleased branch to `main`. e.g. https://github.com/ezrasingh/geoprox/pull/496
 
 ## Github Labels
 
 Geoprox uses a simple set of labels to track issues. Most important are the
 difficulty labels:
 
-* **Beginner** - Suitable for people new to Geoprox, or even new to Rust in general
-* **Intermediate** - More challenging, likely involves some non-trivial design decisions and/or knowledge
-  of Geoprox's internals
-* **Bigger Project** - Large and/or complex project such as designing a complex new feature
+- **Question** - Further information is requested
+- **Good First Issue** - Suitable for people new to Geoprox, or even new to Rust in general
+- **Help Wanted** - Extra attention is needed
 
 Additionally, there are a few other noteworthy labels:
 
-* **Breaking Change** - Fixing this will have to wait until the next breaking-change release
-* **Bug** - Something isn't working right
-* **Enhancement** - Request to add a new feature or otherwise improve Geoprox in some way
+- **Bug** - Something isn't working right
+- **Documentation** - Improvements or additions to documentation
+- **Enhancement** - Request to add a new feature or otherwise improve Geoprox in some way
 
 ## Code of Conduct
 
