@@ -43,7 +43,7 @@ Check the repesctive registry for available tags.
 
 ### Customizing the Configuration
 
-> For complete settings and configuration details, refer to the [Geoprox CLI README](../../geoprox/README.md#configuration).
+> For complete settings and configuration details, refer to the [Geoprox CLI README](https://github.com/ezrasingh/geoprox/blob/main/geoprox/README.md#configuration).
 
 To use a custom configuration file, simply mount your configuration file into the container at `/etc/geoprox`. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
 

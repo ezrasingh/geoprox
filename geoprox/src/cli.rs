@@ -3,14 +3,14 @@ use config::{Config, ConfigError};
 use geoprox_core::models::GeoShardConfig;
 use geoprox_server::config::ServerConfig;
 use serde::Deserialize;
-use std::net::SocketAddr;
+use std::net::IpAddr;
 use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
     /// Specify a config file
-    #[arg(short, long, value_name = "CONFIG")]
+    #[arg(short, long, value_name = "CONFIG", env = "GEOPROX_CONFIG")]
     config: Option<PathBuf>,
 
     #[command(subcommand)]
@@ -21,9 +21,13 @@ pub struct Cli {
 pub enum Commands {
     /// Start Geoprox server
     Run {
-        /// <addr>:<port> (defaults to 0.0.0.0:5000)
-        #[arg(short, long)]
-        bind: Option<SocketAddr>,
+        /// The address the server will bind to
+        #[arg(short, long, default_value = "0.0.0.0", env = "GEOPROX_HTTP_ADDR")]
+        addr: IpAddr,
+
+        /// The port the server will listen on
+        #[arg(short, long, default_value_t = 5000, env = "GEOPROX_HTTP_PORT")]
+        port: u16,
     },
 
     /// Hash latitude/longitude into geohash
@@ -36,9 +40,9 @@ pub enum Commands {
         #[arg(long)]
         lng: f64,
 
-        /// Geohash length (defaults to 6)
-        #[arg(short, long)]
-        depth: Option<usize>,
+        /// Geohash length
+        #[arg(short, long, default_value_t = geoprox_core::shard::GeoShard::DEFAULT_DEPTH)]
+        depth: usize,
     },
 
     /// Decode geohash into approximate longitude/latitude
@@ -69,26 +73,26 @@ pub enum Commands {
 }
 
 #[derive(Debug, Default, Deserialize)]
-pub struct GeoProxConfig {
+pub struct GeoproxConfig {
     pub server: Option<ServerConfig>,
     pub shard: Option<GeoShardConfig>,
 }
 
-pub fn runtime() -> Result<(Option<Commands>, GeoProxConfig), ConfigError> {
+pub fn runtime() -> Result<(Option<Commands>, GeoproxConfig), ConfigError> {
     let cli = Cli::parse();
-    let settings: GeoProxConfig = match cli.config.as_deref() {
+
+    let settings: GeoproxConfig = match cli.config.as_deref() {
         Some(config_path) => Config::builder()
             .add_source(config::File::from(config_path))
-            .add_source(config::Environment::with_prefix("GEOPROX"))
             .build()?
             .try_deserialize()?,
         None => Config::builder()
             .add_source(config::File::with_name("/etc/geoprox/geoprox"))
-            .add_source(config::Environment::with_prefix("GEOPROX"))
             .build()
             .unwrap_or_default()
             .try_deserialize()
             .unwrap_or_default(),
     };
+
     Ok((cli.command, settings))
 }
