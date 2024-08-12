@@ -78,6 +78,8 @@ Here's an example configuration file in `TOML` format:
 http_addr = '0.0.0.0'
 # The port the server will listen on
 http_port = 5000
+# Timeout duration in seconds
+timeout = 10
 
 [shard]
 # Determines the default geohash length for inserts

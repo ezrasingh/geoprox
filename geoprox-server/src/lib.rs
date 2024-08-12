@@ -9,10 +9,15 @@ use app::AppState;
 use config::ServerConfig;
 use geoprox_core::models::GeoShardConfig;
 
-use axum::extract::Request;
 use axum::routing::Router;
+use axum::{body::Bytes, extract::Request};
+use std::time::Duration;
 use tower::Layer;
-use tower_http::normalize_path::NormalizePathLayer;
+use tower_http::compression::CompressionLayer;
+use tower_http::decompression::DecompressionLayer;
+use tower_http::timeout::TimeoutLayer;
+use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse};
+use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Start http server
@@ -29,7 +34,30 @@ pub async fn run(server_config: ServerConfig, shard_config: GeoShardConfig) {
     let state = AppState::new(server_config.clone(), shard_config);
     let router = Router::new()
         .nest("/api/v1/", api::routes(state))
-        .merge(api::docs::router());
+        .merge(api::docs::router())
+        .layer(
+            tower::ServiceBuilder::new()
+                .layer(
+                    // Add high level tracing/logging to all requests
+                    TraceLayer::new_for_http()
+                        .on_body_chunk(|chunk: &Bytes, latency: Duration, _: &tracing::Span| {
+                            tracing::trace!(size_bytes = chunk.len(), latency = ?latency, "sending body chunk")
+                        })
+                        .make_span_with(DefaultMakeSpan::new().include_headers(true))
+                        .on_response(DefaultOnResponse::new()
+                            .include_headers(true).
+                            latency_unit(tower_http::LatencyUnit::Micros)
+                        ),
+                )
+                // Set a timeout
+                .layer(TimeoutLayer::new(
+                    Duration::from_secs(server_config.timout.unwrap_or(config::DEFAULT_TIMEOUT)))
+                )
+                // Compress responses
+                .layer(CompressionLayer::new())
+                // Decompress requests
+                .layer(DecompressionLayer::new())
+        );
 
     // normalize paths on all routes
     let router = NormalizePathLayer::trim_trailing_slash().layer(router);

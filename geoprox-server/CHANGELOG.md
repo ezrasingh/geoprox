@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for `Accept-Encoding`(via [`compression-full`](https://docs.rs/crate/tower-http/0.5.2/features#compression-full) feature in `tower-http`) and `Content-Encoding`(via [`decompression-full`](https://docs.rs/crate/tower-http/0.5.2/features#decompression-full) feature in `tower-http`) headers, [timeouts](https://docs.rs/crate/tower-http/0.5.2/features#timeout) and [tracing](https://docs.rs/crate/tower-http/0.5.2/features#trace) in responses.
 - Added support for path normalization (i.e trailing slash or no trailing slash) ([#4](https://github.com/ezrasingh/geoprox/issues/4))
 
 ## 0.4.1

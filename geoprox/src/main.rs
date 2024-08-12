@@ -19,6 +19,7 @@ fn main() {
                     ServerConfig {
                         http_addr: Some(socket.ip()),
                         http_port: Some(socket.port()),
+                        ..server_conf
                     },
                     shard_conf,
                 )
