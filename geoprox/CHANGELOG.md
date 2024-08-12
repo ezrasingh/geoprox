@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for environment variables ([#6](https://github.com/ezrasingh/geoprox/issues/6)).
+
 ## 0.4.1
 
 - Added support for `default_count` and `default_sorted` in config ([#2](https://github.com/ezrasingh/geoprox/issues/2)).

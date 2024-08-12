@@ -1,7 +1,5 @@
-use std::io::Write;
-
-use geoprox_core::models::GeoShardConfig;
 use geoprox_server::config::ServerConfig;
+use std::io::Write;
 
 mod cli;
 
@@ -9,31 +7,17 @@ fn main() {
     let (command, settings) = cli::runtime().unwrap();
 
     match &command {
-        Some(cli::Commands::Run { bind }) => {
-            let server_conf: ServerConfig = settings.server.unwrap_or_default();
-            let shard_conf: GeoShardConfig = settings.shard.unwrap_or_default();
-
-            if let Some(socket) = bind {
-                // ? merge arguments with any existing config
-                geoprox_server::run(
-                    ServerConfig {
-                        http_addr: Some(socket.ip()),
-                        http_port: Some(socket.port()),
-                        ..server_conf
-                    },
-                    shard_conf,
-                )
-            } else {
-                geoprox_server::run(server_conf, shard_conf);
-            }
-        }
+        Some(cli::Commands::Run { addr, port }) => geoprox_server::run(
+            ServerConfig {
+                http_addr: Some(*addr),
+                http_port: Some(*port),
+                ..settings.server.unwrap_or_default()
+            },
+            settings.shard.unwrap_or_default(),
+        ),
 
         Some(cli::Commands::Encode { lat, lng, depth }) => {
-            let ghash = geoprox_core::geohash::encode(
-                [*lng, *lat].into(),
-                depth.unwrap_or(geoprox_core::shard::GeoShard::DEFAULT_DEPTH),
-            )
-            .unwrap();
+            let ghash = geoprox_core::geohash::encode([*lng, *lat].into(), *depth).unwrap();
             println!("{}", ghash);
         }
 

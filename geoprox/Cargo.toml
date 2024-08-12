@@ -14,7 +14,7 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 geoprox-core = { path = "../geoprox-core", version = "0.4.1" }
 geoprox-server = { path = "../geoprox-server", version = "0.4.1" }
-clap = { version = "4.5.4", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive", "env"] }
 serde = { version = "1.0.199", features = ["derive", "rc"] }
 serde_json = "1.0.116"
 config = "0.14.0"
