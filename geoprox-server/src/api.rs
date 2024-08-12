@@ -13,24 +13,24 @@ pub fn routes(app_state: AppState) -> Router {
 
     Router::new()
         .nest(
-            "/geohash/",
+            "/geohash",
             Router::new()
                 .route("/", get(geohash_api::encode_latlng))
-                .route("/:ghash/", get(geohash_api::decode_geohash))
-                .route("/:ghash/neighbors/", get(geohash_api::get_neighbors))
+                .route("/:ghash", get(geohash_api::decode_geohash))
+                .route("/:ghash/neighbors", get(geohash_api::get_neighbors))
                 .layer(axum::middleware::from_fn(set_cache_control)),
         )
         .route(
-            "/shard/:index/",
+            "/shard/:index",
             post(geoshard_api::create_index)
                 .delete(geoshard_api::drop_index)
                 .put(geoshard_api::insert_key)
                 .patch(geoshard_api::remove_key)
                 .get(geoshard_api::query_range),
         )
-        .route("/shard/", get(geoshard_api::query_range_many))
+        .route("/shard", get(geoshard_api::query_range_many))
         .route(
-            "/shard/:index/batch/",
+            "/shard/:index/batch",
             put(geoshard_api::insert_key_batch).patch(geoshard_api::remove_key_batch),
         )
         .layer(axum::middleware::from_fn(json_content))
@@ -123,16 +123,16 @@ mod test {
     use serde_json::json;
 
     fn setup() -> TestServer {
-        let app = Router::new().nest("/api/v1/", routes(AppState::default()));
+        let router = Router::new().nest("/api/v1/", routes(AppState::default()));
         let config = TestServerConfig::builder().build();
-        TestServer::new_with_config(app, config).unwrap()
+        TestServer::new_with_config(router, config).unwrap()
     }
 
     #[tokio::test]
     async fn can_geohash_api() {
         let server = setup();
         let req = server
-            .get("/api/v1/geohash/")
+            .get("/api/v1/geohash")
             .add_query_params(dto::EncodeLatLng {
                 lat: 45.0,
                 lng: 45.0,
@@ -151,17 +151,17 @@ mod test {
     #[tokio::test]
     async fn can_range_query_api() {
         let server = setup();
-        server.post("/api/v1/shard/drivers/").await;
+        server.post("/api/v1/shard/drivers").await;
         server
-            .put("/api/v1/shard/drivers/")
+            .put("/api/v1/shard/drivers")
             .json(&json!({ "key": "Alice", "lat": 1.0, "lng": 0.0 }))
             .await;
         server
-            .put("/api/v1/geoshard/drivers/")
+            .put("/api/v1/geoshard/drivers")
             .json(&json!({ "key": "Bob", "lat": 0.0, "lng": 1.0 }))
             .await;
         let res = server
-            .get("/api/v1/shard/drivers/")
+            .get("/api/v1/shard/drivers")
             .add_query_params(json!({
                 "lat": 0.0, "lng": 0.0, "range": 1000
             }))
