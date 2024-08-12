@@ -30,7 +30,7 @@ Whether it's for ride-sharing services like Uber and Lyft or delivery platforms 
 
 [Discussed @ May 2024 Rust Indy.rs meetup](https://gitlab.com/indyrs/may2024/-/blob/main/Geo-Proximity-Detection-With-Rust.pdf)
 
-## Table of Contents
+## Table of Contents 📖
 
 - [Table of Contents](#table-of-contents)
   - [Features](#high-level-features)
