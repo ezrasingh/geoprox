@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.4.2
+
 - Added support for environment variables ([#6](https://github.com/ezrasingh/geoprox/issues/6)).
+- Bumped `geoprox-core` to [v0.4.2](https://crates.io/crates/geoprox-core/0.4.2).
+- Bumped `geoprox-server` to [v0.4.2](https://crates.io/crates/geoprox-server/0.4.2).
 
 ## 0.4.1
 
 - Added support for `default_count` and `default_sorted` in config ([#2](https://github.com/ezrasingh/geoprox/issues/2)).
+- Bumped `geoprox-core` to [v0.4.1](https://crates.io/crates/geoprox-core/0.4.1).
+- Bumped `geoprox-server` to [v0.4.1](https://crates.io/crates/geoprox-server/0.4.1).
 
 ## 0.4.0
 

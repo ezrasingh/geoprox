@@ -7,14 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# 0.4.2
+
 - Added support for `Accept-Encoding`(via [`compression-full`](https://docs.rs/crate/tower-http/0.5.2/features#compression-full) feature in `tower-http`) and `Content-Encoding`(via [`decompression-full`](https://docs.rs/crate/tower-http/0.5.2/features#decompression-full) feature in `tower-http`) headers, [timeouts](https://docs.rs/crate/tower-http/0.5.2/features#timeout) and [tracing](https://docs.rs/crate/tower-http/0.5.2/features#trace) in responses.
-- Added support for path normalization (i.e trailing slash or no trailing slash) ([#4](https://github.com/ezrasingh/geoprox/issues/4))
+- Added support for path normalization (i.e trailing slash or no trailing slash) ([#4](https://github.com/ezrasingh/geoprox/issues/4)).
+- Bumped `geoprox-core` to [v0.4.2](https://crates.io/crates/geoprox-core/0.4.2).
 
 ## 0.4.1
 
 - Added `server_config` and `shard_config` to `AppState` ([#2](https://github.com/ezrasingh/geoprox/issues/2))
 - `api::routes` now takes in a single `AppState` as argument for building routes.
 - Crate `README` now points to OpenAPI generated markdown docs
+- Bumped `geoprox-core` to [v0.4.1](https://crates.io/crates/geoprox-core/0.4.1).
 
 ## 0.4.0
 

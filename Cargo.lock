@@ -972,7 +972,7 @@ dependencies = [
 
 [[package]]
 name = "geoprox"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "clap",
  "config",
@@ -996,7 +996,7 @@ dependencies = [
 
 [[package]]
 name = "geoprox-core"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "ahash",
  "criterion",
@@ -1015,7 +1015,7 @@ dependencies = [
 
 [[package]]
 name = "geoprox-server"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "anyhow",
  "axum",
@@ -1438,6 +1438,7 @@ dependencies = [
  "log",
  "num-traits",
  "ordered-float",
+ "rayon",
  "serde",
  "serde_derive",
  "serde_with",

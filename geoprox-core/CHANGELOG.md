@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.4.2
+
 - Replaced the [`haversine`](https://crates.io/crates/haversine) crate with [`haversine-rs`](https://crates.io/crates/haversine-rs) after noticing it performed better in benchmarks.
 
 ## 0.4.1
