@@ -2,11 +2,11 @@
 
 All URIs are relative to _http://localhost_
 
-| Method                                           | HTTP request                               | Description                      |
-| ------------------------------------------------ | ------------------------------------------ | -------------------------------- |
-| [**decodeGeohash**](GeohashApi.md#decodeGeohash) | **GET** /api/v1/geohash/{ghash}/           | Decode geohash into coordinates. |
-| [**encodeLatlng**](GeohashApi.md#encodeLatlng)   | **GET** /api/v1/geohash/                   | Encode coordinates into geohash  |
-| [**getNeighbors**](GeohashApi.md#getNeighbors)   | **GET** /api/v1/geohash/{ghash}/neighbors/ | Neighboring regions              |
+| Method                                           | HTTP request                              | Description                      |
+| ------------------------------------------------ | ----------------------------------------- | -------------------------------- |
+| [**decodeGeohash**](GeohashApi.md#decodeGeohash) | **GET** /api/v1/geohash/{ghash}           | Decode geohash into coordinates. |
+| [**encodeLatlng**](GeohashApi.md#encodeLatlng)   | **GET** /api/v1/geohash                   | Encode coordinates into geohash  |
+| [**getNeighbors**](GeohashApi.md#getNeighbors)   | **GET** /api/v1/geohash/{ghash}/neighbors | Neighboring regions              |
 
 <a name="decodeGeohash"></a>
 

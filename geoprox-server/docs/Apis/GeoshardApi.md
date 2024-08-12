@@ -2,16 +2,16 @@
 
 All URIs are relative to _http://localhost_
 
-| Method                                              | HTTP request                           | Description                                |
-| --------------------------------------------------- | -------------------------------------- | ------------------------------------------ |
-| [**createIndex**](GeoshardApi.md#createIndex)       | **POST** /api/v1/shard/{index}/        | Create geospatial index                    |
-| [**dropIndex**](GeoshardApi.md#dropIndex)           | **DELETE** /api/v1/shard/{index}/      | Deletes geospatial index                   |
-| [**insertKey**](GeoshardApi.md#insertKey)           | **PUT** /api/v1/shard/{index}/         | Insert key into index                      |
-| [**insertKeyBatch**](GeoshardApi.md#insertKeyBatch) | **PUT** /api/v1/shard/{index}/batch/   | Insert multiple keys into index            |
-| [**queryRange**](GeoshardApi.md#queryRange)         | **GET** /api/v1/shard/{index}/         | Search index for objects nearby            |
-| [**queryRangeMany**](GeoshardApi.md#queryRangeMany) | **GET** /api/v1/shard/                 | Search multiple indices for objects nearby |
-| [**removeKey**](GeoshardApi.md#removeKey)           | **PATCH** /api/v1/shard/{index}/       | Remove key from index                      |
-| [**removeKeyBatch**](GeoshardApi.md#removeKeyBatch) | **PATCH** /api/v1/shard/{index}/batch/ | Remove multiple keys from index            |
+| Method                                              | HTTP request                          | Description                                |
+| --------------------------------------------------- | ------------------------------------- | ------------------------------------------ |
+| [**createIndex**](GeoshardApi.md#createIndex)       | **POST** /api/v1/shard/{index}        | Create geospatial index                    |
+| [**dropIndex**](GeoshardApi.md#dropIndex)           | **DELETE** /api/v1/shard/{index}      | Deletes geospatial index                   |
+| [**insertKey**](GeoshardApi.md#insertKey)           | **PUT** /api/v1/shard/{index}         | Insert key into index                      |
+| [**insertKeyBatch**](GeoshardApi.md#insertKeyBatch) | **PUT** /api/v1/shard/{index}/batch   | Insert multiple keys into index            |
+| [**queryRange**](GeoshardApi.md#queryRange)         | **GET** /api/v1/shard/{index}         | Search index for objects nearby            |
+| [**queryRangeMany**](GeoshardApi.md#queryRangeMany) | **GET** /api/v1/shard                 | Search multiple indices for objects nearby |
+| [**removeKey**](GeoshardApi.md#removeKey)           | **PATCH** /api/v1/shard/{index}       | Remove key from index                      |
+| [**removeKeyBatch**](GeoshardApi.md#removeKeyBatch) | **PATCH** /api/v1/shard/{index}/batch | Remove multiple keys from index            |
 
 <a name="createIndex"></a>
 

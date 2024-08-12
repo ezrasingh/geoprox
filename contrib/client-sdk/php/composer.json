@@ -1,6 +1,6 @@
 {
     "name": "geoprox-client",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "Geoprox server implementation providing a HTTP API for geospatial queries and position tracking",
     "keywords": [
         "openapitools",

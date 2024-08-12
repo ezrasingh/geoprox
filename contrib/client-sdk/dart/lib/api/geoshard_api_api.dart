@@ -28,7 +28,7 @@ class GeoshardApiApi {
   ///   Geospatial index name
   Future<Response> createIndexWithHttpInfo(String index,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/'
+    final path = r'/api/v1/shard/{index}'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -87,7 +87,7 @@ class GeoshardApiApi {
   ///   Geospatial index name
   Future<Response> dropIndexWithHttpInfo(String index,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/'
+    final path = r'/api/v1/shard/{index}'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -149,7 +149,7 @@ class GeoshardApiApi {
   ///   
   Future<Response> insertKeyWithHttpInfo(String index, InsertKey insertKey,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/'
+    final path = r'/api/v1/shard/{index}'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -214,7 +214,7 @@ class GeoshardApiApi {
   ///   
   Future<Response> insertKeyBatchWithHttpInfo(String index, InsertKeyBatch insertKeyBatch,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/batch/'
+    final path = r'/api/v1/shard/{index}/batch'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -291,7 +291,7 @@ class GeoshardApiApi {
   ///   If enabled neighbors will be sorted by distance, nearest to furthest (default false)
   Future<Response> queryRangeWithHttpInfo(String index, double lat, double lng, int range, { int? count, bool? sorted, }) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/'
+    final path = r'/api/v1/shard/{index}'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -390,7 +390,7 @@ class GeoshardApiApi {
   ///   If enabled neighbors will be sorted by distance, nearest to furthest (default false)
   Future<Response> queryRangeManyWithHttpInfo(List<String> indices, double lat, double lng, int range, { int? count, bool? sorted, }) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/';
+    final path = r'/api/v1/shard';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -477,7 +477,7 @@ class GeoshardApiApi {
   ///   
   Future<Response> removeKeyWithHttpInfo(String index, RemoveKey removeKey,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/'
+    final path = r'/api/v1/shard/{index}'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals
@@ -542,7 +542,7 @@ class GeoshardApiApi {
   ///   
   Future<Response> removeKeyBatchWithHttpInfo(String index, RemoveKeyBatch removeKeyBatch,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/shard/{index}/batch/'
+    final path = r'/api/v1/shard/{index}/batch'
       .replaceAll('{index}', index);
 
     // ignore: prefer_final_locals

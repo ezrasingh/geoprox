@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 |--------|--------------|-------------|
-| [**CreateIndex**](GeoshardApiApi.md#createindex) | **POST** /api/v1/shard/{index}/ | Create geospatial index |
-| [**DropIndex**](GeoshardApiApi.md#dropindex) | **DELETE** /api/v1/shard/{index}/ | Deletes geospatial index |
-| [**InsertKey**](GeoshardApiApi.md#insertkey) | **PUT** /api/v1/shard/{index}/ | Insert key into index |
-| [**InsertKeyBatch**](GeoshardApiApi.md#insertkeybatch) | **PUT** /api/v1/shard/{index}/batch/ | Insert multiple keys into index |
-| [**QueryRange**](GeoshardApiApi.md#queryrange) | **GET** /api/v1/shard/{index}/ | Search index for objects nearby |
-| [**QueryRangeMany**](GeoshardApiApi.md#queryrangemany) | **GET** /api/v1/shard/ | Search multiple indices for objects nearby |
-| [**RemoveKey**](GeoshardApiApi.md#removekey) | **PATCH** /api/v1/shard/{index}/ | Remove key from index |
-| [**RemoveKeyBatch**](GeoshardApiApi.md#removekeybatch) | **PATCH** /api/v1/shard/{index}/batch/ | Remove multiple keys from index |
+| [**CreateIndex**](GeoshardApiApi.md#createindex) | **POST** /api/v1/shard/{index} | Create geospatial index |
+| [**DropIndex**](GeoshardApiApi.md#dropindex) | **DELETE** /api/v1/shard/{index} | Deletes geospatial index |
+| [**InsertKey**](GeoshardApiApi.md#insertkey) | **PUT** /api/v1/shard/{index} | Insert key into index |
+| [**InsertKeyBatch**](GeoshardApiApi.md#insertkeybatch) | **PUT** /api/v1/shard/{index}/batch | Insert multiple keys into index |
+| [**QueryRange**](GeoshardApiApi.md#queryrange) | **GET** /api/v1/shard/{index} | Search index for objects nearby |
+| [**QueryRangeMany**](GeoshardApiApi.md#queryrangemany) | **GET** /api/v1/shard | Search multiple indices for objects nearby |
+| [**RemoveKey**](GeoshardApiApi.md#removekey) | **PATCH** /api/v1/shard/{index} | Remove key from index |
+| [**RemoveKeyBatch**](GeoshardApiApi.md#removekeybatch) | **PATCH** /api/v1/shard/{index}/batch | Remove multiple keys from index |
 
 <a id="createindex"></a>
 # **CreateIndex**

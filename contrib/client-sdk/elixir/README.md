@@ -18,7 +18,7 @@ your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:geoprox_client, "~> 0.4.1"}]
+  [{:geoprox_client, "~> 0.4.2"}]
 end
 ```
 

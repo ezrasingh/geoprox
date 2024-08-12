@@ -9,9 +9,9 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**decodeGeohash**](GeohashApiApi.md#decodegeohash) | **GET** /api/v1/geohash/{ghash}/ | Decode geohash into coordinates.
-[**encodeLatlng**](GeohashApiApi.md#encodelatlng) | **GET** /api/v1/geohash/ | Encode coordinates into geohash
-[**getNeighbors**](GeohashApiApi.md#getneighbors) | **GET** /api/v1/geohash/{ghash}/neighbors/ | Neighboring regions
+[**decodeGeohash**](GeohashApiApi.md#decodegeohash) | **GET** /api/v1/geohash/{ghash} | Decode geohash into coordinates.
+[**encodeLatlng**](GeohashApiApi.md#encodelatlng) | **GET** /api/v1/geohash | Encode coordinates into geohash
+[**getNeighbors**](GeohashApiApi.md#getneighbors) | **GET** /api/v1/geohash/{ghash}/neighbors | Neighboring regions
 
 
 # **decodeGeohash**

@@ -4,9 +4,9 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**DecodeGeohash**](GeohashApiAPI.md#DecodeGeohash) | **Get** /api/v1/geohash/{ghash}/ | Decode geohash into coordinates.
-[**EncodeLatlng**](GeohashApiAPI.md#EncodeLatlng) | **Get** /api/v1/geohash/ | Encode coordinates into geohash
-[**GetNeighbors**](GeohashApiAPI.md#GetNeighbors) | **Get** /api/v1/geohash/{ghash}/neighbors/ | Neighboring regions
+[**DecodeGeohash**](GeohashApiAPI.md#DecodeGeohash) | **Get** /api/v1/geohash/{ghash} | Decode geohash into coordinates.
+[**EncodeLatlng**](GeohashApiAPI.md#EncodeLatlng) | **Get** /api/v1/geohash | Encode coordinates into geohash
+[**GetNeighbors**](GeohashApiAPI.md#GetNeighbors) | **Get** /api/v1/geohash/{ghash}/neighbors | Neighboring regions
 
 
 

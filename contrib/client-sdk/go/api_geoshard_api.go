@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.1
+API version: 0.4.2
 Contact: singhezra@gmail.com
 */
 
@@ -67,7 +67,7 @@ func (a *GeoshardApiAPIService) CreateIndexExecute(r ApiCreateIndexRequest) (*Cr
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -170,7 +170,7 @@ func (a *GeoshardApiAPIService) DropIndexExecute(r ApiDropIndexRequest) (*DropIn
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -280,7 +280,7 @@ func (a *GeoshardApiAPIService) InsertKeyExecute(r ApiInsertKeyRequest) (*Insert
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -395,7 +395,7 @@ func (a *GeoshardApiAPIService) InsertKeyBatchExecute(r ApiInsertKeyBatchRequest
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/batch/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}/batch"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -538,7 +538,7 @@ func (a *GeoshardApiAPIService) QueryRangeExecute(r ApiQueryRangeRequest) (*Quer
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -701,7 +701,7 @@ func (a *GeoshardApiAPIService) QueryRangeManyExecute(r ApiQueryRangeManyRequest
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/"
+	localVarPath := localBasePath + "/api/v1/shard"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -845,7 +845,7 @@ func (a *GeoshardApiAPIService) RemoveKeyExecute(r ApiRemoveKeyRequest) (*Remove
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -960,7 +960,7 @@ func (a *GeoshardApiAPIService) RemoveKeyBatchExecute(r ApiRemoveKeyBatchRequest
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/shard/{index}/batch/"
+	localVarPath := localBasePath + "/api/v1/shard/{index}/batch"
 	localVarPath = strings.Replace(localVarPath, "{"+"index"+"}", url.PathEscape(parameterValueToString(r.index, "index")), -1)
 
 	localVarHeaderParams := make(map[string]string)

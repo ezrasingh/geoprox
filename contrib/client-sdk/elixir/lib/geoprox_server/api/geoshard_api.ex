@@ -29,7 +29,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:post)
-      |> url("/api/v1/shard/#{index}/")
+      |> url("/api/v1/shard/#{index}")
       |> ensure_body()
       |> Enum.into([])
 
@@ -60,7 +60,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:delete)
-      |> url("/api/v1/shard/#{index}/")
+      |> url("/api/v1/shard/#{index}")
       |> Enum.into([])
 
     connection
@@ -91,7 +91,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:put)
-      |> url("/api/v1/shard/#{index}/")
+      |> url("/api/v1/shard/#{index}")
       |> add_param(:body, :body, insert_key)
       |> Enum.into([])
 
@@ -123,7 +123,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:put)
-      |> url("/api/v1/shard/#{index}/batch/")
+      |> url("/api/v1/shard/#{index}/batch")
       |> add_param(:body, :body, insert_key_batch)
       |> Enum.into([])
 
@@ -164,7 +164,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:get)
-      |> url("/api/v1/shard/#{index}/")
+      |> url("/api/v1/shard/#{index}")
       |> add_param(:query, :lat, lat)
       |> add_param(:query, :lng, lng)
       |> add_param(:query, :range, range)
@@ -208,7 +208,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:get)
-      |> url("/api/v1/shard/")
+      |> url("/api/v1/shard")
       |> add_param(:query, :indices, indices)
       |> add_param(:query, :lat, lat)
       |> add_param(:query, :lng, lng)
@@ -244,7 +244,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:patch)
-      |> url("/api/v1/shard/#{index}/")
+      |> url("/api/v1/shard/#{index}")
       |> add_param(:body, :body, remove_key)
       |> Enum.into([])
 
@@ -276,7 +276,7 @@ defmodule GeoproxServer.Api.GeoshardApi do
     request =
       %{}
       |> method(:patch)
-      |> url("/api/v1/shard/#{index}/batch/")
+      |> url("/api/v1/shard/#{index}/batch")
       |> add_param(:body, :body, remove_key_batch)
       |> Enum.into([])
 

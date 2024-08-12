@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateIndex**](GeoshardApiAPI.md#CreateIndex) | **Post** /api/v1/shard/{index}/ | Create geospatial index
-[**DropIndex**](GeoshardApiAPI.md#DropIndex) | **Delete** /api/v1/shard/{index}/ | Deletes geospatial index
-[**InsertKey**](GeoshardApiAPI.md#InsertKey) | **Put** /api/v1/shard/{index}/ | Insert key into index
-[**InsertKeyBatch**](GeoshardApiAPI.md#InsertKeyBatch) | **Put** /api/v1/shard/{index}/batch/ | Insert multiple keys into index
-[**QueryRange**](GeoshardApiAPI.md#QueryRange) | **Get** /api/v1/shard/{index}/ | Search index for objects nearby
-[**QueryRangeMany**](GeoshardApiAPI.md#QueryRangeMany) | **Get** /api/v1/shard/ | Search multiple indices for objects nearby
-[**RemoveKey**](GeoshardApiAPI.md#RemoveKey) | **Patch** /api/v1/shard/{index}/ | Remove key from index
-[**RemoveKeyBatch**](GeoshardApiAPI.md#RemoveKeyBatch) | **Patch** /api/v1/shard/{index}/batch/ | Remove multiple keys from index
+[**CreateIndex**](GeoshardApiAPI.md#CreateIndex) | **Post** /api/v1/shard/{index} | Create geospatial index
+[**DropIndex**](GeoshardApiAPI.md#DropIndex) | **Delete** /api/v1/shard/{index} | Deletes geospatial index
+[**InsertKey**](GeoshardApiAPI.md#InsertKey) | **Put** /api/v1/shard/{index} | Insert key into index
+[**InsertKeyBatch**](GeoshardApiAPI.md#InsertKeyBatch) | **Put** /api/v1/shard/{index}/batch | Insert multiple keys into index
+[**QueryRange**](GeoshardApiAPI.md#QueryRange) | **Get** /api/v1/shard/{index} | Search index for objects nearby
+[**QueryRangeMany**](GeoshardApiAPI.md#QueryRangeMany) | **Get** /api/v1/shard | Search multiple indices for objects nearby
+[**RemoveKey**](GeoshardApiAPI.md#RemoveKey) | **Patch** /api/v1/shard/{index} | Remove key from index
+[**RemoveKeyBatch**](GeoshardApiAPI.md#RemoveKeyBatch) | **Patch** /api/v1/shard/{index}/batch | Remove multiple keys from index
 
 
 

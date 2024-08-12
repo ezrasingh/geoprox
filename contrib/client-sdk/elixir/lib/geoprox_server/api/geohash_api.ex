@@ -29,7 +29,7 @@ defmodule GeoproxServer.Api.GeohashApi do
     request =
       %{}
       |> method(:get)
-      |> url("/api/v1/geohash/#{ghash}/")
+      |> url("/api/v1/geohash/#{ghash}")
       |> Enum.into([])
 
     connection
@@ -61,7 +61,7 @@ defmodule GeoproxServer.Api.GeohashApi do
     request =
       %{}
       |> method(:get)
-      |> url("/api/v1/geohash/")
+      |> url("/api/v1/geohash")
       |> add_param(:query, :lat, lat)
       |> add_param(:query, :lng, lng)
       |> add_param(:query, :depth, depth)
@@ -94,7 +94,7 @@ defmodule GeoproxServer.Api.GeohashApi do
     request =
       %{}
       |> method(:get)
-      |> url("/api/v1/geohash/#{ghash}/neighbors/")
+      |> url("/api/v1/geohash/#{ghash}/neighbors")
       |> Enum.into([])
 
     connection

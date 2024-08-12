@@ -11,7 +11,7 @@ class GeohashApiApi {
     ApiUtils apiUtils = new ApiUtils();
 
     def decodeGeohash ( String ghash, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/geohash/${ghash}/"
+        String resourcePath = "/api/v1/geohash/${ghash}"
 
         // params
         def queryParams = [:]
@@ -35,7 +35,7 @@ class GeohashApiApi {
     }
 
     def encodeLatlng ( Double lat, Double lng, Integer depth, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/geohash/"
+        String resourcePath = "/api/v1/geohash"
 
         // params
         def queryParams = [:]
@@ -76,7 +76,7 @@ class GeohashApiApi {
     }
 
     def getNeighbors ( String ghash, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/geohash/${ghash}/neighbors/"
+        String resourcePath = "/api/v1/geohash/${ghash}/neighbors"
 
         // params
         def queryParams = [:]

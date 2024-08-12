@@ -53,7 +53,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -128,7 +128,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -205,7 +205,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{
@@ -302,7 +302,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/batch/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}/batch'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{
@@ -407,7 +407,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -501,7 +501,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/';
+    final _path = r'/api/v1/shard';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -588,7 +588,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{
@@ -685,7 +685,7 @@ class GeoshardApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/shard/{index}/batch/'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
+    final _path = r'/api/v1/shard/{index}/batch'.replaceAll('{' r'index' '}', encodeQueryParameter(_serializers, index, const FullType(String)).toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

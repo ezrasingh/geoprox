@@ -43,7 +43,7 @@ class GeohashApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/geohash/{ghash}/'.replaceAll('{' r'ghash' '}', encodeQueryParameter(_serializers, ghash, const FullType(String)).toString());
+    final _path = r'/api/v1/geohash/{ghash}'.replaceAll('{' r'ghash' '}', encodeQueryParameter(_serializers, ghash, const FullType(String)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -122,7 +122,7 @@ class GeohashApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/geohash/';
+    final _path = r'/api/v1/geohash';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -204,7 +204,7 @@ class GeohashApiApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/geohash/{ghash}/neighbors/'.replaceAll('{' r'ghash' '}', encodeQueryParameter(_serializers, ghash, const FullType(String)).toString());
+    final _path = r'/api/v1/geohash/{ghash}/neighbors'.replaceAll('{' r'ghash' '}', encodeQueryParameter(_serializers, ghash, const FullType(String)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{

@@ -28,7 +28,7 @@ class GeohashApiApi {
   ///   Geohash encoded region
   Future<Response> decodeGeohashWithHttpInfo(String ghash,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/geohash/{ghash}/'
+    final path = r'/api/v1/geohash/{ghash}'
       .replaceAll('{ghash}', ghash);
 
     // ignore: prefer_final_locals
@@ -93,7 +93,7 @@ class GeohashApiApi {
   ///   Determines geohash length
   Future<Response> encodeLatlngWithHttpInfo(double lat, double lng, int depth,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/geohash/';
+    final path = r'/api/v1/geohash';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -161,7 +161,7 @@ class GeohashApiApi {
   ///   Geohash encoded region
   Future<Response> getNeighborsWithHttpInfo(String ghash,) async {
     // ignore: prefer_const_declarations
-    final path = r'/api/v1/geohash/{ghash}/neighbors/'
+    final path = r'/api/v1/geohash/{ghash}/neighbors'
       .replaceAll('{ghash}', ghash);
 
     // ignore: prefer_final_locals

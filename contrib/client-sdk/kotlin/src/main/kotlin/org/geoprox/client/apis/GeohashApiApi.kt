@@ -110,7 +110,7 @@ class GeohashApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCli
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/api/v1/geohash/{ghash}/".replace("{"+"ghash"+"}", encodeURIComponent(ghash.toString())),
+            path = "/api/v1/geohash/{ghash}".replace("{"+"ghash"+"}", encodeURIComponent(ghash.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -192,7 +192,7 @@ class GeohashApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCli
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/api/v1/geohash/",
+            path = "/api/v1/geohash",
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -263,7 +263,7 @@ class GeohashApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCli
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/api/v1/geohash/{ghash}/neighbors/".replace("{"+"ghash"+"}", encodeURIComponent(ghash.toString())),
+            path = "/api/v1/geohash/{ghash}/neighbors".replace("{"+"ghash"+"}", encodeURIComponent(ghash.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

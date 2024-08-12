@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 | ------ | ------------ | ----------- |
-| [**create_index**](GeoshardApiApi.md#create_index) | **POST** /api/v1/shard/{index}/ | Create geospatial index |
-| [**drop_index**](GeoshardApiApi.md#drop_index) | **DELETE** /api/v1/shard/{index}/ | Deletes geospatial index |
-| [**insert_key**](GeoshardApiApi.md#insert_key) | **PUT** /api/v1/shard/{index}/ | Insert key into index |
-| [**insert_key_batch**](GeoshardApiApi.md#insert_key_batch) | **PUT** /api/v1/shard/{index}/batch/ | Insert multiple keys into index |
-| [**query_range**](GeoshardApiApi.md#query_range) | **GET** /api/v1/shard/{index}/ | Search index for objects nearby |
-| [**query_range_many**](GeoshardApiApi.md#query_range_many) | **GET** /api/v1/shard/ | Search multiple indices for objects nearby |
-| [**remove_key**](GeoshardApiApi.md#remove_key) | **PATCH** /api/v1/shard/{index}/ | Remove key from index |
-| [**remove_key_batch**](GeoshardApiApi.md#remove_key_batch) | **PATCH** /api/v1/shard/{index}/batch/ | Remove multiple keys from index |
+| [**create_index**](GeoshardApiApi.md#create_index) | **POST** /api/v1/shard/{index} | Create geospatial index |
+| [**drop_index**](GeoshardApiApi.md#drop_index) | **DELETE** /api/v1/shard/{index} | Deletes geospatial index |
+| [**insert_key**](GeoshardApiApi.md#insert_key) | **PUT** /api/v1/shard/{index} | Insert key into index |
+| [**insert_key_batch**](GeoshardApiApi.md#insert_key_batch) | **PUT** /api/v1/shard/{index}/batch | Insert multiple keys into index |
+| [**query_range**](GeoshardApiApi.md#query_range) | **GET** /api/v1/shard/{index} | Search index for objects nearby |
+| [**query_range_many**](GeoshardApiApi.md#query_range_many) | **GET** /api/v1/shard | Search multiple indices for objects nearby |
+| [**remove_key**](GeoshardApiApi.md#remove_key) | **PATCH** /api/v1/shard/{index} | Remove key from index |
+| [**remove_key_batch**](GeoshardApiApi.md#remove_key_batch) | **PATCH** /api/v1/shard/{index}/batch | Remove multiple keys from index |
 
 
 ## create_index

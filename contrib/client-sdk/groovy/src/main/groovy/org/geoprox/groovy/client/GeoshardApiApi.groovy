@@ -20,7 +20,7 @@ class GeoshardApiApi {
     ApiUtils apiUtils = new ApiUtils();
 
     def createIndex ( String index, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/"
+        String resourcePath = "/api/v1/shard/${index}"
 
         // params
         def queryParams = [:]
@@ -44,7 +44,7 @@ class GeoshardApiApi {
     }
 
     def dropIndex ( String index, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/"
+        String resourcePath = "/api/v1/shard/${index}"
 
         // params
         def queryParams = [:]
@@ -68,7 +68,7 @@ class GeoshardApiApi {
     }
 
     def insertKey ( String index, InsertKey insertKey, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/"
+        String resourcePath = "/api/v1/shard/${index}"
 
         // params
         def queryParams = [:]
@@ -98,7 +98,7 @@ class GeoshardApiApi {
     }
 
     def insertKeyBatch ( String index, InsertKeyBatch insertKeyBatch, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/batch/"
+        String resourcePath = "/api/v1/shard/${index}/batch"
 
         // params
         def queryParams = [:]
@@ -128,7 +128,7 @@ class GeoshardApiApi {
     }
 
     def queryRange ( String index, Double lat, Double lng, Integer range, Integer count, Boolean sorted, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/"
+        String resourcePath = "/api/v1/shard/${index}"
 
         // params
         def queryParams = [:]
@@ -179,7 +179,7 @@ class GeoshardApiApi {
     }
 
     def queryRangeMany ( List<String> indices, Double lat, Double lng, Integer range, Integer count, Boolean sorted, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/"
+        String resourcePath = "/api/v1/shard"
 
         // params
         def queryParams = [:]
@@ -233,7 +233,7 @@ class GeoshardApiApi {
     }
 
     def removeKey ( String index, RemoveKey removeKey, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/"
+        String resourcePath = "/api/v1/shard/${index}"
 
         // params
         def queryParams = [:]
@@ -263,7 +263,7 @@ class GeoshardApiApi {
     }
 
     def removeKeyBatch ( String index, RemoveKeyBatch removeKeyBatch, Closure onSuccess, Closure onFailure)  {
-        String resourcePath = "/api/v1/shard/${index}/batch/"
+        String resourcePath = "/api/v1/shard/${index}/batch"
 
         // params
         def queryParams = [:]

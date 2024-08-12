@@ -8,14 +8,14 @@ info:
   license:
     name: MIT OR Apache-2.0
   title: geoprox-server
-  version: 0.4.1
+  version: 0.4.2
 servers:
 - url: /
 tags:
 - description: Geospatial index API
   name: Geoprox
 paths:
-  /api/v1/geohash/:
+  /api/v1/geohash:
     get:
       description: "Encode coordinates by query params, returns geohash."
       operationId: encode_latlng
@@ -57,7 +57,7 @@ paths:
       summary: Encode coordinates into geohash
       tags:
       - geohash_api
-  /api/v1/geohash/{ghash}/:
+  /api/v1/geohash/{ghash}:
     get:
       description: "Decode geohash by path param, returns coordinates with precision\
         \ estimates."
@@ -81,7 +81,7 @@ paths:
       summary: Decode geohash into coordinates.
       tags:
       - geohash_api
-  /api/v1/geohash/{ghash}/neighbors/:
+  /api/v1/geohash/{ghash}/neighbors:
     get:
       description: Returns geohash neighbors in all cardinal directions.
       operationId: get_neighbors
@@ -104,7 +104,7 @@ paths:
       summary: Neighboring regions
       tags:
       - geohash_api
-  /api/v1/shard/:
+  /api/v1/shard:
     get:
       description: Search geospatial many indices for all keys within some distance
       operationId: query_range_many
@@ -177,7 +177,7 @@ paths:
       summary: Search multiple indices for objects nearby
       tags:
       - geoshard_api
-  /api/v1/shard/{index}/:
+  /api/v1/shard/{index}:
     delete:
       description: Drop index. All keys will be lost
       operationId: drop_index
@@ -350,7 +350,7 @@ paths:
       summary: Insert key into index
       tags:
       - geoshard_api
-  /api/v1/shard/{index}/batch/:
+  /api/v1/shard/{index}/batch:
     patch:
       description: Removes multiple keys from geospatial index
       operationId: remove_key_batch

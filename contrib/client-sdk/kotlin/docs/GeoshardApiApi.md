@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**createIndex**](GeoshardApiApi.md#createIndex) | **POST** /api/v1/shard/{index}/ | Create geospatial index |
-| [**dropIndex**](GeoshardApiApi.md#dropIndex) | **DELETE** /api/v1/shard/{index}/ | Deletes geospatial index |
-| [**insertKey**](GeoshardApiApi.md#insertKey) | **PUT** /api/v1/shard/{index}/ | Insert key into index |
-| [**insertKeyBatch**](GeoshardApiApi.md#insertKeyBatch) | **PUT** /api/v1/shard/{index}/batch/ | Insert multiple keys into index |
-| [**queryRange**](GeoshardApiApi.md#queryRange) | **GET** /api/v1/shard/{index}/ | Search index for objects nearby |
-| [**queryRangeMany**](GeoshardApiApi.md#queryRangeMany) | **GET** /api/v1/shard/ | Search multiple indices for objects nearby |
-| [**removeKey**](GeoshardApiApi.md#removeKey) | **PATCH** /api/v1/shard/{index}/ | Remove key from index |
-| [**removeKeyBatch**](GeoshardApiApi.md#removeKeyBatch) | **PATCH** /api/v1/shard/{index}/batch/ | Remove multiple keys from index |
+| [**createIndex**](GeoshardApiApi.md#createIndex) | **POST** /api/v1/shard/{index} | Create geospatial index |
+| [**dropIndex**](GeoshardApiApi.md#dropIndex) | **DELETE** /api/v1/shard/{index} | Deletes geospatial index |
+| [**insertKey**](GeoshardApiApi.md#insertKey) | **PUT** /api/v1/shard/{index} | Insert key into index |
+| [**insertKeyBatch**](GeoshardApiApi.md#insertKeyBatch) | **PUT** /api/v1/shard/{index}/batch | Insert multiple keys into index |
+| [**queryRange**](GeoshardApiApi.md#queryRange) | **GET** /api/v1/shard/{index} | Search index for objects nearby |
+| [**queryRangeMany**](GeoshardApiApi.md#queryRangeMany) | **GET** /api/v1/shard | Search multiple indices for objects nearby |
+| [**removeKey**](GeoshardApiApi.md#removeKey) | **PATCH** /api/v1/shard/{index} | Remove key from index |
+| [**removeKeyBatch**](GeoshardApiApi.md#removeKeyBatch) | **PATCH** /api/v1/shard/{index}/batch | Remove multiple keys from index |
 
 
 <a id="createIndex"></a>

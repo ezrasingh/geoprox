@@ -119,7 +119,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.POST,
-            path = "/api/v1/shard/{index}/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -190,7 +190,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.DELETE,
-            path = "/api/v1/shard/{index}/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -265,7 +265,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.PUT,
-            path = "/api/v1/shard/{index}/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -340,7 +340,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.PUT,
-            path = "/api/v1/shard/{index}/batch/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}/batch".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -437,7 +437,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/api/v1/shard/{index}/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -535,7 +535,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.GET,
-            path = "/api/v1/shard/",
+            path = "/api/v1/shard",
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -610,7 +610,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/api/v1/shard/{index}/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,
@@ -685,7 +685,7 @@ class GeoshardApiApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
         return RequestConfig(
             method = RequestMethod.PATCH,
-            path = "/api/v1/shard/{index}/batch/".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
+            path = "/api/v1/shard/{index}/batch".replace("{"+"index"+"}", encodeURIComponent(index.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

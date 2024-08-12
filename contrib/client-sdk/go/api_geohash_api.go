@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.1
+API version: 0.4.2
 Contact: singhezra@gmail.com
 */
 
@@ -66,7 +66,7 @@ func (a *GeohashApiAPIService) DecodeGeohashExecute(r ApiDecodeGeohashRequest) (
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/geohash/{ghash}/"
+	localVarPath := localBasePath + "/api/v1/geohash/{ghash}"
 	localVarPath = strings.Replace(localVarPath, "{"+"ghash"+"}", url.PathEscape(parameterValueToString(r.ghash, "ghash")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -187,7 +187,7 @@ func (a *GeohashApiAPIService) EncodeLatlngExecute(r ApiEncodeLatlngRequest) (*E
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/geohash/"
+	localVarPath := localBasePath + "/api/v1/geohash"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -304,7 +304,7 @@ func (a *GeohashApiAPIService) GetNeighborsExecute(r ApiGetNeighborsRequest) (*G
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/geohash/{ghash}/neighbors/"
+	localVarPath := localBasePath + "/api/v1/geohash/{ghash}/neighbors"
 	localVarPath = strings.Replace(localVarPath, "{"+"ghash"+"}", url.PathEscape(parameterValueToString(r.ghash, "ghash")), -1)
 
 	localVarHeaderParams := make(map[string]string)
