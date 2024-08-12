@@ -437,8 +437,8 @@ geoprox decode 9q8yy
 <pre><code class="language-sh">geoprox help encode
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
-<p>Geoprox allows specifying a configuration file using the <code>-c</code> or <code>--config</code> option. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code>.</p>
-<h3 id="example-configuration"><a class="header" href="#example-configuration">Example Configuration</a></h3>
+<p>Geoprox allows specifying a configuration file using the <code>-c</code> or <code>--config</code> option or set the <code>GEOPROX_CONFIG</code> environment variable. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code>.</p>
+<h2 id="example-config"><a class="header" href="#example-config">Example Config</a></h2>
 <p>Here's an example configuration file in <code>TOML</code> format:</p>
 <pre><code class="language-toml"># All settings are optional; these are the default values.
 [server]
@@ -446,6 +446,8 @@ geoprox decode 9q8yy
 http_addr = '0.0.0.0'
 # The port the server will listen on
 http_port = 5000
+# Timeout duration in seconds
+timeout = 10
 
 [shard]
 # Determines the default geohash length for inserts
@@ -457,6 +459,14 @@ default_count = 100
 # Toggles the default sorting behavior for query results
 default_sorted = false
 </code></pre>
+<h3 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h3>
+<p>These are the currently supported environment variables. They will take precedence over settings defined in the configuration file.</p>
+<div class="table-wrapper"><table><thead><tr><th>Environment Variable</th><th>Description</th><th>Default Value</th></tr></thead><tbody>
+<tr><td><code>GEOPROX_CONFIG</code></td><td>Specifies the configuration file path.</td><td><code>/etc/geoprox/geoprox.toml</code></td></tr>
+<tr><td><code>GEOPROX_HTTP_ADDR</code></td><td>The address the server will bind to.</td><td><code>0.0.0.0</code></td></tr>
+<tr><td><code>GEOPROX_HTTP_PORT</code></td><td>The port the server will listen on.</td><td><code>5000</code></td></tr>
+</tbody></table>
+</div>
 <h2 id="fine-tuning"><a class="header" href="#fine-tuning">Fine Tuning</a></h2>
 <p>The <code>insert_depth</code> and <code>search_depth</code> settings control the precision of geohashing and impact the performance of distance calculations and search queries.</p>
 <h3 id="optimizing-insert_depth"><a class="header" href="#optimizing-insert_depth">Optimizing <code>insert_depth</code></a></h3>
@@ -519,7 +529,7 @@ docker pull ghcr.io/ezrasingh/geoprox:latest
 <p>Check the repesctive registry for available tags.</p>
 <h3 id="customizing-the-configuration"><a class="header" href="#customizing-the-configuration">Customizing the Configuration</a></h3>
 <blockquote>
-<p>For complete settings and configuration details, refer to the <a href="../../geoprox/README.html#configuration">Geoprox CLI README</a>.</p>
+<p>For complete settings and configuration details, refer to the <a href="https://github.com/ezrasingh/geoprox/blob/main/geoprox/README.md#configuration">Geoprox CLI README</a>.</p>
 </blockquote>
 <p>To use a custom configuration file, simply mount your configuration file into the container at <code>/etc/geoprox</code>. Geoprox will automatically detect and parse configuration files in formats like <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code> if they are named <code>geoprox.yaml</code>, <code>geoprox.toml</code>, <code>geoprox.json</code>, or <code>geoprox.ini</code>, respectively.</p>
 <p>For example, if you have a configuration file named <code>geoprox.yaml</code> in your current directory, you can run the container with the following command:</p>
