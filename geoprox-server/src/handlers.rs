@@ -11,7 +11,7 @@ pub mod geohash_api {
     /// Decode geohash by path param, returns coordinates with precision estimates.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash/{ghash}/",
+        path = "/api/v1/geohash/{ghash}",
         params(
             ("ghash" = String, Path, description = "Geohash encoded region"),
         ),
@@ -43,7 +43,7 @@ pub mod geohash_api {
     /// Encode coordinates by query params, returns geohash.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash/",
+        path = "/api/v1/geohash",
         params(EncodeLatLng),
         responses(
             (
@@ -68,7 +68,7 @@ pub mod geohash_api {
     /// Returns geohash neighbors in all cardinal directions.
     #[utoipa::path(
         get,
-        path = "/api/v1/geohash/{ghash}/neighbors/",
+        path = "/api/v1/geohash/{ghash}/neighbors",
         params(
             ("ghash" = String, Path, description = "Geohash encoded region"),
         ),
@@ -107,7 +107,7 @@ pub mod geoshard_api {
     /// Creates an in-memory index within this geoshard
     #[utoipa::path(
         post,
-        path = "/api/v1/shard/{index}/",
+        path = "/api/v1/shard/{index}",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -148,7 +148,7 @@ pub mod geoshard_api {
     /// Drop index. All keys will be lost
     #[utoipa::path(
         delete,
-        path = "/api/v1/shard/{index}/",
+        path = "/api/v1/shard/{index}",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -176,7 +176,7 @@ pub mod geoshard_api {
     /// Inserts key into geospatial index
     #[utoipa::path(
         put,
-        path = "/api/v1/shard/{index}/",
+        path = "/api/v1/shard/{index}",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -212,7 +212,7 @@ pub mod geoshard_api {
     /// Inserts multiple keys into geospatial index
     #[utoipa::path(
         put,
-        path = "/api/v1/shard/{index}/batch/",
+        path = "/api/v1/shard/{index}/batch",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -252,7 +252,7 @@ pub mod geoshard_api {
     /// Removes key from geospatial index
     #[utoipa::path(
         patch,
-        path = "/api/v1/shard/{index}/",
+        path = "/api/v1/shard/{index}",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -285,7 +285,7 @@ pub mod geoshard_api {
     /// Removes multiple keys from geospatial index
     #[utoipa::path(
         patch,
-        path = "/api/v1/shard/{index}/batch/",
+        path = "/api/v1/shard/{index}/batch",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
         ),
@@ -323,7 +323,7 @@ pub mod geoshard_api {
     /// Search geospatial index for all keys within some distance
     #[utoipa::path(
         get,
-        path = "/api/v1/shard/{index}/",
+        path = "/api/v1/shard/{index}",
         params(
             ("index" = String, Path, description = "Geospatial index name"),
             QueryRange
@@ -360,7 +360,7 @@ pub mod geoshard_api {
     /// Search geospatial many indices for all keys within some distance
     #[utoipa::path(
         get,
-        path = "/api/v1/shard/",
+        path = "/api/v1/shard",
         params(QueryRangeMany),
         responses(
             (

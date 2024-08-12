@@ -9,8 +9,10 @@ use app::AppState;
 use config::ServerConfig;
 use geoprox_core::models::GeoShardConfig;
 
+use axum::extract::Request;
 use axum::routing::Router;
-use tower_http::trace::TraceLayer;
+use tower::Layer;
+use tower_http::normalize_path::NormalizePathLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Start http server
@@ -24,17 +26,22 @@ pub async fn run(server_config: ServerConfig, shard_config: GeoShardConfig) {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let socket: std::net::SocketAddr = server_config.clone().into();
-    let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
-
-    let app = AppState::new(server_config, shard_config);
+    let state = AppState::new(server_config.clone(), shard_config);
     let router = Router::new()
-        .nest(
-            "/api/v1/",
-            api::routes(app).layer(TraceLayer::new_for_http()),
-        )
+        .nest("/api/v1/", api::routes(state))
         .merge(api::docs::router());
 
+    // normalize paths on all routes
+    let router = NormalizePathLayer::trim_trailing_slash().layer(router);
+
+    let socket: std::net::SocketAddr = server_config.into();
+    let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, router).await.unwrap();
+
+    axum::serve(
+        listener,
+        axum::ServiceExt::<Request>::into_make_service(router),
+    )
+    .await
+    .unwrap();
 }

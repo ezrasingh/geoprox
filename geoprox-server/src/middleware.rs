@@ -1,4 +1,5 @@
-use axum::{extract::Request, http::header, middleware::Next, response::IntoResponse};
+use axum::extract::Request;
+use axum::{http::header, middleware::Next, response::IntoResponse};
 
 /// tells client to cache this response for some time
 pub async fn set_cache_control(req: Request, next: Next) -> impl IntoResponse {
