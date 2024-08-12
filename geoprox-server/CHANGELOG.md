@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for path normalization (i.e trailing slash or no trailing slash) ([#4](https://github.com/ezrasingh/geoprox/issues/3))
+
 ## 0.4.1
 
 - Added `server_config` and `shard_config` to `AppState` ([#2](https://github.com/ezrasingh/geoprox/issues/2))
