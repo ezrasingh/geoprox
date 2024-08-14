@@ -9,7 +9,10 @@ use kiddo::KdTree;
 use log::debug;
 use patricia_tree::StringPatriciaMap;
 use rayon::prelude::*;
+use std::collections::BTreeMap;
 use std::hash::{BuildHasher, BuildHasherDefault};
+use std::ops::Bound::{Excluded, Included};
+use std::time::{Duration, Instant};
 
 #[inline]
 fn build_search_space(
@@ -38,10 +41,12 @@ fn build_search_space(
 pub struct SpatialIndex {
     /// maps geohash to common objects
     prefix_tree: StringPatriciaMap<HashSet<ObjectIdentifier>>,
-    /// maps object key, geohash to hash id (object id)
-    position_map: HashTable<[String; 2]>,
+    /// maps object key, geohash and expiration to hash id (object id)
+    position_map: HashTable<(String, String, Option<Instant>)>,
     /// internal hasher
     hasher: BuildHasherDefault<AHasher>,
+    /// maps expiration key to object key
+    expiration_tree: BTreeMap<Instant, String>,
 }
 
 impl SpatialIndex {
@@ -62,16 +67,30 @@ impl SpatialIndex {
         }
     }
 
+    /// Removes expired keys
+    pub fn expire_keys(&mut self) {
+        if let Some((oldest_expire, _)) = self.expiration_tree.first_key_value() {
+            let now = Instant::now();
+            let expired_keys: HashSet<String> = self
+                .expiration_tree
+                .range((Included(oldest_expire), Excluded(&now)))
+                .map(|(_, key)| key.to_owned())
+                .collect();
+            self.remove_many(expired_keys);
+            self.expiration_tree = self.expiration_tree.split_off(&now);
+        }
+    }
+
     /// Insert key into index at some geographical location
-    pub fn insert(&mut self, key: &str, ghash: &str) {
+    pub fn insert(&mut self, key: &str, ghash: &str, expiration: Option<Duration>) {
         let id: ObjectIdentifier = self.hasher.hash_one(key);
         // ? remove object from previous locations
         if let Entry::Occupied(entry) = self.position_map.entry(
             id,
-            |[key, _]| key.eq(key),
-            |[key, _]| self.hasher.hash_one(key),
+            |(key, _, _)| key.eq(key),
+            |(key, _, _)| self.hasher.hash_one(key),
         ) {
-            let ([_, old_ghash], _) = entry.remove();
+            let ((_, old_ghash, old_expiration), _) = entry.remove();
             debug!(
                 "removing object from previous ghash: id={} geohash={}",
                 id, &old_ghash
@@ -81,14 +100,31 @@ impl SpatialIndex {
             } else {
                 self.prefix_tree.remove(old_ghash);
             }
+            if let Some(expire_key) = old_expiration {
+                debug!("removing old expiration for: id={}", id);
+                self.expiration_tree.remove(&expire_key);
+            }
         }
+
         // ? update position_map & prefix_tree
         debug!("storing object: id={} key={}", id, key);
+        if let Some(duration) = expiration {
+            // ? update expiration tree
+            let expire_at = Instant::now() + duration;
+            self.position_map.insert_unique(
+                id,
+                (key.to_owned(), ghash.into(), Some(expire_at)),
+                |(key, _, _)| self.hasher.hash_one(key),
+            );
+            self.expiration_tree.insert(expire_at, key.to_owned());
+        } else {
+            self.position_map.insert_unique(
+                id,
+                (key.to_owned(), ghash.into(), None),
+                |(key, _, _)| self.hasher.hash_one(key),
+            );
+        }
 
-        self.position_map
-            .insert_unique(id, [key.to_owned(), ghash.into()], |[key, _]| {
-                self.hasher.hash_one(key)
-            });
         // ? insert current region into prefix tree
         if let Some(members) = self.prefix_tree.get_mut(ghash) {
             members.insert(id);
@@ -101,7 +137,7 @@ impl SpatialIndex {
     pub fn insert_many(&mut self, objects: impl IntoIterator<Item = (String, String)>) {
         objects
             .into_iter()
-            .for_each(|(key, ghash)| self.insert(&key, &ghash));
+            .for_each(|(key, ghash)| self.insert(&key, &ghash, None));
     }
 
     /// Remove key from index
@@ -109,15 +145,18 @@ impl SpatialIndex {
         let id: ObjectIdentifier = self.hasher.hash_one(key);
         if let Entry::Occupied(entry) = self.position_map.entry(
             id,
-            |[key, _]| key.eq(key),
-            |[key, _]| self.hasher.hash_one(key),
+            |(key, _, _)| key.eq(key),
+            |(key, _, _)| self.hasher.hash_one(key),
         ) {
-            let ([_, ghash], _) = entry.remove();
+            let ((_, ghash, old_expiration), _) = entry.remove();
             if let Some(members) = self.prefix_tree.get_mut(&ghash) {
                 members.remove(&id);
                 if members.is_empty() {
                     self.prefix_tree.remove(&ghash);
                 }
+            }
+            if let Some(expire_key) = old_expiration {
+                self.expiration_tree.remove(&expire_key);
             }
         }
         true
@@ -162,10 +201,10 @@ impl SpatialIndex {
             .par_iter()
             .filter_map(|node| {
                 self.position_map
-                    .find(node.item, |[key, _]| {
+                    .find(node.item, |(key, _, _)| {
                         self.hasher.hash_one(key).eq(&node.item)
                     })
-                    .map(|[key, _]| Neighbor {
+                    .map(|(key, _, _)| Neighbor {
                         distance: node.distance,
                         key: key.to_owned(),
                     })
@@ -195,7 +234,7 @@ mod test {
         let key = "test-key";
 
         // place key within the search area
-        geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
+        geo_index.insert(key, &encode_lat_lng(origin, insert_depth), None);
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
@@ -203,7 +242,7 @@ mod test {
         assert_eq!(res.len(), 1);
 
         // move key out of search area
-        geo_index.insert(key, &encode_lat_lng([-70.0, 100.0], insert_depth));
+        geo_index.insert(key, &encode_lat_lng([-70.0, 100.0], insert_depth), None);
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
@@ -211,7 +250,7 @@ mod test {
         assert_eq!(res.len(), 0);
 
         // move key back into search area
-        geo_index.insert(key, &encode_lat_lng(origin, insert_depth));
+        geo_index.insert(key, &encode_lat_lng(origin, insert_depth), None);
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
@@ -226,8 +265,8 @@ mod test {
         let range = 10.0;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert(&"a", &encode_lat_lng(origin, depth));
-        geo_index.insert(&"b", &encode_lat_lng(origin, depth));
+        geo_index.insert(&"a", &encode_lat_lng(origin, depth), None);
+        geo_index.insert(&"b", &encode_lat_lng(origin, depth), None);
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
@@ -383,7 +422,7 @@ mod test {
 
         for n in 0..capacity {
             let (lat, lng) = (rng.gen_range(-90f64..90f64), rng.gen_range(-180f64..180f64));
-            geo_index.insert(&n.to_string(), &encode_lat_lng([lat, lng], depth));
+            geo_index.insert(&n.to_string(), &encode_lat_lng([lat, lng], depth), None);
         }
 
         let center = [0f64, 0f64];
@@ -396,5 +435,29 @@ mod test {
         res.iter().for_each(|neighbor| {
             assert!(neighbor.distance <= range);
         });
+    }
+
+    #[test]
+    fn can_expire_keys() {
+        let mut geo_index = SpatialIndex::default();
+        let depth: usize = 6;
+        let range = 1000.0;
+        let count = 2;
+        let sorted = false;
+        let origin: LatLngCoord = [0.0, 0.0];
+
+        let duration = Duration::from_millis(500);
+
+        geo_index.insert(&"a", &encode_lat_lng(origin, depth), Some(duration));
+        geo_index.insert(&"b", &encode_lat_lng(origin, depth), Some(duration));
+
+        std::thread::sleep(duration);
+
+        geo_index.expire_keys();
+
+        let res = geo_index
+            .search(origin, range, count, sorted, DEFAULT_DEPTH)
+            .unwrap();
+        assert_eq!(res.len(), 0);
     }
 }

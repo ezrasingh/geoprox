@@ -57,7 +57,7 @@ impl GeoShard {
                 self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH),
             ) {
                 Ok(ghash) => {
-                    geo_index.insert(key, &ghash);
+                    geo_index.insert(key, &ghash, None);
                     Ok(ghash)
                 }
                 Err(err) => Err(GeoShardError::GeohashError(err)),
