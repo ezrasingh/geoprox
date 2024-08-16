@@ -9,7 +9,7 @@ pub type LatLngCoord = [f64; 2];
 
 /// Nearby object
 #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
-#[derive(Debug, Serialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Neighbor {
     /// Distance in kilometers
     pub distance: f64,

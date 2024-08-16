@@ -6,10 +6,22 @@ use axum::{
     Router,
 };
 use std::sync::Arc;
+use std::time::Duration;
 
 /// Returns REST API router
 pub fn routes(app_state: AppState) -> Router {
     let state = SharedState::from(app_state);
+
+    let sidecar_state = Arc::clone(&state);
+    tokio::spawn(async move {
+        let mut timer = tokio::time::interval(Duration::from_secs(1));
+        loop {
+            timer.tick().await;
+            if let Ok(mut app) = sidecar_state.try_write() {
+                app.geoshard.purge_keys();
+            }
+        }
+    });
 
     Router::new()
         .nest(
@@ -157,7 +169,7 @@ mod test {
             .json(&json!({ "key": "Alice", "lat": 1.0, "lng": 0.0 }))
             .await;
         server
-            .put("/api/v1/geoshard/drivers")
+            .put("/api/v1/shard/drivers")
             .json(&json!({ "key": "Bob", "lat": 0.0, "lng": 1.0 }))
             .await;
         let res = server
@@ -168,5 +180,34 @@ mod test {
             .await;
         res.assert_status_ok();
         assert_eq!(res.header("content-type"), "application/json");
+    }
+
+    #[tokio::test]
+    async fn can_invalidate_keys() {
+        let server = setup();
+        server.post("/api/v1/shard/drivers").await;
+        server
+            .put("/api/v1/shard/drivers")
+            .json(&json!({ "key": "Alice", "lat": 0.0, "lng": 0.0, "ttl": 1 }))
+            .await;
+        server
+            .put("/api/v1/shard/drivers")
+            .json(&json!({ "key": "Bob", "lat": 0.0, "lng": 0.0, "ttl": 1  }))
+            .await;
+        let res = server
+            .get("/api/v1/shard/drivers")
+            .add_query_params(json!({
+                "lat": 0.0, "lng": 0.0, "range": 1000
+            }))
+            .await;
+        assert_eq!(res.json::<dto::QueryRangeResponse>().found.len(), 2);
+        tokio::time::sleep(Duration::from_secs(2)).await;
+        let res = server
+            .get("/api/v1/shard/drivers")
+            .add_query_params(json!({
+                "lat": 0.0, "lng": 0.0, "range": 1000
+            }))
+            .await;
+        assert_eq!(res.json::<dto::QueryRangeResponse>().found.len(), 0);
     }
 }
