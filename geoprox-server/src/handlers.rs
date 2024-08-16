@@ -196,10 +196,7 @@ pub mod geoshard_api {
         extract::Json(payload): extract::Json<InsertKey>,
     ) -> Result<Json<InsertKeyResponse>, AppError> {
         let mut state = state.write().unwrap();
-        let ttl: Option<Duration> = match payload.ttl {
-            Some(secs) => Some(Duration::from_secs(secs)),
-            None => None,
-        };
+        let ttl: Option<Duration> = payload.ttl.map(Duration::from_secs);
 
         match state
             .geoshard
@@ -236,10 +233,8 @@ pub mod geoshard_api {
         extract::Json(payload): extract::Json<InsertKeyBatch>,
     ) -> Result<Json<InsertKeyBatchResponse>, AppError> {
         let mut state = state.write().unwrap();
-        let ttl: Option<Duration> = match payload.ttl {
-            Some(secs) => Some(Duration::from_secs(secs)),
-            None => None,
-        };
+        let ttl: Option<Duration> = payload.ttl.map(Duration::from_secs);
+
         let preserve_order = payload.preserve_order;
 
         match state
