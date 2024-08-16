@@ -67,7 +67,7 @@ impl SpatialIndex {
     }
 
     /// Removes expired keys
-    pub fn expire_keys(&mut self) {
+    pub fn purge(&mut self) {
         let now = (Instant::now(), String::new());
         let expired_keys: HashSet<String> = self
             .expirations
@@ -451,7 +451,7 @@ mod test {
     }
 
     #[test]
-    fn can_expire_keys() {
+    fn can_purge() {
         let mut geo_index = SpatialIndex::default();
         let depth: usize = 6;
         let range = 1000.0;
@@ -466,7 +466,7 @@ mod test {
 
         std::thread::sleep(duration);
 
-        geo_index.expire_keys();
+        geo_index.purge();
 
         let res = geo_index
             .search(origin, range, count, sorted, DEFAULT_DEPTH)

@@ -45,7 +45,7 @@ impl GeoShard {
     pub fn purge_keys(&mut self) {
         self.cache
             .par_iter_mut()
-            .for_each(|(_, index)| index.expire_keys())
+            .for_each(|(_, index)| index.purge())
     }
 
     /// Deletes index from the shard

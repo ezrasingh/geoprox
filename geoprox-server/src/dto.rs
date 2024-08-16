@@ -186,7 +186,7 @@ pub struct QueryRange {
 }
 
 /// Returns object keys found with their distance
-#[derive(Debug, Serialize, ToSchema, ToResponse, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema, ToResponse)]
 pub struct QueryRangeResponse {
     /// Object keys found within range
     pub found: Vec<Neighbor>,
