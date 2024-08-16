@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use geohash::GeohashError;
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
@@ -7,7 +9,7 @@ use crate::cache::SpatialIndex;
 use crate::models::{BatchOutput, GeoShardConfig, GeoShardError, LatLngCoord, Neighbor};
 
 /// A collection of geospatial indexes stored in-memory
-#[derive(Default, Clone)]
+#[derive(Clone, Default)]
 pub struct GeoShard {
     cache: HashMap<String, SpatialIndex>,
     config: GeoShardConfig,
@@ -39,6 +41,13 @@ impl GeoShard {
         }
     }
 
+    /// Removes expired keys for all indices
+    pub fn purge_keys(&mut self) {
+        self.cache
+            .par_iter_mut()
+            .for_each(|(_, index)| index.expire_keys())
+    }
+
     /// Deletes index from the shard
     pub fn drop_index(&mut self, index: &str) {
         self.cache.remove(index);
@@ -50,6 +59,7 @@ impl GeoShard {
         index: &str,
         key: &str,
         [lat, lng]: LatLngCoord,
+        ttl: Option<Duration>,
     ) -> Result<String, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
             match geohash::encode(
@@ -57,7 +67,7 @@ impl GeoShard {
                 self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH),
             ) {
                 Ok(ghash) => {
-                    geo_index.insert(key, &ghash, None);
+                    geo_index.insert(key, &ghash, ttl);
                     Ok(ghash)
                 }
                 Err(err) => Err(GeoShardError::GeohashError(err)),
@@ -72,6 +82,7 @@ impl GeoShard {
         &mut self,
         index: &str,
         objects: Vec<(String, LatLngCoord)>,
+        ttl: Option<Duration>,
         preserve_order: bool,
     ) -> Result<BatchOutput<String, GeohashError>, GeoShardError> {
         if let Some(geo_index) = self.cache.get_mut(index) {
@@ -94,7 +105,7 @@ impl GeoShard {
                 })
             };
 
-            geo_index.insert_many(bulk.clone());
+            geo_index.insert_many(bulk.clone(), ttl);
 
             Ok((bulk, errors))
         } else {
@@ -217,6 +228,7 @@ mod test {
                     ("b".to_string(), [1.0, 0.5]),
                     ("c".to_string(), [0.0, 0.0]),
                 ],
+                None,
                 false,
             )
             .unwrap();
@@ -245,6 +257,7 @@ mod test {
                     ("e".to_string(), [-1.0, -0.5]),
                     ("f".to_string(), [0.0, 0.0]),
                 ],
+                None,
                 false,
             )
             .unwrap();
@@ -288,6 +301,7 @@ mod test {
                     ("e".to_string(), [-1.0, -0.5]),
                     ("f".to_string(), [0.0, 0.0]),
                 ],
+                None,
                 false,
             )
             .unwrap();

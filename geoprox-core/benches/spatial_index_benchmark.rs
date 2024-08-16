@@ -73,7 +73,7 @@ fn insert_benchmark(c: &mut Criterion) {
             |b, &capacity| {
                 b.iter_batched(
                     || (SpatialIndex::new(capacity as usize), data.clone()),
-                    |(mut geo_index, data)| black_box(geo_index.insert_many(data)),
+                    |(mut geo_index, data)| black_box(geo_index.insert_many(data, None)),
                     BatchSize::LargeInput,
                 );
             },

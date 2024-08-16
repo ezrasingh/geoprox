@@ -89,6 +89,8 @@ pub struct InsertKey {
     pub lat: f64,
     /// Longitude
     pub lng: f64,
+    /// The time-to-live (TTL) for this key, in seconds
+    pub ttl: Option<u64>,
 }
 
 /// Returns key and geohash
@@ -105,6 +107,8 @@ pub struct InsertKeyResponse {
 pub struct InsertKeyBatch {
     /// Object key
     pub keys: Vec<InsertKey>,
+    /// The time-to-live (TTL) for these keys, in seconds
+    pub ttl: Option<u64>,
     // Insert keys in the order they were received.
     pub preserve_order: bool,
 }
@@ -182,7 +186,7 @@ pub struct QueryRange {
 }
 
 /// Returns object keys found with their distance
-#[derive(Serialize, ToSchema, ToResponse)]
+#[derive(Debug, Serialize, ToSchema, ToResponse, Deserialize)]
 pub struct QueryRangeResponse {
     /// Object keys found within range
     pub found: Vec<Neighbor>,

@@ -9,9 +9,8 @@ use kiddo::KdTree;
 use log::debug;
 use patricia_tree::StringPatriciaMap;
 use rayon::prelude::*;
-use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 use std::hash::{BuildHasher, BuildHasherDefault};
-use std::ops::Bound::{Excluded, Included};
 use std::time::{Duration, Instant};
 
 #[inline]
@@ -46,7 +45,7 @@ pub struct SpatialIndex {
     /// internal hasher
     hasher: BuildHasherDefault<AHasher>,
     /// maps expiration key to object key
-    expiration_tree: BTreeMap<Instant, String>,
+    expirations: BTreeSet<(Instant, String)>,
 }
 
 impl SpatialIndex {
@@ -69,16 +68,14 @@ impl SpatialIndex {
 
     /// Removes expired keys
     pub fn expire_keys(&mut self) {
-        if let Some((oldest_expire, _)) = self.expiration_tree.first_key_value() {
-            let now = Instant::now();
-            let expired_keys: HashSet<String> = self
-                .expiration_tree
-                .range((Included(oldest_expire), Excluded(&now)))
-                .map(|(_, key)| key.to_owned())
-                .collect();
-            self.remove_many(expired_keys);
-            self.expiration_tree = self.expiration_tree.split_off(&now);
-        }
+        let now = (Instant::now(), String::new());
+        let expired_keys: HashSet<String> = self
+            .expirations
+            .range(..=&now)
+            .map(|(_, key)| key.to_owned())
+            .collect();
+        self.remove_many(expired_keys);
+        self.expirations = self.expirations.split_off(&now);
     }
 
     /// Insert key into index at some geographical location
@@ -90,7 +87,7 @@ impl SpatialIndex {
             |(key, _, _)| key.eq(key),
             |(key, _, _)| self.hasher.hash_one(key),
         ) {
-            let ((_, old_ghash, old_expiration), _) = entry.remove();
+            let ((key, old_ghash, old_expiration), _) = entry.remove();
             debug!(
                 "removing object from previous ghash: id={} geohash={}",
                 id, &old_ghash
@@ -102,7 +99,7 @@ impl SpatialIndex {
             }
             if let Some(expire_key) = old_expiration {
                 debug!("removing old expiration for: id={}", id);
-                self.expiration_tree.remove(&expire_key);
+                self.expirations.remove(&(expire_key, key));
             }
         }
 
@@ -116,7 +113,7 @@ impl SpatialIndex {
                 (key.to_owned(), ghash.into(), Some(expire_at)),
                 |(key, _, _)| self.hasher.hash_one(key),
             );
-            self.expiration_tree.insert(expire_at, key.to_owned());
+            self.expirations.insert((expire_at, key.to_string()));
         } else {
             self.position_map.insert_unique(
                 id,
@@ -134,10 +131,14 @@ impl SpatialIndex {
     }
 
     /// insert multiple objects at once
-    pub fn insert_many(&mut self, objects: impl IntoIterator<Item = (String, String)>) {
+    pub fn insert_many(
+        &mut self,
+        objects: impl IntoIterator<Item = (String, String)>,
+        expiration: Option<Duration>,
+    ) {
         objects
             .into_iter()
-            .for_each(|(key, ghash)| self.insert(&key, &ghash, None));
+            .for_each(|(key, ghash)| self.insert(&key, &ghash, expiration));
     }
 
     /// Remove key from index
@@ -148,7 +149,7 @@ impl SpatialIndex {
             |(key, _, _)| key.eq(key),
             |(key, _, _)| self.hasher.hash_one(key),
         ) {
-            let ((_, ghash, old_expiration), _) = entry.remove();
+            let ((key, ghash, old_expiration), _) = entry.remove();
             if let Some(members) = self.prefix_tree.get_mut(&ghash) {
                 members.remove(&id);
                 if members.is_empty() {
@@ -156,7 +157,7 @@ impl SpatialIndex {
                 }
             }
             if let Some(expire_key) = old_expiration {
-                self.expiration_tree.remove(&expire_key);
+                self.expirations.remove(&(expire_key, key));
             }
         }
         true
@@ -291,16 +292,19 @@ mod test {
         let sorted = false;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert_many(vec![
-            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-        ]);
+        geo_index.insert_many(
+            vec![
+                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ],
+            None,
+        );
 
         let res = geo_index
             .search(origin, range, count, sorted, DEFAULT_DEPTH)
@@ -320,16 +324,19 @@ mod test {
         let sorted = false;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert_many(vec![
-            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-        ]);
+        geo_index.insert_many(
+            vec![
+                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ],
+            None,
+        );
 
         let res = geo_index
             .search(origin, range, count, sorted, DEFAULT_DEPTH)
@@ -345,16 +352,19 @@ mod test {
         let range = 1000.0;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert_many(vec![
-            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-        ]);
+        geo_index.insert_many(
+            vec![
+                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ],
+            None,
+        );
 
         let count = 1;
 
@@ -390,16 +400,19 @@ mod test {
         let sorted = true;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert_many(vec![
-            ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-            ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-            ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-            ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-            ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-            ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-            ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-            ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-        ]);
+        geo_index.insert_many(
+            vec![
+                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
+                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
+                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
+                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
+                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
+                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
+                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+            ],
+            None,
+        );
 
         let res = geo_index
             .search(origin, range, count, sorted, DEFAULT_DEPTH)

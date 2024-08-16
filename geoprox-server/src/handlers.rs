@@ -92,6 +92,8 @@ pub mod geohash_api {
 }
 
 pub mod geoshard_api {
+    use std::time::Duration;
+
     use crate::app::{AppError, SharedState};
     use crate::dto::{
         CreateIndexResponse, DropIndexResponse, InsertKey, InsertKeyBatch, InsertKeyBatchResponse,
@@ -194,10 +196,14 @@ pub mod geoshard_api {
         extract::Json(payload): extract::Json<InsertKey>,
     ) -> Result<Json<InsertKeyResponse>, AppError> {
         let mut state = state.write().unwrap();
+        let ttl: Option<Duration> = match payload.ttl {
+            Some(secs) => Some(Duration::from_secs(secs)),
+            None => None,
+        };
 
         match state
             .geoshard
-            .insert_key(&index, &payload.key, [payload.lat, payload.lng])
+            .insert_key(&index, &payload.key, [payload.lat, payload.lng], ttl)
         {
             Ok(geohash) => Ok(Json(InsertKeyResponse {
                 key: payload.key,
@@ -230,11 +236,15 @@ pub mod geoshard_api {
         extract::Json(payload): extract::Json<InsertKeyBatch>,
     ) -> Result<Json<InsertKeyBatchResponse>, AppError> {
         let mut state = state.write().unwrap();
+        let ttl: Option<Duration> = match payload.ttl {
+            Some(secs) => Some(Duration::from_secs(secs)),
+            None => None,
+        };
         let preserve_order = payload.preserve_order;
 
         match state
             .geoshard
-            .insert_many_keys(&index, payload.into(), preserve_order)
+            .insert_many_keys(&index, payload.into(), ttl, preserve_order)
         {
             Ok((res, errs)) => Ok(Json(InsertKeyBatchResponse {
                 results: res.into_iter().collect(),
