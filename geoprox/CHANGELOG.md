@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Improved default config behavior
+## 0.5.0
+
+- Improved default config behavior and config path parsing.
+- Bumped `geoprox-core` to [v0.5.0](https://crates.io/crates/geoprox-core/0.5.0).
+- Bumped `geoprox-server` to [v0.5.0](https://crates.io/crates/geoprox-server/0.5.0).
 
 ## 0.4.2
 

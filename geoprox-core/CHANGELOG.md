@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.5.0
+
 - Added support for key expirations ([#15](https://github.com/ezrasingh/geoprox/issues/15)).
 - Implemented serde for `SpatialIndex` ([#17](https://github.com/ezrasingh/geoprox/issues/17)).
-- renamed `cache.rs` to `index.rs`
+- renamed `cache.rs` to `index.rs`.
+- Updated `kiddo` to [`v4.2.1`](https://github.com/sdd/kiddo/releases/tag/v4.2.1).
 
 ## 0.4.2
 

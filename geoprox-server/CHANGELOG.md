@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.5.0
+
 - Added support for TTL and key-expiration ([#15](https://github.com/ezrasingh/geoprox/issues/15)).
 - Added support for snapshots and persistence ([#17](https://github.com/ezrasingh/geoprox/issues/17)).
-- Using [`duration-string`](https://crates.io/crates/duration-string) crate to handle `Duration` configuration
+- Using [`duration-string`](https://crates.io/crates/duration-string) crate to handle `Duration` configuration.
+- Bumped `geoprox-core` to [v0.5.0](https://crates.io/crates/geoprox-core/0.5.0).
 
 # 0.4.2
 
