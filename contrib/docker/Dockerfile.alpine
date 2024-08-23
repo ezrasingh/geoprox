@@ -16,7 +16,7 @@ RUN \
 
 USER geoprox:geoprox
 
-WORKDIR /usr/local/bin
+WORKDIR /var/lib/geoprox
 COPY --from=builder --chown=geoprox:geoprox /code/target/release/geoprox /usr/local/bin/
 
 ENTRYPOINT [ "geoprox", "run" ]

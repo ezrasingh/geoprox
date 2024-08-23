@@ -33,9 +33,8 @@ extern crate geoprox_core;
 let mut geo_index = geoprox_core::SpatialIndex::default();
 
 // ? place object keys into index
-let insert_depth = 6; // insert precision (higher means objects get grouped into bigger regions)
-geo_index.insert("alice", &geohash::encode([40.7129, 74.007].into(), depth).unwrap());
-geo_index.insert("bob", &geohash::encode([40.7127, 74.005].into(), depth).unwrap());
+geo_index.insert("alice", "s00j8n0");
+geo_index.insert("bob", "s00j8n1");
 
 // ? search index for objects near New York
 let nearby: LatLngCoord = [40.7128, 74.006];
@@ -76,8 +75,20 @@ let mut shard = geoprox_core::GeoShard::default();
 shard.create_index("drivers").unwrap();
 
 // ? place drivers into index
-shard.insert_key("drivers", "alice", [36.2049, 138.253]).unwrap();
-shard.insert_key("drivers", "bob", [36.2047, 138.2528]).unwrap();
+let ttl = std::time::Duration::from_secs(10);
+shard.insert_key(
+    "drivers",
+    "alice",
+    [36.2049, 138.253],
+    Some(ttl)
+).unwrap();
+
+shard.insert_key(
+    "drivers",
+    "bob",
+    [36.2047, 138.2528],
+    None
+).unwrap();
 
 // ? search drivers near Japan
 let nearby: LatLngCoord = [36.2048, 138.2529];

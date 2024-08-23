@@ -4,11 +4,12 @@ services:
     # Available tags can be found at https://hub.docker.com/repository/docker/ezrasingh/geoprox/tags
     image: ezrasingh/geoprox:${IMAGE_TAG:-latest}
     restart: on-failure:3
+    command: -c geoprox.toml
 
     # This is optional, demonstrating how to specify env vars
-    # These are all the defaults
     environment:
-      GEOPROX_CONFIG: /var/lib/geoprox/geoprox.toml
+      # either use -c flag or this env var
+      # GEOPROX_CONFIG: /my/custom/path/geoprox.toml
       GEOPROX_HTTP_ADDR: 0.0.0.0
       GEOPROX_HTTP_PORT: 5000
 
