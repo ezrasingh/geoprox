@@ -30,7 +30,7 @@ impl Default for SnapshotConfig {
     fn default() -> Self {
         Self {
             path: Some(PathBuf::from(DEFAULT_CONFIG_PATH)),
-            every: Some(DurationString::new(Duration::from_secs(60))),
+            every: Some(DurationString::default()),
         }
     }
 }

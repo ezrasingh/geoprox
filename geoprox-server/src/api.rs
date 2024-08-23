@@ -41,7 +41,7 @@ pub fn routes(app_state: AppState) -> Router {
     purge_expirations(Arc::clone(&state), Duration::from_secs(1));
     persist_snapshot(
         Arc::clone(&state),
-        server_config.snapshot.every.unwrap().into(),
+        server_config.snapshot.every.unwrap_or_default().into(),
     );
 
     Router::new()
