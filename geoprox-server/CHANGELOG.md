@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for TTL and key-expiration ([#15](https://github.com/ezrasingh/geoprox/issues/15)).
+- Added support for snapshots and persistence ([#17](https://github.com/ezrasingh/geoprox/issues/17)).
+
 # 0.4.2
 
 - Added support for `Accept-Encoding`(via [`compression-full`](https://docs.rs/crate/tower-http/0.5.2/features#compression-full) feature in `tower-http`) and `Content-Encoding`(via [`decompression-full`](https://docs.rs/crate/tower-http/0.5.2/features#decompression-full) feature in `tower-http`) headers, [timeouts](https://docs.rs/crate/tower-http/0.5.2/features#timeout) and [tracing](https://docs.rs/crate/tower-http/0.5.2/features#trace) in responses.
