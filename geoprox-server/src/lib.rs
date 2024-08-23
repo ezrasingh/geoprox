@@ -71,6 +71,8 @@ pub async fn run(server_config: ServerConfig, shard_config: GeoShardConfig) {
         .init();
 
     let socket: std::net::SocketAddr = server_config.clone().into();
+    dbg!("binding to:", socket);
+
     let listener = tokio::net::TcpListener::bind(socket).await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
 

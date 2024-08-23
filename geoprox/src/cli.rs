@@ -1,7 +1,6 @@
 use clap::{ArgAction, Parser, Subcommand};
-use config::{Config, ConfigError};
 use geoprox_core::models::GeoShardConfig;
-use geoprox_server::config::{ServerConfig, DEFAULT_CONFIG_PATH};
+use geoprox_server::config::ServerConfig;
 use serde::Deserialize;
 use std::net::IpAddr;
 use std::path::PathBuf;
@@ -9,12 +8,8 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
-    /// Specify a config file (defaults /var/lib/geoprox/geoprox.{toml,yaml,json,ini,ron,json5})
-    #[arg(short, long, value_name = "CONFIG", env = "GEOPROX_CONFIG")]
-    config: Option<PathBuf>,
-
     #[command(subcommand)]
-    command: Option<Commands>,
+    pub command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -22,12 +17,16 @@ pub enum Commands {
     /// Start Geoprox server
     Run {
         /// The address the server will bind to
-        #[arg(short, long, default_value_t = ServerConfig::DEFAULT_ADDR, env = "GEOPROX_HTTP_ADDR")]
-        addr: IpAddr,
+        #[arg(short, long, env = "GEOPROX_HTTP_ADDR")]
+        addr: Option<IpAddr>,
 
         /// The port the server will listen on
-        #[arg(short, long, default_value_t = ServerConfig::DEFAULT_PORT, env = "GEOPROX_HTTP_PORT")]
-        port: u16,
+        #[arg(short, long, env = "GEOPROX_HTTP_PORT")]
+        port: Option<u16>,
+
+        /// Specify a config file
+        #[arg(short, long, env = "GEOPROX_CONFIG")]
+        config_path: Option<PathBuf>,
     },
 
     /// Hash latitude/longitude into geohash
@@ -76,28 +75,4 @@ pub enum Commands {
 pub struct GeoproxConfig {
     pub server: Option<ServerConfig>,
     pub shard: Option<GeoShardConfig>,
-}
-
-pub fn runtime() -> Result<(Option<Commands>, GeoproxConfig), ConfigError> {
-    let cli = Cli::parse();
-
-    let settings: GeoproxConfig = match cli.config.as_deref() {
-        Some(config_path) => Config::builder()
-            .add_source(config::File::from(config_path))
-            .build()?
-            .try_deserialize()?,
-        None => Config::builder()
-            .add_source(config::File::with_name(&format!(
-                // ?  look for geoprox.{toml,yaml,json,ini,ron,json5}
-                // ?  config under default config path
-                "{}/geoprox",
-                DEFAULT_CONFIG_PATH
-            )))
-            .build()
-            .unwrap_or_default()
-            .try_deserialize()
-            .unwrap_or_default(),
-    };
-
-    Ok((cli.command, settings))
 }

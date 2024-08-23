@@ -1,20 +1,42 @@
-use geoprox_server::config::ServerConfig;
+use clap::Parser;
+use config::Config;
 use std::io::Write;
 
+use geoprox_server::config::ServerConfig;
+
 mod cli;
+use cli::{Cli, GeoproxConfig};
 
 fn main() {
-    let (command, settings) = cli::runtime().unwrap();
-
-    match &command {
-        Some(cli::Commands::Run { addr, port }) => geoprox_server::run(
-            ServerConfig {
-                http_addr: Some(*addr),
-                http_port: Some(*port),
-                ..settings.server.unwrap_or_default()
-            },
-            settings.shard.unwrap_or_default(),
-        ),
+    let cli = Cli::parse();
+    let cwd = std::env::current_dir().unwrap();
+    match &cli.command {
+        Some(cli::Commands::Run {
+            addr,
+            port,
+            config_path,
+        }) => {
+            let settings: GeoproxConfig = match config_path.as_deref() {
+                Some(config_path) => Config::builder()
+                    .add_source(config::File::from(config_path))
+                    .build()
+                    .unwrap()
+                    .try_deserialize()
+                    .unwrap(),
+                None => GeoproxConfig::default(),
+            };
+            let server_config = settings.server.unwrap_or_default();
+            dbg!("using settings:", &server_config);
+            geoprox_server::run(
+                ServerConfig {
+                    http_addr: addr.or(server_config.http_addr),
+                    http_port: port.or(server_config.http_port),
+                    timeout: server_config.timeout,
+                    snapshots: server_config.snapshots,
+                },
+                settings.shard.unwrap_or_default(),
+            )
+        }
 
         Some(cli::Commands::Encode { lat, lng, depth }) => {
             let ghash = geoprox_core::geohash::encode([*lng, *lat].into(), *depth).unwrap();
@@ -39,7 +61,6 @@ fn main() {
             } else {
                 // ? combine the directory and file name into the final path
                 let file_path = {
-                    let cwd = std::env::current_dir().unwrap();
                     let dir = destination
                         .as_deref() // Convert &Option<PathBuf> to Option<&Path>
                         .unwrap_or(&cwd);
@@ -60,7 +81,7 @@ fn main() {
             }
         }
         None => {
-            println!("Invalid command. Please try '--help' for more information.");
+            eprintln!("Invalid command. Please try '--help' for more information.");
         }
     }
 }
