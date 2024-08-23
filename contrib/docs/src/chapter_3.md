@@ -25,7 +25,7 @@ Geoprox provides several commands to start the server and work with geohashes:
 
 ```sh
 geoprox help
-Usage: geoprox [OPTIONS] [COMMAND]
+Usage: geoprox [COMMAND]
 
 Commands:
   run     Start Geoprox server
@@ -35,9 +35,8 @@ Commands:
   help    Print this message or the help of the given subcommand(s)
 
 Options:
-  -c, --config <CONFIG>  Specify a config file
-  -h, --help             Print help
-  -V, --version          Print version
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 To start using Geoprox, you can run the following command to start the server:
