@@ -37,7 +37,7 @@ impl AppState {
     pub fn store_snapshot(&self) {
         fs::write(
             self.server_config.snapshot.bin_path(),
-            &bincode::serialize(&self.geoshard).unwrap(),
+            bincode::serialize(&self.geoshard).unwrap(),
         )
         .expect("could not store snapshot");
     }

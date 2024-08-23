@@ -218,16 +218,14 @@ impl PartialEq for SpatialIndex {
             .fold(
                 || true,
                 |result, (key, ghash, ttl)| {
-                    let id = other.hasher.hash_one(&key);
+                    let id = other.hasher.hash_one(key);
                     result
-                        && match other
+                        && other
                             .objects
                             .find(id, |(other_key, other_ghash, other_ttl)| {
                                 other_key == key && other_ghash == ghash && other_ttl == ttl
-                            }) {
-                            Some(_) => true,
-                            None => false,
-                        }
+                            })
+                            .is_some()
                 },
             )
             .reduce(|| true, |result, found| result && found);
