@@ -31,24 +31,22 @@ Key features include:
 #### Example Usage
 
 ```rust
-extern crate geoprox_core;
+use geoprox_core::shard::GeoShard;
 
-let mut shard = geoprox_core::GeoShard::default();
+let mut shard = GeoShard::default();
 // ? create an index to store driver coordinates
 shard.create_index("drivers").unwrap();
 
 // ? place drivers into index
 let ttl = std::time::Duration::from_secs(10);
 shard.insert_key(
-    "drivers",
-    "alice",
+    "drivers", "alice",
     [36.2049, 138.253],
     Some(ttl)
 ).unwrap();
 
 shard.insert_key(
-    "drivers",
-    "bob",
+    "drivers", "bob",
     [36.2047, 138.2528],
     None
 ).unwrap();
@@ -76,9 +74,9 @@ Key features include:
 #### Example Usage
 
 ```rust
-extern crate geoprox_core;
+use geoprox_core::index::SpatialIndex;
 
-let mut geo_index = geoprox_core::SpatialIndex::default();
+let mut geo_index = SpatialIndex::default();
 
 // ? place object keys into index
 geo_index.insert("alice", "s00j8n0");
