@@ -1,5 +1,5 @@
-.direnv/
-node_modules/
-generators/
+/.direnv
+/node_modules
+/generators
+/markdown
 openapi.json
-markdown/
