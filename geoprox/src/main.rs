@@ -44,8 +44,7 @@ fn main() {
                         .as_deref() // Convert &Option<PathBuf> to Option<&Path>
                         .unwrap_or(&cwd);
 
-                    let file_name = filename.as_deref().unwrap_or("openapi.json");
-                    dir.join(file_name)
+                    dir.join(filename)
                 };
                 // ? create the file and write the spec JSON to it
                 match std::fs::File::create(&file_path) {

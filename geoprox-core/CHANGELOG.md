@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added support for key expirations ([#15](https://github.com/ezrasingh/geoprox/issues/15)).
+- Implemented serde for `SpatialIndex` ([#17](https://github.com/ezrasingh/geoprox/issues/17)).
+
 ## 0.4.2
 
 - Replaced the [`haversine`](https://crates.io/crates/haversine) crate with [`haversine-rs`](https://crates.io/crates/haversine-rs) after noticing it performed better in benchmarks.

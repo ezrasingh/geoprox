@@ -4,11 +4,23 @@
 http_addr = '0.0.0.0'
 # The port the server will listen on
 http_port = 5000
-# Timeout duration in seconds
-timeout = 10
+# Request timeout
+timeout = '10s'
 
 [shard]
 # Determines the default geohash length for inserts
 insert_depth = 6
 # Determines the default geohash length for searches
 search_depth = 6
+# Specifies the default number of results returned in range queries
+default_count = 100
+# Toggles the default sorting behavior for query results
+default_sorted = false
+
+[server.snapshots]
+# Toggle snapshot usage
+disabled = false
+# Directory where snapshots will be stored
+path = '/var/lib/geoprox'
+# How often snapshots will be taken
+every = '30s'

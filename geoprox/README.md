@@ -65,7 +65,7 @@ geoprox help encode
 
 ## Configuration
 
-Geoprox allows specifying a configuration file using the `-c` or `--config` option or set the `GEOPROX_CONFIG` environment variable. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`.
+Geoprox allows specifying a configuration file using the `-c` or `--config` option or set the `GEOPROX_CONFIG` environment variable. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`. By default, configurations are expected to be found under `/var/lib/geoprox`.
 
 ### Example Config
 
@@ -78,8 +78,8 @@ Here's an example configuration file in `TOML` format:
 http_addr = '0.0.0.0'
 # The port the server will listen on
 http_port = 5000
-# Timeout duration in seconds
-timeout = 10
+# Request timeout
+timeout = '10s'
 
 [shard]
 # Determines the default geohash length for inserts
@@ -90,17 +90,25 @@ search_depth = 6
 default_count = 100
 # Toggles the default sorting behavior for query results
 default_sorted = false
+
+[server.snapshots]
+# Toggle snapshot usage
+disabled = false
+# Directory where snapshots will be stored
+path = '/var/lib/geoprox'
+# How often snapshots will be taken
+every = '30s'
 ```
 
 #### Environment Variables
 
 These are the currently supported environment variables. They will take precedence over settings defined in the configuration file.
 
-| Environment Variable | Description                            | Default Value               |
-| -------------------- | -------------------------------------- | --------------------------- |
-| `GEOPROX_CONFIG`     | Specifies the configuration file path. | `/etc/geoprox/geoprox.toml` |
-| `GEOPROX_HTTP_ADDR`  | The address the server will bind to.   | `0.0.0.0`                   |
-| `GEOPROX_HTTP_PORT`  | The port the server will listen on.    | `5000`                      |
+| Environment Variable | Description                            | Default Value                                             |
+| -------------------- | -------------------------------------- | --------------------------------------------------------- |
+| `GEOPROX_CONFIG`     | Specifies the configuration file path. | `/var/lib/geoprox/geoprox.{toml,yaml,json,ini,ron,json5}` |
+| `GEOPROX_HTTP_ADDR`  | The address the server will bind to.   | `0.0.0.0`                                                 |
+| `GEOPROX_HTTP_PORT`  | The port the server will listen on.    | `5000`                                                    |
 
 ## Fine Tuning
 

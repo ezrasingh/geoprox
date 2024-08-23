@@ -2,11 +2,14 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use geoprox_core::models::GeoShardConfig;
-use geoprox_core::shard::GeoShard;
+use std::fs;
 use std::sync::{Arc, RwLock};
 
-use crate::{config::ServerConfig, dto::AppErrorResponse};
+use geoprox_core::models::GeoShardConfig;
+use geoprox_core::shard::GeoShard;
+
+use crate::config::ServerConfig;
+use crate::dto::AppErrorResponse;
 
 #[derive(Clone, Default)]
 pub struct AppState {
@@ -17,11 +20,26 @@ pub struct AppState {
 
 impl AppState {
     pub fn new(server_config: ServerConfig, shard_config: GeoShardConfig) -> Self {
-        Self {
-            geoshard: GeoShard::from(shard_config.clone()),
-            server_config,
-            shard_config,
+        match fs::read(server_config.snapshots.bin_path()) {
+            Ok(state) => Self {
+                geoshard: bincode::deserialize(&state).expect("could not restore snapshot"),
+                server_config,
+                shard_config,
+            },
+            Err(_) => Self {
+                geoshard: GeoShard::from(shard_config.clone()),
+                server_config,
+                shard_config,
+            },
         }
+    }
+
+    pub fn store_snapshot(&self) {
+        fs::write(
+            self.server_config.snapshots.bin_path(),
+            bincode::serialize(&self.geoshard).unwrap(),
+        )
+        .expect("could not store snapshot");
     }
 }
 

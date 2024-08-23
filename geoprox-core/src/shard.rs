@@ -4,14 +4,15 @@ use geohash::GeohashError;
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 use rayon::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::cache::SpatialIndex;
 use crate::models::{BatchOutput, GeoShardConfig, GeoShardError, LatLngCoord, Neighbor};
 
 /// A collection of geospatial indexes stored in-memory
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub struct GeoShard {
-    cache: HashMap<String, SpatialIndex>,
+    store: HashMap<String, SpatialIndex>,
     config: GeoShardConfig,
 }
 
@@ -32,10 +33,10 @@ impl GeoShard {
 
     /// Adds a new geospatial index to the shard
     pub fn create_index(&mut self, index: &str) -> Result<Option<()>, GeoShardError> {
-        if self.cache.contains_key(index) {
+        if self.store.contains_key(index) {
             return Err(GeoShardError::IndexAlreadyExists(index.to_owned()));
         }
-        match self.cache.insert(index.into(), SpatialIndex::default()) {
+        match self.store.insert(index.into(), SpatialIndex::default()) {
             Some(_) => Ok(Some(())),
             None => Ok(None),
         }
@@ -43,14 +44,14 @@ impl GeoShard {
 
     /// Removes expired keys for all indices
     pub fn purge_keys(&mut self) {
-        self.cache
+        self.store
             .par_iter_mut()
             .for_each(|(_, index)| index.purge())
     }
 
     /// Deletes index from the shard
     pub fn drop_index(&mut self, index: &str) {
-        self.cache.remove(index);
+        self.store.remove(index);
     }
 
     /// Adds a key into the specified index at some geographical position
@@ -61,7 +62,7 @@ impl GeoShard {
         [lat, lng]: LatLngCoord,
         ttl: Option<Duration>,
     ) -> Result<String, GeoShardError> {
-        if let Some(geo_index) = self.cache.get_mut(index) {
+        if let Some(geo_index) = self.store.get_mut(index) {
             match geohash::encode(
                 [lng, lat].into(),
                 self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH),
@@ -85,7 +86,7 @@ impl GeoShard {
         ttl: Option<Duration>,
         preserve_order: bool,
     ) -> Result<BatchOutput<String, GeohashError>, GeoShardError> {
-        if let Some(geo_index) = self.cache.get_mut(index) {
+        if let Some(geo_index) = self.store.get_mut(index) {
             let insert_depth = self.config.insert_depth.unwrap_or(Self::DEFAULT_DEPTH);
             let (bulk, errors): BatchOutput<String, GeohashError> = if !preserve_order {
                 // ? use parallel iterator
@@ -115,7 +116,7 @@ impl GeoShard {
 
     /// Deletes a key from the specified index
     pub fn remove_key(&mut self, index: &str, key: &str) -> Result<bool, GeoShardError> {
-        if let Some(geo_index) = self.cache.get_mut(index) {
+        if let Some(geo_index) = self.store.get_mut(index) {
             Ok(geo_index.remove(key))
         } else {
             Err(GeoShardError::IndexNotFound(index.to_owned()))
@@ -128,7 +129,7 @@ impl GeoShard {
         index: &str,
         keys: HashSet<String>,
     ) -> Result<bool, GeoShardError> {
-        if let Some(geo_index) = self.cache.get_mut(index) {
+        if let Some(geo_index) = self.store.get_mut(index) {
             Ok(geo_index.remove_many(keys))
         } else {
             Err(GeoShardError::IndexNotFound(index.to_owned()))
@@ -148,7 +149,7 @@ impl GeoShard {
         if count.eq(&0) {
             return Ok(vec![]);
         }
-        if let Some(geo_index) = self.cache.get(index) {
+        if let Some(geo_index) = self.store.get(index) {
             match geo_index.search(
                 origin,
                 range,

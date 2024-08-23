@@ -8,20 +8,44 @@ use axum::{
 use std::sync::Arc;
 use std::time::Duration;
 
-/// Returns REST API router
-pub fn routes(app_state: AppState) -> Router {
-    let state = SharedState::from(app_state);
-
-    let sidecar_state = Arc::clone(&state);
+fn purge_expirations(state: SharedState, every: Duration) {
     tokio::spawn(async move {
-        let mut timer = tokio::time::interval(Duration::from_secs(1));
+        let mut timer = tokio::time::interval(every);
         loop {
             timer.tick().await;
-            if let Ok(mut app) = sidecar_state.try_write() {
+            if let Ok(mut app) = state.try_write() {
                 app.geoshard.purge_keys();
             }
         }
     });
+}
+
+fn persist_snapshot(state: SharedState, every: Duration) {
+    tokio::spawn(async move {
+        let mut timer = tokio::time::interval(every);
+        loop {
+            timer.tick().await;
+            if let Ok(app) = state.try_read() {
+                app.store_snapshot();
+            }
+        }
+    });
+}
+
+/// Returns REST API router
+pub fn routes(app_state: AppState) -> Router {
+    let server_config = app_state.server_config.clone();
+    let state = SharedState::from(app_state);
+
+    // ? background tasks
+    purge_expirations(Arc::clone(&state), Duration::from_secs(1));
+
+    if !server_config.snapshots.disabled {
+        persist_snapshot(
+            Arc::clone(&state),
+            server_config.snapshots.every.unwrap_or_default().into(),
+        );
+    }
 
     Router::new()
         .nest(
@@ -129,13 +153,30 @@ pub mod docs {
 
 #[cfg(test)]
 mod test {
+    use std::env::current_dir;
+
     use super::*;
-    use crate::dto;
+    use crate::{
+        config::{ServerConfig, SnapshotConfig},
+        dto,
+    };
     use axum_test::{TestServer, TestServerConfig};
+    use geoprox_core::models::GeoShardConfig;
     use serde_json::json;
 
     fn setup() -> TestServer {
-        let router = Router::new().nest("/api/v1/", routes(AppState::default()));
+        let app = AppState::new(
+            ServerConfig {
+                snapshots: SnapshotConfig {
+                    disabled: false,
+                    path: Some(current_dir().unwrap()),
+                    every: None,
+                },
+                ..Default::default()
+            },
+            GeoShardConfig::default(),
+        );
+        let router = Router::new().nest("/api/v1/", routes(app));
         let config = TestServerConfig::builder().build();
         TestServer::new_with_config(router, config).unwrap()
     }

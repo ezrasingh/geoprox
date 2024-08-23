@@ -29,6 +29,7 @@ utoipa = { version = "4.2.3", optional = true }
 [dev-dependencies]
 criterion = "0.5.1"
 rand = "0.8.5"
+serde_test = "1.0.177"
 
 [features]
 utoipa = ["dep:utoipa"]

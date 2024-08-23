@@ -39,7 +39,7 @@ impl std::fmt::Display for GeoShardError {
 impl std::error::Error for GeoShardError {}
 
 /// Configuration settings for geoshard parameters
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GeoShardConfig {
     /// Determines the default geohash length for inserts
     pub insert_depth: Option<usize>,
