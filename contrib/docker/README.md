@@ -47,7 +47,7 @@ Check the respective registry for available tags.
 
 Geoprox allows specifying a configuration file using the `-c` or `--config` option or set the `GEOPROX_CONFIG` environment variable. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
 
-For example, if you have a configuration file named `geoprox.toml` in your current directory, you can run the container with the following command:
+For example, if you have a configuration file named `geoprox.toml` in the container working directory (`/var/lib/geoprox`), you can run the container with the following command:
 
 ```sh
 docker run -t -p 5000:5000 \
