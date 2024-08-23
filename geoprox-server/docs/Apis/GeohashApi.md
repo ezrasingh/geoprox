@@ -1,4 +1,4 @@
-# GeohashApiApi
+# GeohashApi
 
 All URIs are relative to _http://localhost_
 
