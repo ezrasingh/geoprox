@@ -1,4 +1,6 @@
+!/contrib/client-sdk/rust
+
 .git*
-contrib/
-examples/
-target/
+/contrib
+/examples
+/target

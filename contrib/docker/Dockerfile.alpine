@@ -9,7 +9,11 @@ FROM alpine:3
 
 RUN apk add libc6-compat libgcc
 
-RUN adduser -D geoprox
+RUN \
+    adduser -D geoprox && \
+    mkdir -p /var/lib/geoprox/snapshots && \
+    chown geoprox:geoprox -R /var/lib/geoprox
+
 USER geoprox:geoprox
 
 WORKDIR /usr/local/bin

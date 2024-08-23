@@ -1,0 +1,15 @@
+[server]
+http_addr = '0.0.0.0'
+http_port = 5000
+timeout = '10s'
+
+[shard]
+insert_depth = 6
+search_depth = 6
+default_count = 100
+default_sorted = false
+
+[server.snapshots]
+disabled = false
+path = '/var/lib/geoprox/snapshots'
+every = '30s'

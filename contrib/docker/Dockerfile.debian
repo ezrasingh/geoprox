@@ -6,8 +6,11 @@ RUN cargo build --release
 
 FROM debian:bookworm
 
-RUN groupadd geoprox && \
-    useradd -m -g geoprox geoprox
+RUN \
+    groupadd geoprox && \
+    useradd -m -g geoprox geoprox && \
+    mkdir -p /var/lib/geoprox/snapshots && \
+    chown geoprox:geoprox -R /var/lib/geoprox
 
 USER geoprox:geoprox
 
