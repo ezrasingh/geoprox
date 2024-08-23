@@ -1,5 +1,6 @@
 use crate::metric::HaversineDistance;
 use crate::models::{LatLngCoord, Neighbor, ObjectIdentifier};
+
 use ahash::AHasher;
 use geohash::GeohashError;
 use hashbrown::hash_table::Entry;
@@ -9,6 +10,7 @@ use kiddo::KdTree;
 use log::debug;
 use patricia_tree::StringPatriciaMap;
 use rayon::prelude::*;
+
 use std::collections::BTreeSet;
 use std::hash::{BuildHasher, BuildHasherDefault};
 use std::time::{Duration, Instant};
@@ -36,34 +38,28 @@ fn build_search_space(
     search_tree
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct SpatialIndex {
     /// maps geohash to common objects
     prefix_tree: StringPatriciaMap<HashSet<ObjectIdentifier>>,
     /// maps object key, geohash and expiration to hash id (object id)
-    position_map: HashTable<(String, String, Option<Instant>)>,
-    /// internal hasher
-    hasher: BuildHasherDefault<AHasher>,
+    objects: HashTable<(String, String, Option<Instant>)>,
     /// maps expiration key to object key
     expirations: BTreeSet<(Instant, String)>,
+    /// internal hasher
+    hasher: BuildHasherDefault<AHasher>,
 }
 
 impl SpatialIndex {
-    /// determines the maximum number of elements the spatial index can hold before it needs to reallocate.
-    pub const MAX_CAPACITY: usize = u16::MAX as usize;
-
     pub fn new(capacity: usize) -> Self {
-        let position_map = {
-            if capacity.gt(&Self::MAX_CAPACITY) {
-                HashTable::with_capacity(Self::MAX_CAPACITY)
-            } else {
-                HashTable::with_capacity(capacity)
-            }
-        };
         Self {
-            position_map,
+            objects: HashTable::with_capacity(capacity),
             ..Default::default()
         }
+    }
+
+    pub fn objects(&self) -> HashTable<(String, String, Option<Instant>)> {
+        self.objects.clone()
     }
 
     /// Removes expired keys
@@ -82,7 +78,7 @@ impl SpatialIndex {
     pub fn insert(&mut self, key: &str, ghash: &str, expiration: Option<Duration>) {
         let id: ObjectIdentifier = self.hasher.hash_one(key);
         // ? remove object from previous locations
-        if let Entry::Occupied(entry) = self.position_map.entry(
+        if let Entry::Occupied(entry) = self.objects.entry(
             id,
             |(key, _, _)| key.eq(key),
             |(key, _, _)| self.hasher.hash_one(key),
@@ -108,18 +104,17 @@ impl SpatialIndex {
         if let Some(duration) = expiration {
             // ? update expiration tree
             let expire_at = Instant::now() + duration;
-            self.position_map.insert_unique(
+            self.objects.insert_unique(
                 id,
                 (key.to_owned(), ghash.into(), Some(expire_at)),
                 |(key, _, _)| self.hasher.hash_one(key),
             );
             self.expirations.insert((expire_at, key.to_string()));
         } else {
-            self.position_map.insert_unique(
-                id,
-                (key.to_owned(), ghash.into(), None),
-                |(key, _, _)| self.hasher.hash_one(key),
-            );
+            self.objects
+                .insert_unique(id, (key.to_owned(), ghash.into(), None), |(key, _, _)| {
+                    self.hasher.hash_one(key)
+                });
         }
 
         // ? insert current region into prefix tree
@@ -144,7 +139,7 @@ impl SpatialIndex {
     /// Remove key from index
     pub fn remove(&mut self, key: &str) -> bool {
         let id: ObjectIdentifier = self.hasher.hash_one(key);
-        if let Entry::Occupied(entry) = self.position_map.entry(
+        if let Entry::Occupied(entry) = self.objects.entry(
             id,
             |(key, _, _)| key.eq(key),
             |(key, _, _)| self.hasher.hash_one(key),
@@ -178,7 +173,7 @@ impl SpatialIndex {
         sorted: bool,
         search_depth: usize,
     ) -> Result<Vec<Neighbor>, GeohashError> {
-        if self.position_map.is_empty() || count.eq(&0) {
+        if self.objects.is_empty() || count.eq(&0) {
             return Ok(vec![]);
         }
         let search_region: String = {
@@ -201,7 +196,7 @@ impl SpatialIndex {
             .nearest_n_within::<HaversineDistance>(&origin, radius, count, sorted)
             .par_iter()
             .filter_map(|node| {
-                self.position_map
+                self.objects
                     .find(node.item, |(key, _, _)| {
                         self.hasher.hash_one(key).eq(&node.item)
                     })
@@ -212,6 +207,31 @@ impl SpatialIndex {
             })
             .collect();
         Ok(neighbors)
+    }
+}
+
+impl PartialEq for SpatialIndex {
+    fn eq(&self, other: &Self) -> bool {
+        let objects_eq: bool = self
+            .objects()
+            .par_iter()
+            .fold(
+                || true,
+                |result, (key, ghash, ttl)| {
+                    let id = other.hasher.hash_one(&key);
+                    result
+                        && match other
+                            .objects
+                            .find(id, |(other_key, other_ghash, other_ttl)| {
+                                other_key == key && other_ghash == ghash && other_ttl == ttl
+                            }) {
+                            Some(_) => true,
+                            None => false,
+                        }
+                },
+            )
+            .reduce(|| true, |result, found| result && found);
+        objects_eq && self.expirations == other.expirations && self.hasher == other.hasher
     }
 }
 
@@ -286,7 +306,6 @@ mod test {
     #[test]
     fn can_search() {
         let mut geo_index = SpatialIndex::default();
-        let depth: usize = 6;
         let range = 1000.0;
         let count = 100;
         let sorted = false;
@@ -294,14 +313,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("a".to_string(), "s00j8n0".to_string()),
+                ("b".to_string(), "s00j8n1".to_string()),
+                ("c".to_string(), "s00j8n2".to_string()),
+                ("d".to_string(), "s00j8n3".to_string()),
+                ("e".to_string(), "s00j8n4".to_string()),
+                ("f".to_string(), "s00j8n5".to_string()),
+                ("g".to_string(), "s00j8n6".to_string()),
+                ("h".to_string(), "s00j8n7".to_string()),
             ],
             None,
         );
@@ -318,7 +337,6 @@ mod test {
     #[test]
     fn can_search_count() {
         let mut geo_index = SpatialIndex::default();
-        let depth: usize = 6;
         let range = 1000.0;
         let count = 5;
         let sorted = false;
@@ -326,14 +344,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("a".to_string(), "s00j8n0".to_string()),
+                ("b".to_string(), "s00j8n1".to_string()),
+                ("c".to_string(), "s00j8n2".to_string()),
+                ("d".to_string(), "s00j8n3".to_string()),
+                ("e".to_string(), "s00j8n4".to_string()),
+                ("f".to_string(), "s00j8n5".to_string()),
+                ("g".to_string(), "s00j8n6".to_string()),
+                ("h".to_string(), "s00j8n7".to_string()),
             ],
             None,
         );
@@ -348,20 +366,19 @@ mod test {
     fn can_search_sorted_count() {
         // ? see, https://github.com/sdd/kiddo/issues/168
         let mut geo_index = SpatialIndex::default();
-        let depth: usize = 6;
         let range = 1000.0;
         let origin: LatLngCoord = [0.0, 0.0];
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("a".to_string(), "s00j8n0".to_string()),
+                ("b".to_string(), "s00j8n1".to_string()),
+                ("c".to_string(), "s00j8n2".to_string()),
+                ("d".to_string(), "s00j8n3".to_string()),
+                ("e".to_string(), "s00j8n4".to_string()),
+                ("f".to_string(), "s00j8n5".to_string()),
+                ("g".to_string(), "s00j8n6".to_string()),
+                ("h".to_string(), "s00j8n7".to_string()),
             ],
             None,
         );
@@ -394,7 +411,6 @@ mod test {
     #[test]
     fn can_search_sorted() {
         let mut geo_index = SpatialIndex::default();
-        let depth: usize = 10;
         let range = 1000.0;
         let count = 100;
         let sorted = true;
@@ -402,14 +418,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), encode_lat_lng([1.0, 0.0], depth)),
-                ("b".to_string(), encode_lat_lng([1.0, 1.0], depth)),
-                ("c".to_string(), encode_lat_lng([0.0, 1.0], depth)),
-                ("d".to_string(), encode_lat_lng([0.0, 0.0], depth)),
-                ("e".to_string(), encode_lat_lng([-1., 0.0], depth)),
-                ("f".to_string(), encode_lat_lng([-1.0, -1.0], depth)),
-                ("g".to_string(), encode_lat_lng([0.0, -1.0], depth)),
-                ("h".to_string(), encode_lat_lng([0.0, 0.0], depth)),
+                ("a".to_string(), "s00j8n0".to_string()),
+                ("b".to_string(), "s00j8n1".to_string()),
+                ("c".to_string(), "s00j8n2".to_string()),
+                ("d".to_string(), "s00j8n3".to_string()),
+                ("e".to_string(), "s00j8n4".to_string()),
+                ("f".to_string(), "s00j8n5".to_string()),
+                ("g".to_string(), "s00j8n6".to_string()),
+                ("h".to_string(), "s00j8n7".to_string()),
             ],
             None,
         );
