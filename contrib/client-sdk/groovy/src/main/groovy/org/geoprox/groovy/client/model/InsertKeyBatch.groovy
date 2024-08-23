@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.geoprox.groovy.client.model.InsertKey;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 @Canonical
 class InsertKeyBatch {
@@ -13,4 +14,6 @@ class InsertKeyBatch {
     List<InsertKey> keys = new ArrayList<>()
     
     Boolean preserveOrder
+    /* The time-to-live (TTL) for these keys, in seconds */
+    Long ttl
 }

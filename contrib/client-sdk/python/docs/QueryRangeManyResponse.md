@@ -1,6 +1,6 @@
 # QueryRangeManyResponse
 
-Returns indices and object keys found with their distance
+Returns indexes and object keys found with their distance
 
 ## Properties
 

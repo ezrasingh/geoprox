@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.2
+API version: 0.5.0
 Contact: singhezra@gmail.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the QueryRangeManyResponse type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &QueryRangeManyResponse{}
 
-// QueryRangeManyResponse Returns indices and object keys found with their distance
+// QueryRangeManyResponse Returns indexes and object keys found with their distance
 type QueryRangeManyResponse struct {
 	// Contains information about any errors occured during batch search.
 	Errors map[string]string `json:"errors"`

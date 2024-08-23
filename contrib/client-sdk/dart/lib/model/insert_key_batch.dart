@@ -15,6 +15,7 @@ class InsertKeyBatch {
   InsertKeyBatch({
     this.keys = const [],
     required this.preserveOrder,
+    this.ttl,
   });
 
   /// Object key
@@ -22,24 +23,36 @@ class InsertKeyBatch {
 
   bool preserveOrder;
 
+  /// The time-to-live (TTL) for these keys, in seconds
+  ///
+  /// Minimum value: 0
+  int? ttl;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is InsertKeyBatch &&
     _deepEquality.equals(other.keys, keys) &&
-    other.preserveOrder == preserveOrder;
+    other.preserveOrder == preserveOrder &&
+    other.ttl == ttl;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (keys.hashCode) +
-    (preserveOrder.hashCode);
+    (preserveOrder.hashCode) +
+    (ttl == null ? 0 : ttl!.hashCode);
 
   @override
-  String toString() => 'InsertKeyBatch[keys=$keys, preserveOrder=$preserveOrder]';
+  String toString() => 'InsertKeyBatch[keys=$keys, preserveOrder=$preserveOrder, ttl=$ttl]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'keys'] = this.keys;
       json[r'preserve_order'] = this.preserveOrder;
+    if (this.ttl != null) {
+      json[r'ttl'] = this.ttl;
+    } else {
+      json[r'ttl'] = null;
+    }
     return json;
   }
 
@@ -64,6 +77,7 @@ class InsertKeyBatch {
       return InsertKeyBatch(
         keys: InsertKey.listFromJson(json[r'keys']),
         preserveOrder: mapValueOfType<bool>(json, r'preserve_order')!,
+        ttl: mapValueOfType<int>(json, r'ttl'),
       );
     }
     return null;

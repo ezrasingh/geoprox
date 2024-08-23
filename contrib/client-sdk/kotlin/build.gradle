@@ -1,5 +1,5 @@
 group 'org.geoprox'
-version '0.4.2'
+version '0.5.0'
 
 wrapper {
     gradleVersion = '8.7'

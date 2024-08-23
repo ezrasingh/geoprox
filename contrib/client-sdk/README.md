@@ -32,7 +32,7 @@ Available recipes:
 Here’s how to build only the Rust client using the OpenAPI specification:
 
 ```sh
-just spec codegen rust
+just spec manifest codegen rust
 ```
 
 This command generates the Rust client library from the OpenAPI specification. It will compile the spec and produce the client code without additional components.

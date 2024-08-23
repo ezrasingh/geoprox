@@ -3,7 +3,7 @@
 
 defmodule GeoproxServer.Model.QueryRangeManyResponse do
   @moduledoc """
-  Returns indices and object keys found with their distance
+  Returns indexes and object keys found with their distance
   """
 
   @derive Jason.Encoder

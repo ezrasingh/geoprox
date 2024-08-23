@@ -96,7 +96,7 @@ defmodule GeoproxServer.Connection do
         Keyword.get(
           tesla_options,
           :user_agent,
-          "openapi-generator - GeoproxServer 0.4.2 - elixir"
+          "openapi-generator - GeoproxServer 0.5.0 - elixir"
         )
       )
 

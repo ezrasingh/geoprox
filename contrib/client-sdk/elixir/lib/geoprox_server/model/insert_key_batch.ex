@@ -9,12 +9,14 @@ defmodule GeoproxServer.Model.InsertKeyBatch do
   @derive Jason.Encoder
   defstruct [
     :keys,
-    :preserve_order
+    :preserve_order,
+    :ttl
   ]
 
   @type t :: %__MODULE__{
     :keys => [GeoproxServer.Model.InsertKey.t],
-    :preserve_order => boolean()
+    :preserve_order => boolean(),
+    :ttl => integer() | nil
   }
 
   alias GeoproxServer.Deserializer

@@ -14,6 +14,7 @@ part 'insert_key.g.dart';
 /// * [key] - Object key
 /// * [lat] - Latitude
 /// * [lng] - Longitude
+/// * [ttl] - The time-to-live (TTL) for this key, in seconds
 @BuiltValue()
 abstract class InsertKey implements Built<InsertKey, InsertKeyBuilder> {
   /// Object key
@@ -27,6 +28,10 @@ abstract class InsertKey implements Built<InsertKey, InsertKeyBuilder> {
   /// Longitude
   @BuiltValueField(wireName: r'lng')
   double get lng;
+
+  /// The time-to-live (TTL) for this key, in seconds
+  @BuiltValueField(wireName: r'ttl')
+  int? get ttl;
 
   InsertKey._();
 
@@ -66,6 +71,13 @@ class _$InsertKeySerializer implements PrimitiveSerializer<InsertKey> {
       object.lng,
       specifiedType: const FullType(double),
     );
+    if (object.ttl != null) {
+      yield r'ttl';
+      yield serializers.serialize(
+        object.ttl,
+        specifiedType: const FullType.nullable(int),
+      );
+    }
   }
 
   @override
@@ -109,6 +121,14 @@ class _$InsertKeySerializer implements PrimitiveSerializer<InsertKey> {
             specifiedType: const FullType(double),
           ) as double;
           result.lng = valueDes;
+          break;
+        case r'ttl':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(int),
+          ) as int?;
+          if (valueDes == null) continue;
+          result.ttl = valueDes;
           break;
         default:
           unhandled.add(key);

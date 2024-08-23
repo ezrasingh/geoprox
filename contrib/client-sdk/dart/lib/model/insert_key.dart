@@ -16,6 +16,7 @@ class InsertKey {
     required this.key,
     required this.lat,
     required this.lng,
+    this.ttl,
   });
 
   /// Object key
@@ -27,27 +28,39 @@ class InsertKey {
   /// Longitude
   double lng;
 
+  /// The time-to-live (TTL) for this key, in seconds
+  ///
+  /// Minimum value: 0
+  int? ttl;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is InsertKey &&
     other.key == key &&
     other.lat == lat &&
-    other.lng == lng;
+    other.lng == lng &&
+    other.ttl == ttl;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (key.hashCode) +
     (lat.hashCode) +
-    (lng.hashCode);
+    (lng.hashCode) +
+    (ttl == null ? 0 : ttl!.hashCode);
 
   @override
-  String toString() => 'InsertKey[key=$key, lat=$lat, lng=$lng]';
+  String toString() => 'InsertKey[key=$key, lat=$lat, lng=$lng, ttl=$ttl]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'key'] = this.key;
       json[r'lat'] = this.lat;
       json[r'lng'] = this.lng;
+    if (this.ttl != null) {
+      json[r'ttl'] = this.ttl;
+    } else {
+      json[r'ttl'] = null;
+    }
     return json;
   }
 
@@ -73,6 +86,7 @@ class InsertKey {
         key: mapValueOfType<String>(json, r'key')!,
         lat: mapValueOfType<double>(json, r'lat')!,
         lng: mapValueOfType<double>(json, r'lng')!,
+        ttl: mapValueOfType<int>(json, r'ttl'),
       );
     }
     return null;

@@ -10,7 +10,7 @@ import 'package:built_value/serializer.dart';
 
 part 'query_range_many_response.g.dart';
 
-/// Returns indices and object keys found with their distance
+/// Returns indexes and object keys found with their distance
 ///
 /// Properties:
 /// * [errors] - Contains information about any errors occured during batch search.

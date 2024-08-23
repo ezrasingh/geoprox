@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.2
+API version: 0.5.0
 Contact: singhezra@gmail.com
 */
 
@@ -28,6 +28,8 @@ type InsertKey struct {
 	Lat float64 `json:"lat"`
 	// Longitude
 	Lng float64 `json:"lng"`
+	// The time-to-live (TTL) for this key, in seconds
+	Ttl NullableInt64 `json:"ttl,omitempty"`
 }
 
 type _InsertKey InsertKey
@@ -124,6 +126,48 @@ func (o *InsertKey) SetLng(v float64) {
 	o.Lng = v
 }
 
+// GetTtl returns the Ttl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *InsertKey) GetTtl() int64 {
+	if o == nil || IsNil(o.Ttl.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.Ttl.Get()
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InsertKey) GetTtlOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Ttl.Get(), o.Ttl.IsSet()
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *InsertKey) HasTtl() bool {
+	if o != nil && o.Ttl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given NullableInt64 and assigns it to the Ttl field.
+func (o *InsertKey) SetTtl(v int64) {
+	o.Ttl.Set(&v)
+}
+// SetTtlNil sets the value for Ttl to be an explicit nil
+func (o *InsertKey) SetTtlNil() {
+	o.Ttl.Set(nil)
+}
+
+// UnsetTtl ensures that no value is present for Ttl, not even an explicit nil
+func (o *InsertKey) UnsetTtl() {
+	o.Ttl.Unset()
+}
+
 func (o InsertKey) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -137,6 +181,9 @@ func (o InsertKey) ToMap() (map[string]interface{}, error) {
 	toSerialize["key"] = o.Key
 	toSerialize["lat"] = o.Lat
 	toSerialize["lng"] = o.Lng
+	if o.Ttl.IsSet() {
+		toSerialize["ttl"] = o.Ttl.Get()
+	}
 	return toSerialize, nil
 }
 

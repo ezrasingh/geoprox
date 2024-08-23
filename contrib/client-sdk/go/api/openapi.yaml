@@ -8,7 +8,7 @@ info:
   license:
     name: MIT OR Apache-2.0
   title: geoprox-server
-  version: 0.4.2
+  version: 0.5.0
 servers:
 - url: /
 tags:
@@ -568,7 +568,7 @@ components:
       content:
         application/json:
           schema:
-            description: Returns indices and object keys found with their distance
+            description: Returns indexes and object keys found with their distance
             properties:
               errors:
                 additionalProperties:
@@ -587,7 +587,7 @@ components:
             - errors
             - results
             type: object
-      description: Returns indices and object keys found with their distance
+      description: Returns indexes and object keys found with their distance
     QueryRangeResponse:
       content:
         application/json:
@@ -772,6 +772,7 @@ components:
       description: Arguments for inserting a key
       example:
         lng: 6.027456183070403
+        ttl: 0
         key: key
         lat: 0.8008281904610115
       properties:
@@ -786,6 +787,12 @@ components:
           description: Longitude
           format: double
           type: number
+        ttl:
+          description: "The time-to-live (TTL) for this key, in seconds"
+          format: int64
+          minimum: 0
+          nullable: true
+          type: integer
       required:
       - key
       - lat
@@ -796,11 +803,14 @@ components:
       example:
         keys:
         - lng: 6.027456183070403
+          ttl: 0
           key: key
           lat: 0.8008281904610115
         - lng: 6.027456183070403
+          ttl: 0
           key: key
           lat: 0.8008281904610115
+        ttl: 0
         preserve_order: true
       properties:
         keys:
@@ -810,6 +820,12 @@ components:
           type: array
         preserve_order:
           type: boolean
+        ttl:
+          description: "The time-to-live (TTL) for these keys, in seconds"
+          format: int64
+          minimum: 0
+          nullable: true
+          type: integer
       required:
       - keys
       - preserve_order
@@ -944,7 +960,7 @@ components:
       - range
       type: object
     QueryRangeManyResponse:
-      description: Returns indices and object keys found with their distance
+      description: Returns indexes and object keys found with their distance
       example:
         results:
           key:

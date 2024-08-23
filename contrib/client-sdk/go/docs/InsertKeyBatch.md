@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Keys** | [**[]InsertKey**](InsertKey.md) | Object key | 
 **PreserveOrder** | **bool** |  | 
+**Ttl** | Pointer to **NullableInt64** | The time-to-live (TTL) for these keys, in seconds | [optional] 
 
 ## Methods
 
@@ -66,6 +67,41 @@ and a boolean to check if the value has been set.
 SetPreserveOrder sets PreserveOrder field to given value.
 
 
+### GetTtl
+
+`func (o *InsertKeyBatch) GetTtl() int64`
+
+GetTtl returns the Ttl field if non-nil, zero value otherwise.
+
+### GetTtlOk
+
+`func (o *InsertKeyBatch) GetTtlOk() (*int64, bool)`
+
+GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTtl
+
+`func (o *InsertKeyBatch) SetTtl(v int64)`
+
+SetTtl sets Ttl field to given value.
+
+### HasTtl
+
+`func (o *InsertKeyBatch) HasTtl() bool`
+
+HasTtl returns a boolean if a field has been set.
+
+### SetTtlNil
+
+`func (o *InsertKeyBatch) SetTtlNil(b bool)`
+
+ SetTtlNil sets the value for Ttl to be an explicit nil
+
+### UnsetTtl
+`func (o *InsertKeyBatch) UnsetTtl()`
+
+UnsetTtl ensures that no value is present for Ttl, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

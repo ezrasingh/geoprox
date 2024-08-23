@@ -10,13 +10,15 @@ defmodule GeoproxServer.Model.InsertKey do
   defstruct [
     :key,
     :lat,
-    :lng
+    :lng,
+    :ttl
   ]
 
   @type t :: %__MODULE__{
     :key => String.t,
     :lat => float(),
-    :lng => float()
+    :lng => float(),
+    :ttl => integer() | nil
   }
 
   def decode(value) do

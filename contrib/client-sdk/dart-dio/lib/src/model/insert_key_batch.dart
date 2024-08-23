@@ -15,6 +15,7 @@ part 'insert_key_batch.g.dart';
 /// Properties:
 /// * [keys] - Object key
 /// * [preserveOrder] 
+/// * [ttl] - The time-to-live (TTL) for these keys, in seconds
 @BuiltValue()
 abstract class InsertKeyBatch implements Built<InsertKeyBatch, InsertKeyBatchBuilder> {
   /// Object key
@@ -23,6 +24,10 @@ abstract class InsertKeyBatch implements Built<InsertKeyBatch, InsertKeyBatchBui
 
   @BuiltValueField(wireName: r'preserve_order')
   bool get preserveOrder;
+
+  /// The time-to-live (TTL) for these keys, in seconds
+  @BuiltValueField(wireName: r'ttl')
+  int? get ttl;
 
   InsertKeyBatch._();
 
@@ -57,6 +62,13 @@ class _$InsertKeyBatchSerializer implements PrimitiveSerializer<InsertKeyBatch> 
       object.preserveOrder,
       specifiedType: const FullType(bool),
     );
+    if (object.ttl != null) {
+      yield r'ttl';
+      yield serializers.serialize(
+        object.ttl,
+        specifiedType: const FullType.nullable(int),
+      );
+    }
   }
 
   @override
@@ -93,6 +105,14 @@ class _$InsertKeyBatchSerializer implements PrimitiveSerializer<InsertKeyBatch> 
             specifiedType: const FullType(bool),
           ) as bool;
           result.preserveOrder = valueDes;
+          break;
+        case r'ttl':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(int),
+          ) as int?;
+          if (valueDes == null) continue;
+          result.ttl = valueDes;
           break;
         default:
           unhandled.add(key);

@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.2
+API version: 0.5.0
 Contact: singhezra@gmail.com
 */
 

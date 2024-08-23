@@ -3,7 +3,7 @@ geoprox-server
 
 Geoprox server implementation providing a HTTP API for geospatial queries and position tracking
 
-API version: 0.4.2
+API version: 0.5.0
 Contact: singhezra@gmail.com
 */
 
@@ -25,6 +25,8 @@ type InsertKeyBatch struct {
 	// Object key
 	Keys []InsertKey `json:"keys"`
 	PreserveOrder bool `json:"preserve_order"`
+	// The time-to-live (TTL) for these keys, in seconds
+	Ttl NullableInt64 `json:"ttl,omitempty"`
 }
 
 type _InsertKeyBatch InsertKeyBatch
@@ -96,6 +98,48 @@ func (o *InsertKeyBatch) SetPreserveOrder(v bool) {
 	o.PreserveOrder = v
 }
 
+// GetTtl returns the Ttl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *InsertKeyBatch) GetTtl() int64 {
+	if o == nil || IsNil(o.Ttl.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.Ttl.Get()
+}
+
+// GetTtlOk returns a tuple with the Ttl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *InsertKeyBatch) GetTtlOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Ttl.Get(), o.Ttl.IsSet()
+}
+
+// HasTtl returns a boolean if a field has been set.
+func (o *InsertKeyBatch) HasTtl() bool {
+	if o != nil && o.Ttl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTtl gets a reference to the given NullableInt64 and assigns it to the Ttl field.
+func (o *InsertKeyBatch) SetTtl(v int64) {
+	o.Ttl.Set(&v)
+}
+// SetTtlNil sets the value for Ttl to be an explicit nil
+func (o *InsertKeyBatch) SetTtlNil() {
+	o.Ttl.Set(nil)
+}
+
+// UnsetTtl ensures that no value is present for Ttl, not even an explicit nil
+func (o *InsertKeyBatch) UnsetTtl() {
+	o.Ttl.Unset()
+}
+
 func (o InsertKeyBatch) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -108,6 +152,9 @@ func (o InsertKeyBatch) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["keys"] = o.Keys
 	toSerialize["preserve_order"] = o.PreserveOrder
+	if o.Ttl.IsSet() {
+		toSerialize["ttl"] = o.Ttl.Get()
+	}
 	return toSerialize, nil
 }
 

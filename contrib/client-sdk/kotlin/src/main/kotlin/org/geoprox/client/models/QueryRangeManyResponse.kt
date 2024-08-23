@@ -21,7 +21,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Returns indices and object keys found with their distance
+ * Returns indexes and object keys found with their distance
  *
  * @param errors Contains information about any errors occured during batch search.
  * @param results Object keys found within range

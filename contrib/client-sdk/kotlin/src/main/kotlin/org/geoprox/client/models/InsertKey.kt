@@ -25,6 +25,7 @@ import com.squareup.moshi.JsonClass
  * @param key Object key
  * @param lat Latitude
  * @param lng Longitude
+ * @param ttl The time-to-live (TTL) for this key, in seconds
  */
 
 
@@ -40,7 +41,11 @@ data class InsertKey (
 
     /* Longitude */
     @Json(name = "lng")
-    val lng: kotlin.Double
+    val lng: kotlin.Double,
+
+    /* The time-to-live (TTL) for this key, in seconds */
+    @Json(name = "ttl")
+    val ttl: kotlin.Long? = null
 
 ) {
 

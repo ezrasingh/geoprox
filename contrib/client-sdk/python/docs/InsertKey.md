@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **key** | **str** | Object key | 
 **lat** | **float** | Latitude | 
 **lng** | **float** | Longitude | 
+**ttl** | **int** | The time-to-live (TTL) for this key, in seconds | [optional] 
 
 ## Example
 

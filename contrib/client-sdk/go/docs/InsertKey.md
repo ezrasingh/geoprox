@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **Key** | **string** | Object key | 
 **Lat** | **float64** | Latitude | 
 **Lng** | **float64** | Longitude | 
+**Ttl** | Pointer to **NullableInt64** | The time-to-live (TTL) for this key, in seconds | [optional] 
 
 ## Methods
 
@@ -87,6 +88,41 @@ and a boolean to check if the value has been set.
 SetLng sets Lng field to given value.
 
 
+### GetTtl
+
+`func (o *InsertKey) GetTtl() int64`
+
+GetTtl returns the Ttl field if non-nil, zero value otherwise.
+
+### GetTtlOk
+
+`func (o *InsertKey) GetTtlOk() (*int64, bool)`
+
+GetTtlOk returns a tuple with the Ttl field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTtl
+
+`func (o *InsertKey) SetTtl(v int64)`
+
+SetTtl sets Ttl field to given value.
+
+### HasTtl
+
+`func (o *InsertKey) HasTtl() bool`
+
+HasTtl returns a boolean if a field has been set.
+
+### SetTtlNil
+
+`func (o *InsertKey) SetTtlNil(b bool)`
+
+ SetTtlNil sets the value for Ttl to be an explicit nil
+
+### UnsetTtl
+`func (o *InsertKey) UnsetTtl()`
+
+UnsetTtl ensures that no value is present for Ttl, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -14,7 +14,7 @@ manifest:
   jsonnet -S manifest.jsonnet -m generators
 
 # Generate sdk client
-codegen TARGET_LANG: manifest
+codegen TARGET_LANG:
   npx @openapitools/openapi-generator-cli generate \
     -i openapi.json -c generators/{{TARGET_LANG}}.yaml \
     -g {{TARGET_LANG}} -o ./{{TARGET_LANG}}

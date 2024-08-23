@@ -25,6 +25,7 @@ import com.squareup.moshi.JsonClass
  *
  * @param propertyKeys Object key
  * @param preserveOrder 
+ * @param ttl The time-to-live (TTL) for these keys, in seconds
  */
 
 
@@ -35,7 +36,11 @@ data class InsertKeyBatch (
     val propertyKeys: kotlin.collections.List<InsertKey>,
 
     @Json(name = "preserve_order")
-    val preserveOrder: kotlin.Boolean
+    val preserveOrder: kotlin.Boolean,
+
+    /* The time-to-live (TTL) for these keys, in seconds */
+    @Json(name = "ttl")
+    val ttl: kotlin.Long? = null
 
 ) {
 

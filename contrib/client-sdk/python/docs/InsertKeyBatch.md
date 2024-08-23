@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **keys** | [**List[InsertKey]**](InsertKey.md) | Object key | 
 **preserve_order** | **bool** |  | 
+**ttl** | **int** | The time-to-live (TTL) for these keys, in seconds | [optional] 
 
 ## Example
 
