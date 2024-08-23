@@ -211,7 +211,7 @@ pub struct QueryRangeMany {
     pub sorted: Option<bool>,
 }
 
-/// Returns indices and object keys found with their distance
+/// Returns indexes and object keys found with their distance
 #[derive(Serialize, ToSchema, ToResponse)]
 pub struct QueryRangeManyResponse {
     /// Object keys found within range
