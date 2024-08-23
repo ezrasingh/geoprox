@@ -66,6 +66,26 @@ geoprox help encode
 
 Geoprox allows specifying a configuration file using the `-c` or `--config` option or set the `GEOPROX_CONFIG` environment variable. This file can contain various settings to customize the behavior of the Geoprox server and commands. The configuration can be provided in any common format such as `YAML`, `TOML`, `JSON`, or `INI`.
 
+### Example Usage
+
+Specify config using `-c` flag:
+
+```sh
+# from current working directory
+geoprox run -c geoprox.toml
+
+# from absolute path
+geoprox run -c /my/custom/config.yaml
+```
+
+or using environment variables:
+
+```sh
+export GEOPROX_CONFIG='/my/custom/config.json'
+
+geoprox run
+```
+
 ### Example Config
 
 Here's an example configuration file in `TOML` format:
