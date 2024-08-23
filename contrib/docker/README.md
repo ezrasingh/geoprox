@@ -45,7 +45,7 @@ Check the respective registry for available tags.
 
 > For complete settings and configuration details, refer to the [Geoprox CLI README](../../geoprox/README.md#configuration).
 
-To use a custom configuration file, simply mount your configuration file into the container at `/etc/geoprox`. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
+To use a custom configuration file, simply mount your configuration file into the container at `/var/lib/geoprox`. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
 
 For example, if you have a configuration file named `geoprox.yaml` in your current directory, you can run the container with the following command:
 

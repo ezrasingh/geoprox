@@ -39,10 +39,13 @@ pub fn routes(app_state: AppState) -> Router {
 
     // ? background tasks
     purge_expirations(Arc::clone(&state), Duration::from_secs(1));
-    persist_snapshot(
-        Arc::clone(&state),
-        server_config.snapshot.every.unwrap_or_default().into(),
-    );
+
+    if !server_config.snapshots.disabled {
+        persist_snapshot(
+            Arc::clone(&state),
+            server_config.snapshots.every.unwrap_or_default().into(),
+        );
+    }
 
     Router::new()
         .nest(
@@ -164,7 +167,8 @@ mod test {
     fn setup() -> TestServer {
         let app = AppState::new(
             ServerConfig {
-                snapshot: SnapshotConfig {
+                snapshots: SnapshotConfig {
+                    disabled: false,
                     path: Some(current_dir().unwrap()),
                     every: None,
                 },

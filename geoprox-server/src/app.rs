@@ -20,7 +20,7 @@ pub struct AppState {
 
 impl AppState {
     pub fn new(server_config: ServerConfig, shard_config: GeoShardConfig) -> Self {
-        match fs::read(server_config.snapshot.bin_path()) {
+        match fs::read(server_config.snapshots.bin_path()) {
             Ok(state) => Self {
                 geoshard: bincode::deserialize(&state).expect("could not restore snapshot"),
                 server_config,
@@ -36,7 +36,7 @@ impl AppState {
 
     pub fn store_snapshot(&self) {
         fs::write(
-            self.server_config.snapshot.bin_path(),
+            self.server_config.snapshots.bin_path(),
             bincode::serialize(&self.geoshard).unwrap(),
         )
         .expect("could not store snapshot");

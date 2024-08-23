@@ -6,11 +6,14 @@ use std::{
     time::Duration,
 };
 
-pub const DEFAULT_CONFIG_PATH: &str = "/etc/geoprox";
+pub const DEFAULT_CONFIG_PATH: &str = "/var/lib/geoprox";
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct SnapshotConfig {
-    /// Directory where snapshots will be stored and read from (default /etc/geoprox/)
+    /// Toggles snapshot usage
+    #[serde(default)]
+    pub disabled: bool,
+    /// Directory where snapshots will be stored and read from (default /var/lib/geoprox)
     pub path: Option<PathBuf>,
     /// Determines how often snapshots will be taken (default 60s)
     pub every: Option<DurationString>,
@@ -29,6 +32,7 @@ impl SnapshotConfig {
 impl Default for SnapshotConfig {
     fn default() -> Self {
         Self {
+            disabled: false,
             path: Some(PathBuf::from(DEFAULT_CONFIG_PATH)),
             every: Some(DurationString::default()),
         }
@@ -44,7 +48,7 @@ pub struct ServerConfig {
     /// Timeout duration in seconds (default 10s)
     pub timeout: Option<DurationString>,
     /// Determines how snapshots will be handled
-    pub snapshot: SnapshotConfig,
+    pub snapshots: SnapshotConfig,
 }
 
 impl ServerConfig {
@@ -58,7 +62,7 @@ impl Default for ServerConfig {
             http_addr: Some(Self::DEFAULT_ADDR),
             http_port: Some(Self::DEFAULT_PORT),
             timeout: Some(DurationString::new(Duration::from_secs(10))),
-            snapshot: SnapshotConfig::default(),
+            snapshots: SnapshotConfig::default(),
         }
     }
 }

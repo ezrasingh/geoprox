@@ -1,7 +1,7 @@
 use clap::{ArgAction, Parser, Subcommand};
 use config::{Config, ConfigError};
 use geoprox_core::models::GeoShardConfig;
-use geoprox_server::config::ServerConfig;
+use geoprox_server::config::{ServerConfig, DEFAULT_CONFIG_PATH};
 use serde::Deserialize;
 use std::net::IpAddr;
 use std::path::PathBuf;
@@ -9,7 +9,7 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
-    /// Specify a config file
+    /// Specify a config file (defaults /var/lib/geoprox/geoprox.{toml,yaml,json,ini,ron,json5})
     #[arg(short, long, value_name = "CONFIG", env = "GEOPROX_CONFIG")]
     config: Option<PathBuf>,
 
@@ -22,11 +22,11 @@ pub enum Commands {
     /// Start Geoprox server
     Run {
         /// The address the server will bind to
-        #[arg(short, long, default_value = "0.0.0.0", env = "GEOPROX_HTTP_ADDR")]
+        #[arg(short, long, default_value_t = ServerConfig::DEFAULT_ADDR, env = "GEOPROX_HTTP_ADDR")]
         addr: IpAddr,
 
         /// The port the server will listen on
-        #[arg(short, long, default_value_t = 5000, env = "GEOPROX_HTTP_PORT")]
+        #[arg(short, long, default_value_t = ServerConfig::DEFAULT_PORT, env = "GEOPROX_HTTP_PORT")]
         port: u16,
     },
 
@@ -59,8 +59,8 @@ pub enum Commands {
         destination: Option<PathBuf>,
 
         /// Name of the output file (defaults to openapi.json)
-        #[arg(short, long)]
-        filename: Option<String>,
+        #[arg(short, long, default_value = "openapi.json")]
+        filename: String,
 
         /// Output the API specification to standard output (stdout)
         #[arg(short, long, action=ArgAction::SetTrue)]
@@ -87,7 +87,12 @@ pub fn runtime() -> Result<(Option<Commands>, GeoproxConfig), ConfigError> {
             .build()?
             .try_deserialize()?,
         None => Config::builder()
-            .add_source(config::File::with_name("/etc/geoprox/geoprox"))
+            .add_source(config::File::with_name(&format!(
+                // ?  look for geoprox.{toml,yaml,json,ini,ron,json5}
+                // ?  config under default config path
+                "{}/geoprox",
+                DEFAULT_CONFIG_PATH
+            )))
             .build()
             .unwrap_or_default()
             .try_deserialize()
