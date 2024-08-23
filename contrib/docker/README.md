@@ -56,6 +56,10 @@ docker run -t -p 5000:5000 \
     -c geoprox.toml
 ```
 
+In this command:
+
+- `-v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro` mounts the local configuration file into the container.
+
 If you need to specify a different path or file name for your configuration, use the `-c` or `--config` option:
 
 ```sh
@@ -67,7 +71,6 @@ docker run -t -p 5000:5000 \
 
 In this command:
 
-- `-v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro` mounts the local configuration file into the container.
 - `-c /some/path/custom-config.yaml` specifies the configuration file to be used by the Geoprox server.
 
 Or use the `GEOPROX_CONFIG` environment variable:

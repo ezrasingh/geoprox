@@ -39,35 +39,52 @@ To pin your Geoprox instance to a specific version and variant, use the format `
 
 > If you specify only the version, like `v0.3.0`, it will default to the `alpine` variant, resulting in `v0.3.0-alpine`.
 
-Check the repesctive registry for available tags.
+Check the respective registry for available tags.
 
 ### Customizing the Configuration
 
-> For complete settings and configuration details, refer to the [Geoprox CLI README](https://github.com/ezrasingh/geoprox/blob/main/geoprox/README.md#configuration).
+> For complete settings and configuration details, refer to the [Geoprox CLI README](../../geoprox/README.md#configuration).
 
-To use a custom configuration file, simply mount your configuration file into the container at `/etc/geoprox`. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
+Geoprox allows specifying a configuration file using the `-c` or `--config` option or set the `GEOPROX_CONFIG` environment variable. Geoprox will automatically detect and parse configuration files in formats like `YAML`, `TOML`, `JSON`, or `INI` if they are named `geoprox.yaml`, `geoprox.toml`, `geoprox.json`, or `geoprox.ini`, respectively.
 
-For example, if you have a configuration file named `geoprox.yaml` in your current directory, you can run the container with the following command:
+For example, if you have a configuration file named `geoprox.toml` in the container working directory (`/var/lib/geoprox`), you can run the container with the following command:
 
 ```sh
 docker run -t -p 5000:5000 \
-    -v $(pwd)/geoprox.yaml:/etc/geoprox/geoprox.yaml:ro \
-    ezrasingh/geoprox:latest
+    -v $(pwd)/geoprox.toml:/var/lib/geoprox/geoprox.toml:ro \
+    ezrasingh/geoprox:latest \
+    -c geoprox.toml
 ```
+
+In this command:
+
+- `-v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro` mounts the local configuration file into the container.
 
 If you need to specify a different path or file name for your configuration, use the `-c` or `--config` option:
 
 ```sh
 docker run -t -p 5000:5000 \
-    -v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro \
+    -v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro \
     ezrasingh/geoprox:latest \
-    -c /some/path/custom-config.toml
+    -c /some/path/custom-config.yaml
 ```
 
 In this command:
 
-- `-v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro` mounts the local configuration file into the container.
-- `-c /some/path/custom-config.toml` specifies the configuration file to be used by the Geoprox server.
+- `-c /some/path/custom-config.yaml` specifies the configuration file to be used by the Geoprox server.
+
+Or use the `GEOPROX_CONFIG` environment variable:
+
+```sh
+docker run -t -p 5000:5000 \
+    -v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro \
+    -e GEOPROX_CONFIG='/some/path/custom-config.yaml' \
+    ezrasingh/geoprox:latest
+```
+
+In this command:
+
+- `-e GEOPROX_CONFIG='/some/path/custom-config.yaml'` specifies the configuration file to be used by the Geoprox server.
 
 ## Quick Start
 
