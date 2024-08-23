@@ -13,7 +13,7 @@ pub struct SnapshotConfig {
     /// Toggles snapshot usage
     #[serde(default)]
     pub disabled: bool,
-    /// Directory where snapshots will be stored and read from (default /var/lib/geoprox)
+    /// Directory where snapshots will be stored and read from (default /var/lib/geoprox/snapshots)
     pub path: Option<PathBuf>,
     /// Determines how often snapshots will be taken (default 60s)
     pub every: Option<DurationString>,
@@ -21,10 +21,13 @@ pub struct SnapshotConfig {
 
 impl SnapshotConfig {
     pub const SNAPSHOT_FILENAME: &'static str = "snapshot.bin";
+    fn default_path() -> PathBuf {
+        PathBuf::from(DEFAULT_CONFIG_PATH).join("snapshots")
+    }
     pub fn bin_path(&self) -> PathBuf {
         self.path
             .clone()
-            .unwrap_or(PathBuf::from(DEFAULT_CONFIG_PATH))
+            .unwrap_or(Self::default_path())
             .join(Self::SNAPSHOT_FILENAME)
     }
 }
@@ -33,7 +36,7 @@ impl Default for SnapshotConfig {
     fn default() -> Self {
         Self {
             disabled: false,
-            path: Some(PathBuf::from(DEFAULT_CONFIG_PATH)),
+            path: Some(Self::default_path()),
             every: Some(DurationString::default()),
         }
     }

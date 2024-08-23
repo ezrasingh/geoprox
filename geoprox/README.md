@@ -95,7 +95,7 @@ default_sorted = false
 # Toggle snapshot usage
 disabled = false
 # Directory where snapshots will be stored
-path = '/var/lib/geoprox'
+path = '/var/lib/geoprox/snapshots'
 # How often snapshots will be taken
 every = '30s'
 ```
