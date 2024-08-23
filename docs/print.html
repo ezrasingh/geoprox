@@ -546,27 +546,41 @@ docker pull ghcr.io/ezrasingh/geoprox:latest
 <blockquote>
 <p>If you specify only the version, like <code>v0.3.0</code>, it will default to the <code>alpine</code> variant, resulting in <code>v0.3.0-alpine</code>.</p>
 </blockquote>
-<p>Check the repesctive registry for available tags.</p>
+<p>Check the respective registry for available tags.</p>
 <h3 id="customizing-the-configuration"><a class="header" href="#customizing-the-configuration">Customizing the Configuration</a></h3>
 <blockquote>
-<p>For complete settings and configuration details, refer to the <a href="https://github.com/ezrasingh/geoprox/blob/main/geoprox/README.md#configuration">Geoprox CLI README</a>.</p>
+<p>For complete settings and configuration details, refer to the <a href="../../geoprox/README.html#configuration">Geoprox CLI README</a>.</p>
 </blockquote>
-<p>To use a custom configuration file, simply mount your configuration file into the container at <code>/etc/geoprox</code>. Geoprox will automatically detect and parse configuration files in formats like <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code> if they are named <code>geoprox.yaml</code>, <code>geoprox.toml</code>, <code>geoprox.json</code>, or <code>geoprox.ini</code>, respectively.</p>
-<p>For example, if you have a configuration file named <code>geoprox.yaml</code> in your current directory, you can run the container with the following command:</p>
+<p>Geoprox allows specifying a configuration file using the <code>-c</code> or <code>--config</code> option or set the <code>GEOPROX_CONFIG</code> environment variable. Geoprox will automatically detect and parse configuration files in formats like <code>YAML</code>, <code>TOML</code>, <code>JSON</code>, or <code>INI</code> if they are named <code>geoprox.yaml</code>, <code>geoprox.toml</code>, <code>geoprox.json</code>, or <code>geoprox.ini</code>, respectively.</p>
+<p>For example, if you have a configuration file named <code>geoprox.toml</code> in the container working directory (<code>/var/lib/geoprox</code>), you can run the container with the following command:</p>
 <pre><code class="language-sh">docker run -t -p 5000:5000 \
-    -v $(pwd)/geoprox.yaml:/etc/geoprox/geoprox.yaml:ro \
-    ezrasingh/geoprox:latest
-</code></pre>
-<p>If you need to specify a different path or file name for your configuration, use the <code>-c</code> or <code>--config</code> option:</p>
-<pre><code class="language-sh">docker run -t -p 5000:5000 \
-    -v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro \
+    -v $(pwd)/geoprox.toml:/var/lib/geoprox/geoprox.toml:ro \
     ezrasingh/geoprox:latest \
-    -c /some/path/custom-config.toml
+    -c geoprox.toml
 </code></pre>
 <p>In this command:</p>
 <ul>
-<li><code>-v $(pwd)/custom-config.toml:/some/path/custom-config.toml:ro</code> mounts the local configuration file into the container.</li>
-<li><code>-c /some/path/custom-config.toml</code> specifies the configuration file to be used by the Geoprox server.</li>
+<li><code>-v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro</code> mounts the local configuration file into the container.</li>
+</ul>
+<p>If you need to specify a different path or file name for your configuration, use the <code>-c</code> or <code>--config</code> option:</p>
+<pre><code class="language-sh">docker run -t -p 5000:5000 \
+    -v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro \
+    ezrasingh/geoprox:latest \
+    -c /some/path/custom-config.yaml
+</code></pre>
+<p>In this command:</p>
+<ul>
+<li><code>-c /some/path/custom-config.yaml</code> specifies the configuration file to be used by the Geoprox server.</li>
+</ul>
+<p>Or use the <code>GEOPROX_CONFIG</code> environment variable:</p>
+<pre><code class="language-sh">docker run -t -p 5000:5000 \
+    -v $(pwd)/custom-config.yaml:/some/path/custom-config.yaml:ro \
+    -e GEOPROX_CONFIG='/some/path/custom-config.yaml' \
+    ezrasingh/geoprox:latest
+</code></pre>
+<p>In this command:</p>
+<ul>
+<li><code>-e GEOPROX_CONFIG='/some/path/custom-config.yaml'</code> specifies the configuration file to be used by the Geoprox server.</li>
 </ul>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
 <p>To quickly get started with Geoprox using Docker, follow these steps to configure and run the server with Docker Compose.</p>
