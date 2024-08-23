@@ -6,7 +6,7 @@ use itertools::Itertools;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::cache::SpatialIndex;
+use crate::index::SpatialIndex;
 use crate::models::{BatchOutput, GeoShardConfig, GeoShardError, LatLngCoord, Neighbor};
 
 /// A collection of geospatial indexes stored in-memory

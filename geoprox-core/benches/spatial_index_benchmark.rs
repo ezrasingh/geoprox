@@ -1,7 +1,7 @@
 use criterion::{
     black_box, criterion_group, criterion_main, BatchSize, BenchmarkId, Criterion, Throughput,
 };
-use geoprox_core::{cache::SpatialIndex, models::LatLngCoord};
+use geoprox_core::{index::SpatialIndex, models::LatLngCoord};
 use hashbrown::HashSet;
 use rand::prelude::*;
 

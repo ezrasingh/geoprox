@@ -1,6 +1,6 @@
 mod metric;
 
-pub mod cache;
+pub mod index;
 pub mod models;
 pub mod serde;
 pub mod shard;

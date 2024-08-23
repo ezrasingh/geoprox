@@ -2,7 +2,7 @@
 
 Geoprox Core is the foundational Rust crate for the [Geoprox](https://github.com/ezrasingh/geoprox/) project, providing robust geospatial indexing and sharding capabilities. It includes two primary modules:
 
-- **`cache`**: Manages in-memory storage and retrieval of geospatial data to ensure quick access and efficient querying.
+- **`index`**: Manages in-memory storage and retrieval of geospatial data to ensure quick access and efficient querying.
 - **`shard`**: Handles the partitioning and indexing of geospatial information, optimizing data distribution and retrieval across large datasets.
 
 These modules are built to handle various use cases, such as food delivery services and real-time inventory tracking.
@@ -15,43 +15,6 @@ These modules are built to handle various use cases, such as food delivery servi
 - **Geospatial Sharding**: Manage and query distributed datasets with geospatial awareness.
 
 ## Data Stuctures
-
-### SpatialIndex
-
-The `cache` module implements the `SpatialIndex` data structure, enabling efficient placement and searching of resources based on their geohash-encoded locations.
-
-Key features include:
-
-- **Placing Resources**: Add resources to the index with their geohash-encoded locations.
-- **Searching Resources**: Perform range queries to find resources within a specified distance from a given location.
-
-#### Example Usage
-
-```rust
-extern crate geoprox_core;
-
-let mut geo_index = geoprox_core::SpatialIndex::default();
-
-// ? place object keys into index
-geo_index.insert("alice", "s00j8n0");
-geo_index.insert("bob", "s00j8n1");
-
-// ? search index for objects near New York
-let nearby: LatLngCoord = [40.7128, 74.006];
-let within: f64 = 200.0; // 200km radius
-let count = 100; // return up to 100 results
-let sorted = true; // sort results by distance
-let search_depth = 6; // search precision (higher means more precise)
-let res = geo_index.search(nearby, within, count, sorted, depth).unwrap();
-
-println!("found: {:#?}", res);
-
-assert_eq!(res.len(), 2);
-
-res.iter().for_each(|neighbor| {
-    assert!(neighbor.distance <= within);
-});
-```
 
 ### GeoShard
 
@@ -99,6 +62,43 @@ let sorted = true; // sort results by distance
 let res = shard.query_range("drivers", nearby, within, Some(count), Some(sorted));
 
 println!("found: {:#?}", res.unwrap());
+```
+
+### SpatialIndex
+
+The `index` module implements the `SpatialIndex` data structure, enabling efficient placement and searching of resources based on their geohash-encoded locations.
+
+Key features include:
+
+- **Placing Resources**: Add resources to the index with their geohash-encoded locations.
+- **Searching Resources**: Perform range queries to find resources within a specified distance from a given location.
+
+#### Example Usage
+
+```rust
+extern crate geoprox_core;
+
+let mut geo_index = geoprox_core::SpatialIndex::default();
+
+// ? place object keys into index
+geo_index.insert("alice", "s00j8n0");
+geo_index.insert("bob", "s00j8n1");
+
+// ? search index for objects near New York
+let nearby: LatLngCoord = [40.7128, 74.006];
+let within: f64 = 200.0; // 200km radius
+let count = 100; // return up to 100 results
+let sorted = true; // sort results by distance
+let search_depth = 6; // search precision (higher means more precise)
+let res = geo_index.search(nearby, within, count, sorted, depth).unwrap();
+
+println!("found: {:#?}", res);
+
+assert_eq!(res.len(), 2);
+
+res.iter().for_each(|neighbor| {
+    assert!(neighbor.distance <= within);
+});
 ```
 
 ## Contributing

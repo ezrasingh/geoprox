@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for key expirations ([#15](https://github.com/ezrasingh/geoprox/issues/15)).
 - Implemented serde for `SpatialIndex` ([#17](https://github.com/ezrasingh/geoprox/issues/17)).
+- renamed `cache.rs` to `index.rs`
 
 ## 0.4.2
 

@@ -2,7 +2,7 @@ use std::time::{Duration, Instant, SystemTime};
 
 use serde::{Deserialize, Serialize};
 
-use crate::cache::SpatialIndex;
+use crate::index::SpatialIndex;
 
 impl Serialize for SpatialIndex {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
