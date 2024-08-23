@@ -25,7 +25,7 @@ pub enum Commands {
         port: Option<u16>,
 
         /// Specify a config file
-        #[arg(short, long, env = "GEOPROX_CONFIG")]
+        #[arg(short, long = "config", env = "GEOPROX_CONFIG")]
         config_path: Option<PathBuf>,
     },
 
@@ -47,7 +47,7 @@ pub enum Commands {
     /// Decode geohash into approximate longitude/latitude
     Decode {
         /// geohash
-        #[arg(short, long)]
+        #[arg(short, long = "geohash")]
         ghash: String,
     },
 
