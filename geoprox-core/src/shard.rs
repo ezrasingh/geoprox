@@ -127,7 +127,7 @@ impl GeoShard {
     pub fn remove_many_keys(
         &mut self,
         index: &str,
-        keys: HashSet<String>,
+        keys: HashSet<impl ToString>,
     ) -> Result<bool, GeoShardError> {
         if let Some(geo_index) = self.store.get_mut(index) {
             Ok(geo_index.remove_many(keys))

@@ -13,7 +13,8 @@ use rayon::prelude::*;
 
 use std::collections::BTreeSet;
 use std::hash::{BuildHasher, BuildHasherDefault};
-use std::time::{Duration, Instant};
+use std::sync::Arc;
+use std::time::{Duration, Instant, SystemTime};
 
 #[inline]
 fn build_search_space(
@@ -43,9 +44,9 @@ pub struct SpatialIndex {
     /// maps geohash to common objects
     prefix_tree: StringPatriciaMap<HashSet<ObjectIdentifier>>,
     /// maps object key, geohash and expiration to hash id (object id)
-    objects: HashTable<(String, String, Option<Instant>)>,
+    objects: HashTable<(Arc<str>, Arc<str>, Option<Instant>)>,
     /// maps expiration key to object key
-    expirations: BTreeSet<(Instant, String)>,
+    expirations: BTreeSet<(Instant, Arc<str>)>,
     /// internal hasher
     hasher: BuildHasherDefault<AHasher>,
 }
@@ -58,17 +59,23 @@ impl SpatialIndex {
         }
     }
 
-    pub fn objects(&self) -> HashTable<(String, String, Option<Instant>)> {
-        self.objects.clone()
+    pub fn sys_time_objects(&self) -> Vec<(Arc<str>, Arc<str>, Option<SystemTime>)> {
+        let sys_now = SystemTime::now();
+        let now = Instant::now();
+        self.objects
+            .clone()
+            .into_iter()
+            .map(|(key, ghash, ttl)| (key, ghash, ttl.map(|expire_at| sys_now - (now - expire_at))))
+            .collect()
     }
 
     /// Removes expired keys
     pub fn purge(&mut self) {
-        let now = (Instant::now(), String::new());
-        let expired_keys: HashSet<String> = self
+        let now = (Instant::now(), Arc::from(""));
+        let expired_keys: HashSet<Arc<str>> = self
             .expirations
             .range(..=&now)
-            .map(|(_, key)| key.to_owned())
+            .map(|(_, key)| key.clone())
             .collect();
         self.remove_many(expired_keys);
         self.expirations = self.expirations.split_off(&now);
@@ -101,39 +108,35 @@ impl SpatialIndex {
 
         // ? update position_map & prefix_tree
         debug!("storing object: id={} key={}", id, key);
-        if let Some(duration) = expiration {
-            // ? update expiration tree
-            let expire_at = Instant::now() + duration;
-            self.objects.insert_unique(
-                id,
-                (key.to_owned(), ghash.into(), Some(expire_at)),
-                |(key, _, _)| self.hasher.hash_one(key),
-            );
-            self.expirations.insert((expire_at, key.to_string()));
-        } else {
-            self.objects
-                .insert_unique(id, (key.to_owned(), ghash.into(), None), |(key, _, _)| {
-                    self.hasher.hash_one(key)
-                });
+        // ? create reference counting containers
+        let key: Arc<str> = Arc::from(key);
+        let ghash: Arc<str> = Arc::from(ghash);
+        let expire_at = expiration.map(|duration| Instant::now() + duration);
+        // ? update expiration tree
+        if let Some(instant) = expire_at {
+            self.expirations.insert((instant, key.clone()));
         }
-
         // ? insert current region into prefix tree
-        if let Some(members) = self.prefix_tree.get_mut(ghash) {
+        if let Some(members) = self.prefix_tree.get_mut(ghash.clone()) {
             members.insert(id);
         } else {
-            self.prefix_tree.insert(ghash, HashSet::from([id]));
+            self.prefix_tree.insert(ghash.clone(), HashSet::from([id]));
         };
+        self.objects
+            .insert_unique(id.into(), (key, ghash, expire_at), |(key, _, _)| {
+                self.hasher.hash_one(key)
+            });
     }
 
     /// insert multiple objects at once
     pub fn insert_many(
         &mut self,
-        objects: impl IntoIterator<Item = (String, String)>,
+        objects: impl IntoIterator<Item = (impl ToString, impl ToString)>,
         expiration: Option<Duration>,
     ) {
         objects
             .into_iter()
-            .for_each(|(key, ghash)| self.insert(&key, &ghash, expiration));
+            .for_each(|(key, ghash)| self.insert(&key.to_string(), &ghash.to_string(), expiration));
     }
 
     /// Remove key from index
@@ -159,9 +162,10 @@ impl SpatialIndex {
     }
 
     /// remove multiple objects at once
-    pub fn remove_many(&mut self, keys: HashSet<String>) -> bool {
+    pub fn remove_many(&mut self, keys: HashSet<impl ToString>) -> bool {
         // returns false if any failed
-        keys.iter().fold(true, |_, key| self.remove(key))
+        keys.iter()
+            .fold(true, |_, key| self.remove(&key.to_string()))
     }
 
     /// search for objects within the area of some location
@@ -202,7 +206,7 @@ impl SpatialIndex {
                     })
                     .map(|(key, _, _)| Neighbor {
                         distance: node.distance,
-                        key: key.to_owned(),
+                        key: key.clone(),
                     })
             })
             .collect();
@@ -213,7 +217,8 @@ impl SpatialIndex {
 impl PartialEq for SpatialIndex {
     fn eq(&self, other: &Self) -> bool {
         let objects_eq: bool = self
-            .objects()
+            .objects
+            .clone()
             .par_iter()
             .fold(
                 || true,
@@ -284,16 +289,16 @@ mod test {
         let range = 10.0;
         let origin: LatLngCoord = [0.0, 0.0];
 
-        geo_index.insert(&"a", &encode_lat_lng(origin, depth), None);
-        geo_index.insert(&"b", &encode_lat_lng(origin, depth), None);
+        geo_index.insert("a", &encode_lat_lng(origin, depth), None);
+        geo_index.insert("b", &encode_lat_lng(origin, depth), None);
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
             .unwrap();
         assert_eq!(res.len(), 2);
 
-        geo_index.remove(&"a");
-        geo_index.remove(&"b");
+        geo_index.remove("a");
+        geo_index.remove("b");
 
         let res = geo_index
             .search(origin, range, 100, false, DEFAULT_DEPTH)
@@ -311,14 +316,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), "s00j8n0".to_string()),
-                ("b".to_string(), "s00j8n1".to_string()),
-                ("c".to_string(), "s00j8n2".to_string()),
-                ("d".to_string(), "s00j8n3".to_string()),
-                ("e".to_string(), "s00j8n4".to_string()),
-                ("f".to_string(), "s00j8n5".to_string()),
-                ("g".to_string(), "s00j8n6".to_string()),
-                ("h".to_string(), "s00j8n7".to_string()),
+                ("a", "s00j8n0"),
+                ("b", "s00j8n1"),
+                ("c", "s00j8n2"),
+                ("d", "s00j8n3"),
+                ("e", "s00j8n4"),
+                ("f", "s00j8n5"),
+                ("g", "s00j8n6"),
+                ("h", "s00j8n7"),
             ],
             None,
         );
@@ -342,14 +347,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), "s00j8n0".to_string()),
-                ("b".to_string(), "s00j8n1".to_string()),
-                ("c".to_string(), "s00j8n2".to_string()),
-                ("d".to_string(), "s00j8n3".to_string()),
-                ("e".to_string(), "s00j8n4".to_string()),
-                ("f".to_string(), "s00j8n5".to_string()),
-                ("g".to_string(), "s00j8n6".to_string()),
-                ("h".to_string(), "s00j8n7".to_string()),
+                ("a", "s00j8n0"),
+                ("b", "s00j8n1"),
+                ("c", "s00j8n2"),
+                ("d", "s00j8n3"),
+                ("e", "s00j8n4"),
+                ("f", "s00j8n5"),
+                ("g", "s00j8n6"),
+                ("h", "s00j8n7"),
             ],
             None,
         );
@@ -369,14 +374,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), "s00j8n0".to_string()),
-                ("b".to_string(), "s00j8n1".to_string()),
-                ("c".to_string(), "s00j8n2".to_string()),
-                ("d".to_string(), "s00j8n3".to_string()),
-                ("e".to_string(), "s00j8n4".to_string()),
-                ("f".to_string(), "s00j8n5".to_string()),
-                ("g".to_string(), "s00j8n6".to_string()),
-                ("h".to_string(), "s00j8n7".to_string()),
+                ("a", "s00j8n0"),
+                ("b", "s00j8n1"),
+                ("c", "s00j8n2"),
+                ("d", "s00j8n3"),
+                ("e", "s00j8n4"),
+                ("f", "s00j8n5"),
+                ("g", "s00j8n6"),
+                ("h", "s00j8n7"),
             ],
             None,
         );
@@ -416,14 +421,14 @@ mod test {
 
         geo_index.insert_many(
             vec![
-                ("a".to_string(), "s00j8n0".to_string()),
-                ("b".to_string(), "s00j8n1".to_string()),
-                ("c".to_string(), "s00j8n2".to_string()),
-                ("d".to_string(), "s00j8n3".to_string()),
-                ("e".to_string(), "s00j8n4".to_string()),
-                ("f".to_string(), "s00j8n5".to_string()),
-                ("g".to_string(), "s00j8n6".to_string()),
-                ("h".to_string(), "s00j8n7".to_string()),
+                ("a", "s00j8n0"),
+                ("b", "s00j8n1"),
+                ("c", "s00j8n2"),
+                ("d", "s00j8n3"),
+                ("e", "s00j8n4"),
+                ("f", "s00j8n5"),
+                ("g", "s00j8n6"),
+                ("h", "s00j8n7"),
             ],
             None,
         );
@@ -440,7 +445,7 @@ mod test {
 
     #[test]
     fn can_capacity() {
-        let capacity = i16::MAX;
+        let capacity = u16::MAX;
         let mut geo_index = SpatialIndex::new(capacity as usize);
         let mut rng = rand::thread_rng();
         let depth: usize = 5;
@@ -475,8 +480,8 @@ mod test {
 
         let duration = Duration::from_millis(500);
 
-        geo_index.insert(&"a", &encode_lat_lng(origin, depth), Some(duration));
-        geo_index.insert(&"b", &encode_lat_lng(origin, depth), Some(duration));
+        geo_index.insert("a", &encode_lat_lng(origin, depth), Some(duration));
+        geo_index.insert("b", &encode_lat_lng(origin, depth), Some(duration));
 
         std::thread::sleep(duration);
 

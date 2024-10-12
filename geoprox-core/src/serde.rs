@@ -1,4 +1,7 @@
-use std::time::{Duration, Instant, SystemTime};
+use std::{
+    sync::Arc,
+    time::{Duration, SystemTime},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -9,13 +12,9 @@ impl Serialize for SpatialIndex {
     where
         S: serde::Serializer,
     {
-        let sys_now = SystemTime::now();
-        let now = Instant::now();
-        self.objects()
-            .into_iter()
-            .map(|(key, ghash, ttl)| (key, ghash, ttl.map(|expire_at| sys_now - (now - expire_at))))
-            .collect::<Vec<(String, String, Option<SystemTime>)>>()
-            .serialize(serializer)
+        let normalized_objects: Vec<(Arc<str>, Arc<str>, Option<SystemTime>)> =
+            self.sys_time_objects();
+        normalized_objects.serialize(serializer)
     }
 }
 

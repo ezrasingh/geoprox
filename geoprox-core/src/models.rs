@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::shard::GeoShard;
 use serde::{Deserialize, Serialize};
 
@@ -14,7 +16,7 @@ pub struct Neighbor {
     /// Distance in kilometers
     pub distance: f64,
     /// Object key
-    pub key: String,
+    pub key: Arc<str>,
 }
 
 #[derive(Debug)]
