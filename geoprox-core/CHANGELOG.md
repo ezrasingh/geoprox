@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 0.5.1
+
+- Updated `kiddo` to [`v5.0.3`](https://github.com/sdd/kiddo/releases/tag/v5.0.3).
+
 ## 0.5.0
 
 - Added support for key expirations ([#15](https://github.com/ezrasingh/geoprox/issues/15)).

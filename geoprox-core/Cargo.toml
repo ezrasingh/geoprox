@@ -16,10 +16,7 @@ geohash = "0.13.1"
 hashbrown = { version = "0.14.5", features = ["serde", "rayon"] }
 haversine-rs = "0.3.0"
 itertools = "0.13.0"
-kiddo = { git = "https://github.com/sdd/kiddo.git", version = "4.2.1", features = [
-    "serialize",
-    "rayon",
-] }
+kiddo = { version = "5.0.3", features = ["serde"] }
 log = "0.4.22"
 patricia_tree = { version = "0.8.0", features = ["serde"] }
 rayon = "1.10.0"

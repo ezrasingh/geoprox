@@ -5,7 +5,7 @@ use ahash::AHasher;
 use geohash::GeohashError;
 use hashbrown::hash_table::Entry;
 use hashbrown::{HashSet, HashTable};
-use kiddo::distance_metric::DistanceMetric;
+use kiddo::traits::DistanceMetric;
 use kiddo::KdTree;
 use log::debug;
 use patricia_tree::StringPatriciaMap;
@@ -193,7 +193,12 @@ impl SpatialIndex {
 
         // ? compute nearest neighbors
         let neighbors: Vec<Neighbor> = build_search_space(&self.prefix_tree, &search_region)
-            .nearest_n_within::<HaversineDistance>(&origin, radius, count, sorted)
+            .nearest_n_within::<HaversineDistance>(
+                &origin,
+                radius,
+                std::num::NonZero::new(count).unwrap(),
+                sorted,
+            )
             .par_iter()
             .filter_map(|node| {
                 self.objects

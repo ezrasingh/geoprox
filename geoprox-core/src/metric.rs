@@ -1,6 +1,6 @@
 use haversine_rs::point::Point;
 use haversine_rs::units::Unit;
-use kiddo::distance_metric::DistanceMetric;
+use kiddo::traits::DistanceMetric;
 
 pub struct HaversineDistance;
 
